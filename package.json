@@ -6,7 +6,11 @@
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "eslint src",
+    "test": "NODE_ENV=test jest --verbose --silent",
+    "test:coverage": "npm run test -- --coverage",
+    "build": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "expo": "~44.0.2",
@@ -18,7 +22,35 @@
     "react-native-web": "0.17.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "eslint": "^8.13.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-native": "^4.0.0",
+    "jest": "^27.5.1"
   },
-  "private": true
+  "private": true,
+  "eslintConfig": {
+    "env": {
+      "es2021": true,
+      "jest": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "react",
+      "react-native"
+    ],
+    "rules": {
+      "react/react-in-jsx-scope": "off"
+    }
+  }
 }
