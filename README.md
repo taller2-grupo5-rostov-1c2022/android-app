@@ -1,3 +1,5 @@
+[![Pipeline](https://github.com/taller2-grupo5-rostov-1c2022/android-app/actions/workflows/pipeline.yml/badge.svg)](https://github.com/taller2-grupo5-rostov-1c2022/android-app/actions/workflows/pipeline.yml) [![codecov](https://codecov.io/gh/taller2-grupo5-rostov-1c2022/android-app/branch/master/graph/badge.svg?token=OJS5A87F2G)](https://codecov.io/gh/taller2-grupo5-rostov-1c2022/android-app)
+
 # Node Server
 
 ## Set Up
@@ -33,6 +35,8 @@ npm i
 npm run build
 ```
 
+> WIP : This may not work locally, should add a Docker Image to build the app
+
 ## Workflow - CI/CD
 
 - Cancel Redundant Workflows
@@ -55,3 +59,13 @@ You'll need to set the following actions secrets:
 
 - [Deliver Artifact](https://github.com/marketplace/actions/react-native-android-build-apk)
 - [Release](https://github.com/softprops/action-gh-release)
+
+#### Creating & Pushing Tags
+
+```
+$ git tag v0.1.0
+$ gut push origin --tags
+```
+
+> keep tag version aligned with `package.json`
+> this could be automated
