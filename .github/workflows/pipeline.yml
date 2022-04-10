@@ -61,18 +61,23 @@ jobs:
 
   Build:
     needs: [Lint, Test]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: Install npm dependencies
-        run: |
-          npm install
+      - run: npm ci
       - name: Build Android Release
-        run: |
-          cd android && ./gradlew assembleRelease
-      - name: Upload Artifact
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-        uses: actions/upload-artifact@v1
+        run: cd android && ./gradlew assembleRelease
+      # Upload Artifact
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: app-release.apk
+      #     path: android/app/build/outputs/apk/release/
+      - name: Release
+        # if: contains(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
         with:
-          name: app-release.apk
-          path: android/app/build/outputs/apk/release/
+          files: android/app/build/outputs/apk/release/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
