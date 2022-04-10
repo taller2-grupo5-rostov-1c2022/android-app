@@ -3,6 +3,7 @@ name: Pipeline
 on:
   push:
     branches: [master]
+    tags: ["*", "**"]
     paths-ignore: ["**/README.md"]
   pull_request:
     branches: [master]
