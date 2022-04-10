@@ -4,10 +4,10 @@ on:
   push:
     branches: [master]
     tags: ["*", "**"]
-    paths-ignore: ["**/README.md"]
+    paths-ignore: ["**.md", ".github/**"]
   pull_request:
     branches: [master]
-    paths-ignore: ["**/README.md"]
+    paths-ignore: ["**.md", ".github/**"]
     types: [opened, synchronize]
   workflow_dispatch: # Allows manual run
 
