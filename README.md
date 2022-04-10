@@ -1,6 +1,6 @@
 [![Pipeline](https://github.com/taller2-grupo5-rostov-1c2022/android-app/actions/workflows/pipeline.yml/badge.svg)](https://github.com/taller2-grupo5-rostov-1c2022/android-app/actions/workflows/pipeline.yml) [![codecov](https://codecov.io/gh/taller2-grupo5-rostov-1c2022/android-app/branch/master/graph/badge.svg?token=OJS5A87F2G)](https://codecov.io/gh/taller2-grupo5-rostov-1c2022/android-app)
 
-# Node Server
+# Android App
 
 ## Set Up
 
