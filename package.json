@@ -55,6 +55,10 @@
     ],
     "rules": {
       "react/react-in-jsx-scope": "off"
+    },
+    "globals": {
+      "fetch": false,
+      "console": false
     }
   }
 }
