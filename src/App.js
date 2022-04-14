@@ -14,13 +14,14 @@ export default function App() {
         <Headline>Spotifiuby</Headline>
         <Text>Log In</Text>
         <TextInput
-          label="Email"
+          placeholder="Email"
           value={email}
           onChangeText={text => setEmail(text)}
           style={styles.input}
         />
         <TextInput
-          label="Password"
+          secureTextEntry={true}
+          placeholder="Password"
           value={password}
           onChangeText={text => setPassword(text)}
           style={styles.input}
