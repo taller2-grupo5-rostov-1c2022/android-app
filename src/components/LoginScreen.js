@@ -3,7 +3,7 @@ import React from "react";
 import { Text, Headline, Button, TextInput } from 'react-native-paper';
 import { StyleSheet, Image, SafeAreaView} from "react-native";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     return (
@@ -24,7 +24,11 @@ const LoginScreen = () => {
           onChangeText={text => setPassword(text)}
           style={styles.input}
         />
-        <Button mode="contained">Log In</Button>
+        <Button
+        onPress={() =>
+          navigation.navigate('TextScreen')
+        }
+         mode="contained">Log In</Button>
         <StatusBar style="auto" />
       </SafeAreaView>
     );

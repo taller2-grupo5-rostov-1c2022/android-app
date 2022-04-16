@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   Text,
   DefaultTheme,
@@ -7,7 +8,14 @@ import {
 } from "react-native-paper";
 import LoginScreen from "./components/LoginScreen";
 
+const Stack = createNativeStackNavigator();
+
+const TextScreen = ({ navigation }) => {
+  return <Text>Hola</Text>;
+};
+
 export default function App() {
+
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
@@ -31,8 +39,12 @@ export default function App() {
 
   return (
     <PaperProvider theme={theme}>
-      <LoginScreen />
-      <Text>Songs: {isLoading ? "Loading" : JSON.stringify(data)}</Text>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="TextScreen" component={TextScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </PaperProvider>
   );
 }
@@ -46,3 +58,14 @@ const theme = {
     accent: "#f1c40f",
   },
 };
+
+//<Text>Songs: {isLoading ? "Loading" : JSON.stringify(data)}</Text>
+/*
+<NavigationContainer>
+<Stack.Navigator initialRouteName="Login">
+  <Stack.Screen name="Login" component={LoginScreen} />
+  <Stack.Screen name="TextScreen" component={TextScreen} />
+</Stack.Navigator>
+</NavigationContainer>
+
+*/
