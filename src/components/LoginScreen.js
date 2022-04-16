@@ -1,9 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Text, Headline, Button, TextInput } from "react-native-paper";
-import { StyleSheet, Image, SafeAreaView } from "react-native";
+import { Image } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import PropTypes from "prop-types";
+import styles from "./styles.js";
 
-const LoginScreen = ({ navigation }) => {
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   return (
@@ -24,30 +27,16 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={(text) => setPassword(text)}
         style={styles.input}
       />
-      <Button
-        onPress={() => navigation.navigate("TextScreen")}
-        mode="contained"
-      >
+      <Button onPress={() => navigation.replace("Home")} mode="contained">
         Log In
       </Button>
       <StatusBar style="auto" />
     </SafeAreaView>
   );
+}
+
+LoginScreen.propTypes = {
+  navigation: PropTypes.shape({
+    replace: PropTypes.func.isRequired,
+  }).isRequired,
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    width: "80%",
-  },
-});
-
-export default LoginScreen;
