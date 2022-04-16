@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Headline, List, Text, ActivityIndicator } from "react-native-paper";
+import { Headline, List, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles.js";
 
