@@ -3,7 +3,12 @@ import { Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Headline, Button, TextInput } from "react-native-paper";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "./styles.js";
 
@@ -28,6 +33,19 @@ export default function LoginScreen({ navigation }) {
       });
   };
 
+  const signInWithEmail = async () => {
+    setAuthing(true);
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log(userCredential);
+        navigation.replace("Home");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Image source={require("../img/logo.png")} />
@@ -46,8 +64,11 @@ export default function LoginScreen({ navigation }) {
         onChangeText={(text) => setPassword(text)}
         style={styles.input}
       />
-      <Button onPress={() => navigation.replace("Home")} mode="contained">
+      <Button onPress={signInWithEmail} mode="contained">
         Log In
+      </Button>
+      <Button onPress={() => navigation.replace("Home")} mode="contained">
+        Skip
       </Button>
       <Button onPress={() => signInWithGoogle()} disabled={authing}>
         Sign in with Google

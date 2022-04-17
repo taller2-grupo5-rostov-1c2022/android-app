@@ -69,3 +69,7 @@ $ gut push origin --tags
 
 > keep tag version aligned with `package.json`
 > this could be automated
+
+## Firebase
+
+- [Firebase Web - Docs](https://firebase.google.com/docs/auth/web/start)
