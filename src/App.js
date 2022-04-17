@@ -5,6 +5,10 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import LoginScreen from "./components/LoginScreen";
 import HomeScreen from "./components/HomeScreen";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "../config/firebase";
+
+initializeApp(firebaseConfig);
 
 const Stack = createNativeStackNavigator();
 

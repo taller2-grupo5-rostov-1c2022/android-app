@@ -1,14 +1,33 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { Text, Headline, Button, TextInput } from "react-native-paper";
+import React, { useState } from "react";
 import { Image } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, Headline, Button, TextInput } from "react-native-paper";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "./styles.js";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  const auth = getAuth();
+  const [authing, setAuthing] = useState(false);
+
+  const signInWithGoogle = async () => {
+    setAuthing(true);
+
+    signInWithPopup(auth, new GoogleAuthProvider())
+      .then((response) => {
+        console.log(response.user.uid);
+        navigation.replace("Home");
+      })
+      .catch((error) => {
+        console.log(error);
+        setAuthing(false);
+      });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Image source={require("../img/logo.png")} />
@@ -29,6 +48,9 @@ export default function LoginScreen({ navigation }) {
       />
       <Button onPress={() => navigation.replace("Home")} mode="contained">
         Log In
+      </Button>
+      <Button onPress={() => signInWithGoogle()} disabled={authing}>
+        Sign in with Google
       </Button>
       <StatusBar style="auto" />
     </SafeAreaView>
