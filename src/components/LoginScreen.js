@@ -67,9 +67,7 @@ export default function LoginScreen({ navigation }) {
       <Button onPress={signInWithEmail} mode="contained">
         Log In
       </Button>
-      <Button onPress={() => navigation.replace("Home")} mode="contained">
-        Skip
-      </Button>
+      <Button onPress={() => navigation.replace("Home")}>Skip</Button>
       <Button onPress={() => signInWithGoogle()} disabled={authing}>
         Sign in with Google
       </Button>
