@@ -1,44 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { webApi, useSWR, json_fetcher } from "../util/services";
 import { Headline, List, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles.js";
 
 export default function SongsScreen() {
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-
-  const getData = async () => {
-    try {
-      const response = await fetch(
-        "https://rostov-gateway.herokuapp.com/songs/"
-      );
-      const json = await response.json();
-      setData(json);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
+  const songs = useSWR(webApi + "/songs/", json_fetcher);
 
   return (
     <SafeAreaView styles={styles.container}>
       <Headline> Songs </Headline>
-      {content(isLoading, data)}
+      {content(songs.isValidating, songs.data, songs.error)}
     </SafeAreaView>
   );
 }
 
-function content(isLoading, data) {
-  if (isLoading) {
-    return <ActivityIndicator></ActivityIndicator>;
-  } else {
-    return mapData(data);
-  }
+function content(isLoading, data, error) {
+  if (isLoading) return <ActivityIndicator></ActivityIndicator>;
+
+  if (error) return <Headline>Error: {error.message}</Headline>;
+
+  return mapData(data);
 }
 
 function mapData(data) {
