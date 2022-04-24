@@ -14,7 +14,7 @@ const AlbumsScreen = () => {
   );
 };
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "music", title: "Music", icon: "music-note" },
@@ -25,7 +25,7 @@ export default function HomeScreen({ navigation }) {
   const renderScene = BottomNavigation.SceneMap({
     music: SongsScreen,
     albums: AlbumsScreen,
-    account: () => AccountScreen(() => navigation.replace("Login")),
+    account: AccountScreen,
   });
 
   return (

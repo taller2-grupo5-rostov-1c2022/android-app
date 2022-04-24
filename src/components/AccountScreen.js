@@ -6,14 +6,15 @@ import { getAuth, signOut } from "firebase/auth";
 import ExternalView from "./ExternalView.js";
 import { useNavigation } from "@react-navigation/native";
 
-export default function AccountScreen(logout) {
+export default function AccountScreen() {
   const auth = getAuth();
-  const navigator = useNavigation();
+  const navigation = useNavigation();
+
   const onLogOut = () => {
     signOut(auth)
       .then(() => {
         console.log("log out");
-        logout && logout();
+        navigation.replace("Login");
       })
       .catch((error) => {
         console.error(error);
@@ -43,7 +44,7 @@ export default function AccountScreen(logout) {
             <List.Icon {...props} icon="music-box-multiple"></List.Icon>
           )}
           onPress={() => {
-            navigator.navigate("ManageMySongs");
+            navigation.navigate("ManageMySongs");
           }}
         />
       </List.Section>
