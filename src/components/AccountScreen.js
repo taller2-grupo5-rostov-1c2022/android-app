@@ -4,9 +4,11 @@ import { List, IconButton, Headline, Subheading } from "react-native-paper";
 import styles from "./styles.js";
 import { getAuth, signOut } from "firebase/auth";
 import ExternalView from "./ExternalView.js";
+import { useNavigation } from "@react-navigation/native";
 
 export default function AccountScreen(logout) {
   const auth = getAuth();
+  const navigator = useNavigation();
   const onLogOut = () => {
     signOut(auth)
       .then(() => {
@@ -40,6 +42,9 @@ export default function AccountScreen(logout) {
           left={(props) => (
             <List.Icon {...props} icon="music-box-multiple"></List.Icon>
           )}
+          onPress={() => {
+            navigator.navigate("ManageMySongs");
+          }}
         />
       </List.Section>
     </ExternalView>
