@@ -1,18 +1,9 @@
 import React from "react";
 import { webApi, useSWR, json_fetcher } from "../util/services";
-import {
-  Headline,
-  List,
-  ActivityIndicator,
-  Portal,
-  Dialog,
-  Subheading,
-  Button,
-  Text,
-} from "react-native-paper";
+import { Headline, List, ActivityIndicator, Portal } from "react-native-paper";
 import styles from "./styles.js";
 import ExternalView from "./ExternalView";
-import { View } from "react-native";
+import SongDialog from "./SongDialog";
 
 export default function ManageMySongs() {
   const songs = useSWR(webApi + "/songs/", json_fetcher);
@@ -49,20 +40,6 @@ function mapData(data, setDialog) {
 
 function onEdit(key, songData, setDialog) {
   const hideDialog = () => setDialog(null);
-
-  setDialog(
-    <Dialog visible="true" onDismiss={hideDialog}>
-      <Dialog.Title>Edit Song</Dialog.Title>
-      <Dialog.Content>
-        <View>
-          <Subheading>{songData.name}</Subheading>
-          <Text>{"Artista: " + songData.artist_name}</Text>
-          <Text>{"Key: " + key}</Text>
-        </View>
-      </Dialog.Content>
-      <Dialog.Actions>
-        <Button onPress={hideDialog}>Done</Button>
-      </Dialog.Actions>
-    </Dialog>
-  );
+  console.log(`Canción clickeada: ${key} (${songData.name})`);
+  setDialog(SongDialog(hideDialog, key, songData));
 }
