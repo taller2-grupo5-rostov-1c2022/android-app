@@ -18,10 +18,7 @@ export default function App() {
     <SafeAreaProvider>
       <PaperProvider theme={theme}>
         <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Login"
-            screenOptions={{ headerShown: false }}
-          >
+          <Stack.Navigator initialRouteName="Login">
             <Stack.Screen
               name="Login"
               component={LoginScreen}
