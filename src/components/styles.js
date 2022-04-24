@@ -25,6 +25,12 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 1,
   },
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });
 
 export default styles;

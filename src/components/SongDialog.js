@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, Button } from "react-native-paper";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { webApi } from "../util/services";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
@@ -10,30 +10,32 @@ import FilePicker from "./FilePicker";
 export default function SongDialog({ hideDialog, songKey, initialData }) {
   const { control, setFocus, handleSubmit } = useForm({
     defaultValues: {
-      name: initialData?.name,
-      artist_name: initialData?.artist_name,
-      description: initialData?.description ?? "No implementado, ignorar",
+      name: initialData ? initialData.name : "",
+      artist_name: initialData ? initialData.artist_name : "",
+      // description: initialData ? initialData.description : "",
+      description: "No implementado, ignorar",
       file: null,
     },
     mode: "onChange",
   });
 
+  const [loading, setLoading] = React.useState(false);
+
   const onSave = async (data) => {
+    setLoading(true);
     console.log(`Saving song `, data);
+
     const file = data.file;
     delete data.file;
-    console.log(
-      "URL: \n",
-      webApi + "/songs/" + (songKey ? "?song_id=" + songKey : "")
-    );
-    console.log("Request: \n", getRequest(songKey, data, file));
 
-    hideDialog();
+    console.log("Request: \n", getRequest(songKey, data, file));
 
     const response = await fetch(
       webApi + "/songs/" + (songKey ? "?song_id=" + songKey : ""),
       getRequest(songKey, data, file)
     );
+
+    hideDialog();
 
     response.json().then((data) => {
       console.log(data);
@@ -41,7 +43,7 @@ export default function SongDialog({ hideDialog, songKey, initialData }) {
   };
 
   return (
-    <Dialog visible="true" onDismiss={hideDialog}>
+    <Dialog visible="true" onDismiss={hideDialog} dismissable={!loading}>
       <Dialog.Title>Edit Song</Dialog.Title>
       <Dialog.Content>
         <ScrollView>
@@ -53,7 +55,17 @@ export default function SongDialog({ hideDialog, songKey, initialData }) {
         </ScrollView>
       </Dialog.Content>
       <Dialog.Actions>
-        <Button onPress={handleSubmit((data) => onSave(data))}>Save</Button>
+        <View style={{ flexDirection: "row" }}>
+          <Button onPress={hideDialog} disabled={loading}>
+            Cancel
+          </Button>
+          <Button
+            onPress={handleSubmit((data) => onSave(data))}
+            disabled={loading}
+          >
+            Save
+          </Button>
+        </View>
       </Dialog.Actions>
     </Dialog>
   );
