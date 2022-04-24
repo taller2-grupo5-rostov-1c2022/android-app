@@ -1,17 +1,17 @@
 import React from "react";
 import { webApi, useSWR, json_fetcher } from "../util/services";
 import { Headline, List, ActivityIndicator } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles.js";
+import ExternalView from "./ExternalView";
 
 export default function SongsScreen() {
   const songs = useSWR(webApi + "/songs/", json_fetcher);
 
   return (
-    <SafeAreaView styles={styles.container}>
+    <ExternalView style={styles.container}>
       <Headline> Songs </Headline>
       {content(songs.isValidating, songs.data, songs.error)}
-    </SafeAreaView>
+    </ExternalView>
   );
 }
 

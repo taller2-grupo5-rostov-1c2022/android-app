@@ -1,8 +1,9 @@
 import React from "react";
-import { Button } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
+import { List, IconButton, Headline, Subheading } from "react-native-paper";
 import styles from "./styles.js";
 import { getAuth, signOut } from "firebase/auth";
+import ExternalView from "./ExternalView.js";
 
 export default function AccountScreen(logout) {
   const auth = getAuth();
@@ -18,15 +19,29 @@ export default function AccountScreen(logout) {
   };
 
   return (
-    <SafeAreaView styles={styles.container}>
-      <Button
-        mode="contained"
-        uppercase="true"
-        onPress={onLogOut}
-        styles={styles.button}
-      >
-        LOG OUT
-      </Button>
-    </SafeAreaView>
+    <ExternalView style={styles.container}>
+      <Headline>My Account</Headline>
+      <View style={{ flexDirection: "row", margin: "4%" }}>
+        <View style={{ justifyContent: "center", flex: 9 }}>
+          <Subheading>Logged in as {auth.currentUser.displayName}</Subheading>
+        </View>
+        <View style={{ flex: 1 }}>
+          <IconButton
+            icon="logout"
+            onPress={onLogOut}
+            accessibilityLabel="Logout"
+          />
+        </View>
+      </View>
+      <List.Section>
+        <List.Subheader>Artist settings</List.Subheader>
+        <List.Item
+          title="Manage my songs..."
+          left={(props) => (
+            <List.Icon {...props} icon="music-box-multiple"></List.Icon>
+          )}
+        />
+      </List.Section>
+    </ExternalView>
   );
 }
