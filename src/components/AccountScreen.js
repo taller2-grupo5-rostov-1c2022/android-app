@@ -4,14 +4,17 @@ import { List, IconButton, Headline, Subheading } from "react-native-paper";
 import styles from "./styles.js";
 import { getAuth, signOut } from "firebase/auth";
 import ExternalView from "./ExternalView.js";
+import { useNavigation } from "@react-navigation/native";
 
-export default function AccountScreen(logout) {
+export default function AccountScreen() {
   const auth = getAuth();
+  const navigation = useNavigation();
+
   const onLogOut = () => {
     signOut(auth)
       .then(() => {
         console.log("log out");
-        logout && logout();
+        navigation.replace("Login");
       })
       .catch((error) => {
         console.error(error);
