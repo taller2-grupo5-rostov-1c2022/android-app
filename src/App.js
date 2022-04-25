@@ -29,7 +29,11 @@ export default function App() {
               component={HomeScreen}
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="ManageMySongs" component={ManageMySongs} />
+            <Stack.Screen
+              name="ManageMySongs"
+              component={ManageMySongs}
+              options={{ title: "Manage my songs" }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>
