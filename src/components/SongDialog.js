@@ -21,25 +21,10 @@ export default function SongDialog({ hideDialog, songKey, initialData }) {
 
   const [loading, setLoading] = React.useState(false);
 
-  const onSave = async (data) => {
+  const sendRequest = async (requestSender) => {
     setLoading(true);
-    console.log(`Saving song `, data);
-
-    const file = data.file;
-    delete data.file;
-
-    console.log("Request: \n", getRequest(songKey, data, file));
-
-    const response = await fetch(
-      webApi + "/songs/" + (songKey ? "?song_id=" + songKey : ""),
-      getRequest(songKey, data, file)
-    );
-
+    await requestSender();
     hideDialog();
-
-    response.json().then((data) => {
-      console.log(data);
-    });
   };
 
   return (
@@ -59,15 +44,70 @@ export default function SongDialog({ hideDialog, songKey, initialData }) {
           <Button onPress={hideDialog} disabled={loading}>
             Cancel
           </Button>
-          <Button
-            onPress={handleSubmit((data) => onSave(data))}
-            disabled={loading}
-          >
-            Save
-          </Button>
+          <DeleteButton
+            songKey={songKey}
+            loading={loading}
+            sendRequest={sendRequest}
+          />
+          <SaveButton
+            songKey={songKey}
+            handleSubmit={handleSubmit}
+            loading={loading}
+            sendRequest={sendRequest}
+          />
         </View>
       </Dialog.Actions>
     </Dialog>
+  );
+}
+
+function SaveButton({ songKey, handleSubmit, loading, sendRequest }) {
+  const onSave = async (data) => {
+    sendRequest(async () => {
+      console.log("Saving song " + data.name);
+
+      const file = data.file;
+      delete data.file;
+
+      const response = await fetch(
+        webApi + "/songs/" + (songKey ? "?song_id=" + songKey : ""),
+        getRequest(songKey, data, file)
+      );
+
+      response.json().then((data) => {
+        console.log("Song saved. Received response: ", data);
+      });
+    });
+  };
+
+  return (
+    <Button onPress={handleSubmit((data) => onSave(data))} disabled={loading}>
+      Save
+    </Button>
+  );
+}
+
+function DeleteButton({ songKey, loading, sendRequest }) {
+  if (songKey == null) return null;
+
+  const onDelete = async () => {
+    sendRequest(async () => {
+      console.log("Deleting song with key " + songKey);
+
+      const response = await fetch(webApi + "/songs/?song_id=" + songKey, {
+        method: "DELETE",
+      });
+
+      response.json().then((data) => {
+        console.log("Song deleted. Received response: ", data);
+      });
+    });
+  };
+
+  return (
+    <Button disabled={loading} onPress={onDelete}>
+      Delete
+    </Button>
   );
 }
 
@@ -168,4 +208,17 @@ SongDialog.propTypes = {
 
 FormDefinition.propTypes = {
   fileRequired: PropTypes.bool,
+};
+
+SaveButton.propTypes = {
+  songKey: PropTypes.string,
+  loading: PropTypes.bool,
+  handleSubmit: PropTypes.func,
+  sendRequest: PropTypes.func,
+};
+
+DeleteButton.propTypes = {
+  songKey: PropTypes.string,
+  loading: PropTypes.bool,
+  sendRequest: PropTypes.func,
 };

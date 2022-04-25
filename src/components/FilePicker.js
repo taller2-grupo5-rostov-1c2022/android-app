@@ -7,7 +7,6 @@ import * as DocumentPicker from "expo-document-picker";
 
 // File picker para usar con los forms
 export default function FilePicker(props) {
-  console.log(props);
   const {
     name,
     rules,
