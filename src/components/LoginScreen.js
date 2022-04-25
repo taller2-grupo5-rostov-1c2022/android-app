@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Headline, Button, TextInput } from "react-native-paper";
 import {
   getAuth,
@@ -11,7 +10,8 @@ import {
 } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "./styles.js";
-import { Audio } from 'expo-av';
+import { Audio } from "expo-av";
+import ExternalView from "./ExternalView.js";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState("");
@@ -48,18 +48,16 @@ export default function LoginScreen({ navigation }) {
   };
 
   const music = async () => {
-    const source = { uri: 
-      'https://x2convert.com/Thankyou?token=U2FsdGVkX1%2fu99lc%2fPk9fKoNi0%2bO5tue8ezg%2bDbF9IG4ipBAkcwV%2fA7MjbLplN4jSIOxJsNMGgMswGs6yhtCDu1bJPdNwHirkA0wLA9WSz%2fM8DPg68okk6n0nzQyEXa%2fzpE86MCiBOCfTcT%2bu31bK5eq7Xek2KGtnhNgw4TsHUSDTllfWdP%2fwycBW60BO25I&s=youtube&id=&h=45242820710516705'
+    const source = {
+      uri: "https://x2convert.com/Thankyou?token=U2FsdGVkX1%2fu99lc%2fPk9fKoNi0%2bO5tue8ezg%2bDbF9IG4ipBAkcwV%2fA7MjbLplN4jSIOxJsNMGgMswGs6yhtCDu1bJPdNwHirkA0wLA9WSz%2fM8DPg68okk6n0nzQyEXa%2fzpE86MCiBOCfTcT%2bu31bK5eq7Xek2KGtnhNgw4TsHUSDTllfWdP%2fwycBW60BO25I&s=youtube&id=&h=45242820710516705",
     };
-    const {sound, status} = await Audio
-      .Sound
-      .createAsync(source);
+    const { sound } = await Audio.Sound.createAsync(source);
     //await sound.loadAsync();
     await sound.playAsync();
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ExternalView style={styles.containerCenter}>
       <Image source={require("../img/logo.png")} />
       <Headline>Spotifiuby</Headline>
       <Text>Log In</Text>
@@ -85,7 +83,7 @@ export default function LoginScreen({ navigation }) {
       </Button>
       <Button onPress={music}>music</Button>
       <StatusBar style="auto" />
-    </SafeAreaView>
+    </ExternalView>
   );
 }
 
