@@ -25,17 +25,26 @@ export default function FilePicker(props) {
   });
 
   const [caption, setCaption] = React.useState(null);
+  const [errorMsg, setErrorMsg] = React.useState(null);
+
+  const err = control.getFieldState(name).error?.message;
 
   const getFile = async () => {
     let result = await DocumentPicker.getDocumentAsync({ type: fileType });
 
-    if (result.type === "success") {
-      field.onChange(result.uri);
-      setCaption(result.name);
-    }
-  };
+    if (result.type != "success") return;
 
-  const error = control.getFieldState(name).error;
+    if (!result.file.type.match(fileType)) {
+      setErrorMsg("Invalid file type");
+      setCaption(null);
+      field.onChange(null);
+      return;
+    }
+
+    setErrorMsg(null);
+    field.onChange(result.uri);
+    setCaption(result.name);
+  };
 
   return (
     <View>
@@ -52,7 +61,7 @@ export default function FilePicker(props) {
         </Button>
         <Caption>{caption ?? "No file selected"}</Caption>
       </View>
-      <Text style={{ color: "#b00020" }}>{error?.message}</Text>
+      <Text style={{ color: "#b00020" }}>{errorMsg ?? err}</Text>
     </View>
   );
 }

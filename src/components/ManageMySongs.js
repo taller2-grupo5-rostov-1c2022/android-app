@@ -25,7 +25,6 @@ export default function ManageMySongs() {
 
   const addDialog = (props) => {
     setAdderEnabled(false);
-    console.log("Props: ", props);
     setDialog(
       <Portal>
         <SongDialog hideDialog={hideDialog} {...props} />
