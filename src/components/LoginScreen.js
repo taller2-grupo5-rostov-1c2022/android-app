@@ -10,8 +10,8 @@ import {
 } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "./styles.js";
-import TrackPlayer from "react-native-track-player";
-import ExternalView from "./ExternalView";
+import { Audio } from "expo-av";
+import ExternalView from "./ExternalView.js";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState("");
@@ -48,21 +48,12 @@ export default function LoginScreen({ navigation }) {
   };
 
   const music = async () => {
-    await TrackPlayer.setupPlayer({});
-    TrackPlayer.updateOptions({
-      stopWithApp: true,
-    });
-    await TrackPlayer.add({
-      url: "https://x2convert.com/Thankyou?token=U2FsdGVkX1%2fu99lc%2fPk9fKoNi0%2bO5tue8ezg%2bDbF9IG4ipBAkcwV%2fA7MjbLplN4jSIOxJsNMGgMswGs6yhtCDu1bJPdNwHirkA0wLA9WSz%2fM8DPg68okk6n0nzQyEXa%2fzpE86MCiBOCfTcT%2bu31bK5eq7Xek2KGtnhNgw4TsHUSDTllfWdP%2fwycBW60BO25I&s=youtube&id=&h=45242820710516705", // Load media from the network
-      title: "Avaritia",
-      artist: "deadmau5",
-      album: "while(1<2)",
-      genre: "Progressive House, Electro House",
-      date: "2014-05-20T07:00:00+00:00", // RFC 3339
-      artwork: "https://picsum.photos/200", // Load artwork from the network
-      duration: 4402, // Duration in seconds
-    });
-    TrackPlayer.play();
+    const source = {
+      uri: "https://x2convert.com/Thankyou?token=U2FsdGVkX1%2fu99lc%2fPk9fKoNi0%2bO5tue8ezg%2bDbF9IG4ipBAkcwV%2fA7MjbLplN4jSIOxJsNMGgMswGs6yhtCDu1bJPdNwHirkA0wLA9WSz%2fM8DPg68okk6n0nzQyEXa%2fzpE86MCiBOCfTcT%2bu31bK5eq7Xek2KGtnhNgw4TsHUSDTllfWdP%2fwycBW60BO25I&s=youtube&id=&h=45242820710516705",
+    };
+    const { sound } = await Audio.Sound.createAsync(source);
+    //await sound.loadAsync();
+    await sound.playAsync();
   };
 
   return (

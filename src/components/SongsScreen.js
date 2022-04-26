@@ -16,7 +16,7 @@ export default function SongsScreen() {
 }
 
 function content(isLoading, data, error) {
-  if (isLoading) return <ActivityIndicator></ActivityIndicator>;
+  if (isLoading) return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (error) return <Headline>Error: {error.message}</Headline>;
 
