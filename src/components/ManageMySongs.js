@@ -33,7 +33,10 @@ export default function ManageMySongs() {
   };
 
   const content = () => {
-    if (songs.isValidating) return <ActivityIndicator></ActivityIndicator>;
+    if (songs.isValidating)
+      return (
+        <ActivityIndicator size="large" style={styles.activityIndicator} />
+      );
 
     if (songs.error) return <Headline>Error: {songs.error.message}</Headline>;
 
@@ -41,7 +44,10 @@ export default function ManageMySongs() {
   };
 
   return (
-    <ExternalView style={styles.container}>
+    <ExternalView
+      style={dialog ? styles.disabledContainer : styles.container}
+      pointerEvents={dialog ? "none" : "auto"}
+    >
       <Portal>
         <FAB
           icon="plus"

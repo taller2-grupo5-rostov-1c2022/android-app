@@ -31,6 +31,17 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  activityIndicator: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  disabledContainer: {
+    ...containerDefault,
+    opacity: 0.5,
+  },
 });
 
 export default styles;
+
+// Hacer algo para que cuando dialog no es null se ponga gris lo de atras

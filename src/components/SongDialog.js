@@ -1,11 +1,12 @@
 import React from "react";
-import { Dialog, Button } from "react-native-paper";
+import { Dialog, Button, ActivityIndicator } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import { webApi } from "../util/services";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import FilePicker from "./FilePicker";
+import styles from "./styles";
 
 export default function SongDialog({ hideDialog, songKey, initialData }) {
   const { control, setFocus, handleSubmit } = useForm({
@@ -27,8 +28,11 @@ export default function SongDialog({ hideDialog, songKey, initialData }) {
     hideDialog();
   };
 
+  if (loading)
+    return <ActivityIndicator size="large" style={styles.activityIndicator} />;
+
   return (
-    <Dialog visible="true" onDismiss={hideDialog} dismissable={!loading}>
+    <Dialog visible="true" onDismiss={hideDialog}>
       <Dialog.Title>Edit Song</Dialog.Title>
       <Dialog.Content>
         <ScrollView>
@@ -41,18 +45,11 @@ export default function SongDialog({ hideDialog, songKey, initialData }) {
       </Dialog.Content>
       <Dialog.Actions>
         <View style={{ flexDirection: "row" }}>
-          <Button onPress={hideDialog} disabled={loading}>
-            Cancel
-          </Button>
-          <DeleteButton
-            songKey={songKey}
-            loading={loading}
-            sendRequest={sendRequest}
-          />
+          <Button onPress={hideDialog}>Cancel</Button>
+          <DeleteButton songKey={songKey} sendRequest={sendRequest} />
           <SaveButton
             songKey={songKey}
             handleSubmit={handleSubmit}
-            loading={loading}
             sendRequest={sendRequest}
           />
         </View>
@@ -61,7 +58,7 @@ export default function SongDialog({ hideDialog, songKey, initialData }) {
   );
 }
 
-function SaveButton({ songKey, handleSubmit, loading, sendRequest }) {
+function SaveButton({ songKey, handleSubmit, sendRequest }) {
   const onSave = async (data) => {
     sendRequest(async () => {
       console.log("Saving song " + data.name);
@@ -69,10 +66,7 @@ function SaveButton({ songKey, handleSubmit, loading, sendRequest }) {
       const file = data.file;
       delete data.file;
 
-      const response = await fetch(
-        webApi + "/songs/" + (songKey ? "?song_id=" + songKey : ""),
-        getRequest(songKey, data, file)
-      );
+      const response = await saveRequest(songKey, data, file);
 
       response.json().then((data) => {
         console.log("Song saved. Received response: ", data);
@@ -80,14 +74,10 @@ function SaveButton({ songKey, handleSubmit, loading, sendRequest }) {
     });
   };
 
-  return (
-    <Button onPress={handleSubmit((data) => onSave(data))} disabled={loading}>
-      Save
-    </Button>
-  );
+  return <Button onPress={handleSubmit((data) => onSave(data))}>Save</Button>;
 }
 
-function DeleteButton({ songKey, loading, sendRequest }) {
+function DeleteButton({ songKey, sendRequest }) {
   if (songKey == null) return null;
 
   const onDelete = async () => {
@@ -104,14 +94,10 @@ function DeleteButton({ songKey, loading, sendRequest }) {
     });
   };
 
-  return (
-    <Button disabled={loading} onPress={onDelete}>
-      Delete
-    </Button>
-  );
+  return <Button onPress={onDelete}>Delete</Button>;
 }
 
-function getRequest(songKey, songData, file) {
+async function saveRequest(songKey, songData, file) {
   const method = songKey ? "PUT" : "POST";
   const body = { info: songData };
 
@@ -119,7 +105,7 @@ function getRequest(songKey, songData, file) {
     body.file = file;
   }
 
-  return {
+  const data = {
     method: method,
     headers: {
       Accept: "application/json",
@@ -127,6 +113,11 @@ function getRequest(songKey, songData, file) {
     },
     body: JSON.stringify(body),
   };
+
+  return fetch(
+    webApi + "/songs/" + (songKey ? "?song_id=" + songKey : ""),
+    data
+  );
 }
 
 function FormDefinition({ fileRequired, ...rest }) {
@@ -212,13 +203,11 @@ FormDefinition.propTypes = {
 
 SaveButton.propTypes = {
   songKey: PropTypes.string,
-  loading: PropTypes.bool,
   handleSubmit: PropTypes.func,
   sendRequest: PropTypes.func,
 };
 
 DeleteButton.propTypes = {
   songKey: PropTypes.string,
-  loading: PropTypes.bool,
   sendRequest: PropTypes.func,
 };

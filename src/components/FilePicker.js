@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Caption, Title, Text } from "react-native-paper";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
 import * as DocumentPicker from "expo-document-picker";
@@ -34,7 +34,7 @@ export default function FilePicker(props) {
 
     if (result.type != "success") return;
 
-    if (!result.file.type.match(fileType)) {
+    if (!result.mimeType.match(fileType)) {
       setErrorMsg("Invalid file type");
       setCaption(null);
       field.onChange(null);
