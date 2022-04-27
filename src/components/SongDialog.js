@@ -9,15 +9,12 @@ import FilePicker from "./FilePicker";
 import styles from "./styles";
 import FormData from "form-data";
 
-export default function SongDialog({
-  hideDialog,
-  song: { id, ...initialData },
-}) {
+export default function SongDialog({ hideDialog, song }) {
   const { control, setFocus, handleSubmit } = useForm({
     defaultValues: {
-      name: initialData ? initialData.name : "",
-      artists: initialData ? initialData.artists : "",
-      description: initialData ? initialData.description : "",
+      name: song?.name ?? "",
+      artists: song?.artists ?? "",
+      description: song?.description ?? "",
       file: null,
     },
     mode: "onChange",
@@ -42,16 +39,16 @@ export default function SongDialog({
           <FormDefinition
             control={control}
             setFocus={setFocus}
-            creating={id == null}
+            creating={!song?.id}
           ></FormDefinition>
         </ScrollView>
       </Dialog.Content>
       <Dialog.Actions>
         <View style={{ flexDirection: "row" }}>
           <Button onPress={hideDialog}>Cancel</Button>
-          <DeleteButton songKey={id} sendRequest={sendRequest} />
+          <DeleteButton songKey={song?.id} sendRequest={sendRequest} />
           <SaveButton
-            songKey={id}
+            songKey={song?.id}
             handleSubmit={handleSubmit}
             sendRequest={sendRequest}
           />
