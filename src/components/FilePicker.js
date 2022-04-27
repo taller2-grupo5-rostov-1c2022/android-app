@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Caption, Title, Text } from "react-native-paper";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
 import * as DocumentPicker from "expo-document-picker";
