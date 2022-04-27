@@ -5,11 +5,13 @@ import AccountScreen from "./AccountScreen.js";
 import PropTypes from "prop-types";
 import styles from "./styles.js";
 import ExternalView from "./ExternalView";
+import Player from "./Player";
 
 const AlbumsScreen = () => {
   return (
     <ExternalView style={styles.container}>
       <Text> TODO </Text>
+      <Player/>
     </ExternalView>
   );
 };

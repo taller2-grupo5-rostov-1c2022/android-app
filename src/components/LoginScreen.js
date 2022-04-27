@@ -49,7 +49,7 @@ export default function LoginScreen({ navigation }) {
 
   const music = async () => {
     const source = {
-      uri: "https://x2convert.com/Thankyou?token=U2FsdGVkX1%2fu99lc%2fPk9fKoNi0%2bO5tue8ezg%2bDbF9IG4ipBAkcwV%2fA7MjbLplN4jSIOxJsNMGgMswGs6yhtCDu1bJPdNwHirkA0wLA9WSz%2fM8DPg68okk6n0nzQyEXa%2fzpE86MCiBOCfTcT%2bu31bK5eq7Xek2KGtnhNgw4TsHUSDTllfWdP%2fwycBW60BO25I&s=youtube&id=&h=45242820710516705",
+      uri: "https://storage.googleapis.com/rostov-spotifiuby.appspot.com/songs/1",
     };
     const { sound } = await Audio.Sound.createAsync(source);
     //await sound.loadAsync();
