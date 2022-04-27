@@ -63,14 +63,14 @@ export default function ManageMySongs() {
 }
 
 function mapData(data, addDialog) {
-  return Object.entries(data).map(([key, value]) => {
+  return data.map((song) => {
     return (
       <List.Item
-        title={value.name}
-        description={"by " + value.artist_name}
-        key={key}
+        title={song.name}
+        description={"by " + song.artists}
+        key={song.id}
         onPress={() => {
-          addDialog({ songKey: key, initialData: value });
+          addDialog({ song });
         }}
       />
     );

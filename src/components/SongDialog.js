@@ -7,14 +7,17 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import FilePicker from "./FilePicker";
 import styles from "./styles";
+import FormData from "form-data";
 
-export default function SongDialog({ hideDialog, songKey, initialData }) {
+export default function SongDialog({
+  hideDialog,
+  song: { id, ...initialData },
+}) {
   const { control, setFocus, handleSubmit } = useForm({
     defaultValues: {
       name: initialData ? initialData.name : "",
-      artist_name: initialData ? initialData.artist_name : "",
-      // description: initialData ? initialData.description : "",
-      description: "No implementado, ignorar",
+      artists: initialData ? initialData.artists : "",
+      description: initialData ? initialData.description : "",
       file: null,
     },
     mode: "onChange",
@@ -39,16 +42,16 @@ export default function SongDialog({ hideDialog, songKey, initialData }) {
           <FormDefinition
             control={control}
             setFocus={setFocus}
-            fileRequired={songKey == null}
+            creating={id == null}
           ></FormDefinition>
         </ScrollView>
       </Dialog.Content>
       <Dialog.Actions>
         <View style={{ flexDirection: "row" }}>
           <Button onPress={hideDialog}>Cancel</Button>
-          <DeleteButton songKey={songKey} sendRequest={sendRequest} />
+          <DeleteButton songKey={id} sendRequest={sendRequest} />
           <SaveButton
-            songKey={songKey}
+            songKey={id}
             handleSubmit={handleSubmit}
             sendRequest={sendRequest}
           />
@@ -63,13 +66,10 @@ function SaveButton({ songKey, handleSubmit, sendRequest }) {
     sendRequest(async () => {
       console.log("Saving song " + data.name);
 
-      const file = data.file;
-      delete data.file;
+      const response = await saveRequest(songKey, data);
 
-      const response = await saveRequest(songKey, data, file);
-
-      response.json().then((data) => {
-        console.log("Song saved. Received response: ", data);
+      response.json().then((response) => {
+        console.log("Song saved. Received response: ", response);
       });
     });
   };
@@ -84,7 +84,7 @@ function DeleteButton({ songKey, sendRequest }) {
     sendRequest(async () => {
       console.log("Deleting song with key " + songKey);
 
-      const response = await fetch(webApi + "/songs/?song_id=" + songKey, {
+      const response = await fetch(webApi + "/songs/" + songKey, {
         method: "DELETE",
       });
 
@@ -97,21 +97,21 @@ function DeleteButton({ songKey, sendRequest }) {
   return <Button onPress={onDelete}>Delete</Button>;
 }
 
-async function saveRequest(songKey, songData, file) {
-  const method = songKey ? "PUT" : "POST";
-  const body = { info: songData };
-
-  if (file) {
-    body.file = file;
-  }
-
+async function saveRequest(songKey, formData) {
+  var body = new FormData();
+  Object.entries(formData).forEach(([key, value]) => {
+    body.append(key, value);
+    console.log(key, ": ", value);
+  });
+  body.append("creator", "tmp");
+  console.log(body);
   const data = {
-    method: method,
+    method: songKey ? "PUT" : "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
-    body: JSON.stringify(body),
+    body: body,
   };
 
   return fetch(
@@ -120,7 +120,7 @@ async function saveRequest(songKey, songData, file) {
   );
 }
 
-function FormDefinition({ fileRequired, ...rest }) {
+function FormDefinition({ creating, ...rest }) {
   return (
     <FormBuilder
       {...rest}
@@ -130,7 +130,7 @@ function FormDefinition({ fileRequired, ...rest }) {
           name: "name",
           rules: {
             required: {
-              value: true,
+              value: creating,
               message: "Name is required",
             },
           },
@@ -141,10 +141,10 @@ function FormDefinition({ fileRequired, ...rest }) {
         },
         {
           type: "text",
-          name: "artist_name",
+          name: "artists",
           rules: {
             required: {
-              value: true,
+              value: creating,
               message: "Authors are required",
             },
           },
@@ -158,7 +158,7 @@ function FormDefinition({ fileRequired, ...rest }) {
           name: "description",
           rules: {
             required: {
-              value: true,
+              value: creating,
               message: "Description is required",
             },
           },
@@ -177,7 +177,7 @@ function FormDefinition({ fileRequired, ...rest }) {
           },
           rules: {
             required: {
-              value: fileRequired,
+              value: creating,
               message: "File is required",
             },
           },
@@ -189,25 +189,25 @@ function FormDefinition({ fileRequired, ...rest }) {
 
 SongDialog.propTypes = {
   hideDialog: PropTypes.func,
-  songKey: PropTypes.string,
-  initialData: PropTypes.shape({
+  song: PropTypes.shape({
+    id: PropTypes.any,
     name: PropTypes.string,
-    artist_name: PropTypes.string,
     description: PropTypes.string,
+    artists: PropTypes.string,
   }),
 };
 
 FormDefinition.propTypes = {
-  fileRequired: PropTypes.bool,
+  creating: PropTypes.bool,
 };
 
 SaveButton.propTypes = {
-  songKey: PropTypes.string,
+  songKey: PropTypes.any,
   handleSubmit: PropTypes.func,
   sendRequest: PropTypes.func,
 };
 
 DeleteButton.propTypes = {
-  songKey: PropTypes.string,
+  songKey: PropTypes.any,
   sendRequest: PropTypes.func,
 };

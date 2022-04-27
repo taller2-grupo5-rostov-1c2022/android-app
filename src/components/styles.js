@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   bottom: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,

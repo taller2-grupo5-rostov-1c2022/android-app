@@ -5,7 +5,6 @@ import styles from "./styles.js";
 import ExternalView from "./ExternalView";
 import Player from "./Player";
 
-
 export default function SongsScreen() {
   const songs = useSWR(webApi + "/songs/", json_fetcher);
 
@@ -13,7 +12,7 @@ export default function SongsScreen() {
     <ExternalView style={styles.container}>
       <Headline> Songs </Headline>
       {content(songs.isValidating, songs.data, songs.error)}
-      <Player/>
+      <Player />
     </ExternalView>
   );
 }
@@ -27,14 +26,13 @@ function content(isLoading, data, error) {
 }
 
 function mapData(data) {
-  return Object.entries(data).map(([key, value]) => {
-    console.log(key);
-    console.log(value);
+  return data.map((song) => {
+    console.log("song: ", song);
     return (
       <List.Item
-        title={value.name}
-        description={"by " + value.artist_name}
-        key={key}
+        title={song.name}
+        description={"by " + song.artists}
+        key={song.id}
       />
     );
   });
