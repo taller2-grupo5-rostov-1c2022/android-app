@@ -79,8 +79,6 @@ function DeleteButton({ songKey, sendRequest }) {
 
   const onDelete = async () => {
     sendRequest(async () => {
-      console.log("Deleting song with key " + songKey);
-
       const response = await fetch(webApi + "/songs/" + songKey, {
         method: "DELETE",
       });
@@ -96,12 +94,16 @@ function DeleteButton({ songKey, sendRequest }) {
 
 async function saveRequest(songKey, formData) {
   var body = new FormData();
-  Object.entries(formData).forEach(([key, value]) => {
-    body.append(key, value);
-    console.log(key, ": ", value);
-  });
-  body.append("creator", "tmp");
-  console.log(body);
+  // Object.entries(formData).forEach(([key, value]) => {
+  //   body.append(key, value);
+  // });
+  console.log("formData", formData);
+
+  body.append("name", "fdelu");
+  body.append("description", "a song");
+  body.append("creator", "SJRPTQKlGqfEhHUnkGfpuA4Cses1");
+  body.append("artists", "rostovFC");
+
   const data = {
     method: songKey ? "PUT" : "POST",
     headers: {
@@ -116,6 +118,20 @@ async function saveRequest(songKey, formData) {
     data
   );
 }
+/*
+Expected response ( when file is missing )
+
+curl -X 'POST' \
+  'https://rostov-song-server.herokuapp.com/api/v2/songs/' \
+  -H 'accept: application/json' \
+  -H 'api_key: key' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'name=e' \
+  -F 'description=e' \
+  -F 'creator=e' \
+  -F 'artists=e'  
+{"detail":[{"loc":["body","file"],"msg":"field required","type":"value_error.missing"}]}
+*/
 
 function FormDefinition({ creating, ...rest }) {
   return (

@@ -25,7 +25,7 @@ export default function LoginScreen({ navigation }) {
 
     signInWithPopup(auth, new GoogleAuthProvider())
       .then((response) => {
-        console.log(response.user.uid);
+        console.log("User UID", response.user.uid);
         navigation.replace("Home");
       })
       .catch((error) => {
@@ -39,7 +39,7 @@ export default function LoginScreen({ navigation }) {
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log(userCredential);
+        console.log("User UID", userCredential?._tokenResponse?.localId);
         navigation.replace("Home");
       })
       .catch((error) => {

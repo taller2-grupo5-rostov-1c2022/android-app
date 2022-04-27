@@ -27,7 +27,6 @@ function content(isLoading, data, error) {
 
 function mapData(data) {
   return data.map((song) => {
-    console.log("song: ", song);
     return (
       <List.Item
         title={song.name}
