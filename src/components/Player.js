@@ -4,13 +4,22 @@ import styles from "./styles.js";
 import appContext from "./appContext.js";
 import { Audio } from "expo-av";
 
-const music = async (uri) => {
-  const source = {
-    uri,
-  };
-  const { sound } = await Audio.Sound.createAsync(source);
-  //await sound.loadAsync();
-  await sound.playAsync();
+var audio = {
+  uri: null,
+  sound: null,
+};
+
+const play = async (uri) => {
+  if (audio.uri !== uri) {
+    const { sound } = await Audio.Sound.createAsync({ uri });
+    audio.uri = uri;
+    audio.sound = sound;
+  }
+  await audio?.sound?.playAsync();
+};
+
+const pause = () => {
+  audio?.sound?.pauseAsync();
 };
 
 const Player = () => {
@@ -20,11 +29,12 @@ const Player = () => {
   const context = React.useContext(appContext);
   const playIcon = paused ? "play" : "pause";
 
-  const play = () => {
+  const onPress = () => {
     if (paused) {
-      music(context.songUrl);
+      play(context.songUrl);
       setPaused(false);
     } else {
+      pause();
       setPaused(true);
     }
   };
@@ -36,7 +46,7 @@ const Player = () => {
         icon="heart-outline"
         onPress={() => console.log("Pressed heart")}
       />
-      <Appbar.Action icon={playIcon} onPress={play} />
+      <Appbar.Action icon={playIcon} onPress={onPress} />
       <Appbar.Action
         icon="skip-next"
         onPress={() => console.log("Pressed skip")}
