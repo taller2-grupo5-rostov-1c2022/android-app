@@ -7,6 +7,7 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import FilePicker from "./FilePicker";
 import styles from "./styles";
+import postSong from "../util/post_song";
 
 export default function SongDialog({ hideDialog, song }) {
   const { control, setFocus, handleSubmit } = useForm({
@@ -97,23 +98,24 @@ async function getBlob(uri) {
 }
 
 async function saveRequest(songKey, formData) {
-  let { file, ...rest } = formData;
-  const method = songKey ? "PUT" : "POST";
-  const url = webApi + "/songs/" + (songKey ? "?song_id=" + songKey : "");
-
-  let body = new globalThis.FormData();
-  Object.entries(rest).forEach(([key, value]) => body.append(key, value));
-
-  if (file) body.append("file", await getBlob(file.uri), file.name);
-
-  return fetch(url, {
-    method,
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "multipart/form-data",
-    },
-    body: body,
-  });
+  postSong(formData);
+  // let { file, ...rest } = formData;
+  // const method = songKey ? "PUT" : "POST";
+  // const url = webApi + "/songs/" + (songKey ? "?song_id=" + songKey : "");
+  //
+  // let body = new globalThis.FormData();
+  // Object.entries(rest).forEach(([key, value]) => body.append(key, value));
+  //
+  // if (file) body.append("file", await getBlob(file.uri), file.name);
+  //
+  // return fetch(url, {
+  //   method,
+  //   headers: {
+  //     Accept: "application/json",
+  //     "Content-Type": "multipart/form-data",
+  //   },
+  //   body: body,
+  // });
 }
 
 function FormDefinition({ creating, ...rest }) {
