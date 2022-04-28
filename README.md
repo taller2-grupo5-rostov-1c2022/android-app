@@ -60,6 +60,12 @@ You'll need to set the following actions secrets:
 - [Deliver Artifact](https://github.com/marketplace/actions/react-native-android-build-apk)
 - [Release](https://github.com/softprops/action-gh-release)
 
+#### Locally
+
+```
+cd android && ./gradlew assembleRelease
+```
+
 #### Creating & Pushing Tags
 
 ```

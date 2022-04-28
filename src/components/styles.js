@@ -46,6 +46,11 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  bigLogo: {
+    width: 200,
+    height: 200,
+    resizeMode: "stretch",
+  },
 });
 
 export default styles;

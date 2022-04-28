@@ -10,8 +10,8 @@ import {
 } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "./styles.js";
-import { Audio } from "expo-av";
 import ExternalView from "./ExternalView.js";
+import image from "../img/logo.png";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState("");
@@ -47,18 +47,9 @@ export default function LoginScreen({ navigation }) {
       });
   };
 
-  const music = async () => {
-    const source = {
-      uri: "https://storage.googleapis.com/rostov-spotifiuby.appspot.com/songs/1",
-    };
-    const { sound } = await Audio.Sound.createAsync(source);
-    //await sound.loadAsync();
-    await sound.playAsync();
-  };
-
   return (
     <ExternalView style={styles.containerCenter}>
-      <Image source={require("../img/logo.png")} />
+      <Image source={image} style={styles.bigLogo} />
       <Headline>Spotifiuby</Headline>
       <Text>Log In</Text>
       <TextInput
@@ -77,11 +68,9 @@ export default function LoginScreen({ navigation }) {
       <Button onPress={signInWithEmail} mode="contained">
         Log In
       </Button>
-      <Button onPress={() => navigation.replace("Home")}>Skip</Button>
       <Button onPress={() => signInWithGoogle()} disabled={authing}>
         Sign in with Google
       </Button>
-      <Button onPress={music}>music</Button>
       <StatusBar style="auto" />
     </ExternalView>
   );

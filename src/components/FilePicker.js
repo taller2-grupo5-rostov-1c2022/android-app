@@ -32,7 +32,7 @@ export default function FilePicker(props) {
   const getFile = async () => {
     let { type, name, uri, mimeType } = await DocumentPicker.getDocumentAsync({
       type: fileType,
-      copyToCacheDirectory: true,
+      // copyToCacheDirectory: true,
     });
 
     if (type != "success") return;
