@@ -71,7 +71,7 @@ export default function SongDialog({ hideDialog, song }) {
 function ErrorDialog({ error, hideDialog }) {
   return (
     <Dialog visible="true" onDismiss={hideDialog}>
-      <Dialog.Title>Error</Dialog.Title>
+      <Dialog.Title>Error completing request</Dialog.Title>
       <Dialog.Content>
         <Subheading>{error?.message}</Subheading>
       </Dialog.Content>
@@ -102,7 +102,7 @@ function DeleteButton({ songKey, sendRequest }) {
     sendRequest(async () => {
       const response = await deleteRequest(songKey);
 
-      response.json().then((data) => {
+      response.then((data) => {
         console.log("Song deleted. Received response: ", data);
       });
     });
