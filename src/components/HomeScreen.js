@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import styles from "./styles.js";
 import ExternalView from "./ExternalView";
 import Player from "./Player";
+import appContext from "./appContext";
 
 const AlbumsScreen = () => {
   return (
@@ -30,12 +31,17 @@ export default function HomeScreen() {
     account: AccountScreen,
   });
 
+  const [name, setName] = React.useState("");
+  const [artist, setArtist] = React.useState("");
+  
   return (
-    <BottomNavigation
-      navigationState={{ index, routes }}
-      onIndexChange={setIndex}
-      renderScene={renderScene}
-    />
+    <appContext.Provider value={{name, artist, setName, setArtist}}>
+      <BottomNavigation
+        navigationState={{ index, routes }}
+        onIndexChange={setIndex}
+        renderScene={renderScene}
+      />
+    </appContext.Provider>
   );
 }
 
