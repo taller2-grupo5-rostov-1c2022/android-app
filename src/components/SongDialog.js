@@ -34,7 +34,7 @@ export default function SongDialog({ hideDialog, song }) {
   const sendRequest = async (requestSender) => {
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
-      await requestSender();
+      await makeRequest(requestSender);
       hideDialog();
     } catch (err) {
       setStatus({ loading: false, error: err });
@@ -82,33 +82,39 @@ function ErrorDialog({ error, hideDialog }) {
   );
 }
 
+async function makeRequest(req) {
+  const resp = await req();
+  const json = await resp.json();
+  if (!resp.ok)
+    throw new Error(
+      `${resp.statusText} (${resp.status}):\n${JSON.stringify(json.detail)}`
+    );
+
+  return json;
+}
+
 function SaveButton({ songKey, handleSubmit, sendRequest }) {
-  const onSave = async (data) => {
-    sendRequest(async () => {
-      console.log("Saving song " + data.name);
-
-      const response = await saveRequest(songKey, data);
-      console.log("Song saved. Received response: ", response);
-    });
-  };
-
-  return <Button onPress={handleSubmit((data) => onSave(data))}>Save</Button>;
+  return (
+    <Button
+      onPress={handleSubmit((data) =>
+        sendRequest(async () => await saveRequest(songKey, data))
+      )}
+    >
+      Save
+    </Button>
+  );
 }
 
 function DeleteButton({ songKey, sendRequest }) {
   if (songKey == null) return null;
 
-  const onDelete = async () => {
-    sendRequest(async () => {
-      const response = await deleteRequest(songKey);
-
-      response.then((data) => {
-        console.log("Song deleted. Received response: ", data);
-      });
-    });
-  };
-
-  return <Button onPress={onDelete}>Delete</Button>;
+  return (
+    <Button
+      onPress={() => sendRequest(async () => await deleteRequest(songKey))}
+    >
+      Delete
+    </Button>
+  );
 }
 
 function FormDefinition({ creating, ...rest }) {

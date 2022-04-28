@@ -32,6 +32,7 @@ export default function FilePicker(props) {
   const getFile = async () => {
     let { type, name, uri, mimeType } = await DocumentPicker.getDocumentAsync({
       type: fileType,
+      // copyToCacheDirectory: true,
     });
 
     if (type != "success") return;
@@ -44,7 +45,7 @@ export default function FilePicker(props) {
     }
 
     setErrorMsg(null);
-    field.onChange({ name, uri, mimeType });
+    field.onChange({ name, uri, type: mimeType });
     setCaption(name);
   };
 

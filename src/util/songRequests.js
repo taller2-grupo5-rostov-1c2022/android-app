@@ -1,48 +1,45 @@
-import axios from "axios";
 import { webApi } from "./services";
 const FormData = global.FormData;
 
-const axiosInstance = axios.create({
-  baseURL: webApi,
-  timeout: 30000,
-});
+async function addFile(body, file) {
+  if (!file) return;
 
-async function getBlob(uri) {
-  let req = await fetch(uri);
-  return await req.blob();
+  if (file.uri.startsWith("file:/")) {
+    body.append("file", file);
+    return;
+  }
+
+  let req = await fetch(file.uri);
+  body.append("file", await req.blob(), file.name);
+}
+
+function getUrl(songKey) {
+  return webApi + "/songs/" + (songKey ?? "");
 }
 
 export async function saveRequest(songKey, formData) {
   let { file, ...rest } = formData;
   const method = songKey ? "PUT" : "POST";
-  const url = songKey ?? "";
 
   let body = new FormData();
   Object.entries(rest).forEach(([key, value]) => body.append(key, value));
+  await addFile(body, file);
 
   if (method === "POST") body.append("creator", "SJRPTQKlGqfEhHUnkGfpuA4Cses1");
 
-  if (file) body.append("file", await getBlob(file.uri), file.name);
-
-  const config = {
+  return fetch(getUrl(songKey), {
     method,
-    url: "/songs/" + url,
-    responseType: "json",
     headers: {
-      "Content-Type": "multipart/form-data",
+      Accept: "application/json",
+      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
+      // "Content-Type": "multipart/form-data",
     },
-    transformRequest: () => body,
-    data: body,
-  };
-
-  return axiosInstance.request(config);
+    body,
+  });
 }
 
 export async function deleteRequest(songKey) {
-  const config = {
+  return fetch(getUrl(songKey), {
     method: "DELETE",
-    url: "/songs/" + songKey,
-  };
-
-  return axiosInstance.request(config);
+  });
 }

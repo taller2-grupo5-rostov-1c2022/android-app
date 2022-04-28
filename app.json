@@ -1,8 +1,15 @@
 {
   "expo": {
-    "name": "android-app",
-    "slug": "android-app",
-    "version": "1.0.0",
+    "name": "Spotifiuby",
+    "slug": "Spotifiuby",
+    "version": "0.1.1",
+    "icon": "./src/img/icon.png",
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/img/icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
     "assetBundlePatterns": [
       "**/*"
     ]
