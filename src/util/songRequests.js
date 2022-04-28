@@ -1,9 +1,16 @@
 import { webApi } from "./services";
 const FormData = global.FormData;
 
-async function getBlob(uri) {
-  let req = await fetch(uri);
-  return await req.blob();
+async function addFile(body, file) {
+  if (!file) return;
+
+  if (file.uri.startsWith("file:/")) {
+    body.append("file", file);
+    return;
+  }
+
+  let req = await fetch(file.uri);
+  body.append("file", await req.blob(), file.name);
 }
 
 function getUrl(songKey) {
@@ -16,19 +23,17 @@ export async function saveRequest(songKey, formData) {
 
   let body = new FormData();
   Object.entries(rest).forEach(([key, value]) => body.append(key, value));
+  await addFile(body, file);
 
   if (method === "POST") body.append("creator", "SJRPTQKlGqfEhHUnkGfpuA4Cses1");
 
-  if (file) body.append("file", await getBlob(file.uri), file.name);
-
-  const headers = new global.Headers();
-  // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-  // headers.append("Content-Type", "multipart/form-data");
-  headers.append("Accept", "application/json");
-
   return fetch(getUrl(songKey), {
     method,
-    headers,
+    headers: {
+      Accept: "application/json",
+      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
+      // "Content-Type": "multipart/form-data",
+    },
     body,
   });
 }

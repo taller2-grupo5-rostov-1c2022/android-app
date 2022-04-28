@@ -34,7 +34,7 @@ export default function SongDialog({ hideDialog, song }) {
   const sendRequest = async (requestSender) => {
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
-      await requestSender();
+      await makeRequest(requestSender);
       hideDialog();
     } catch (err) {
       setStatus({ loading: false, error: err });
@@ -69,7 +69,6 @@ export default function SongDialog({ hideDialog, song }) {
 }
 
 function ErrorDialog({ error, hideDialog }) {
-  console.error(JSON.stringify(error));
   return (
     <Dialog visible="true" onDismiss={hideDialog}>
       <Dialog.Title>Error completing request</Dialog.Title>
@@ -83,35 +82,40 @@ function ErrorDialog({ error, hideDialog }) {
   );
 }
 
+async function makeRequest(req) {
+  const resp = await req();
+  const json = await resp.json();
+  console.log("json: ", json);
+  if (!resp.ok)
+    throw new Error(
+      `${resp.statusText} (${resp.status}):\n${JSON.stringify(json.detail)}`
+    );
+
+  return json;
+}
+
 function SaveButton({ songKey, handleSubmit, sendRequest }) {
-  const onSave = async (data) => {
-    sendRequest(async () => {
-      console.log("Saving song " + data.name);
-
-      const response = await saveRequest(songKey, data);
-      response
-        .json()
-        .then((data) => console.log("Song saved. Received response: ", data));
-    });
-  };
-
-  return <Button onPress={handleSubmit((data) => onSave(data))}>Save</Button>;
+  return (
+    <Button
+      onPress={handleSubmit((data) =>
+        sendRequest(async () => await saveRequest(songKey, data))
+      )}
+    >
+      Save
+    </Button>
+  );
 }
 
 function DeleteButton({ songKey, sendRequest }) {
   if (songKey == null) return null;
 
-  const onDelete = async () => {
-    sendRequest(async () => {
-      const response = await deleteRequest(songKey);
-
-      response
-        .json()
-        .then((data) => console.log("Song deleted. Received response: ", data));
-    });
-  };
-
-  return <Button onPress={onDelete}>Delete</Button>;
+  return (
+    <Button
+      onPress={() => sendRequest(async () => await deleteRequest(songKey))}
+    >
+      Delete
+    </Button>
+  );
 }
 
 function FormDefinition({ creating, ...rest }) {
@@ -209,9 +213,6 @@ DeleteButton.propTypes = {
 ErrorDialog.propTypes = {
   error: PropTypes.shape({
     message: PropTypes.string,
-    response: PropTypes.string,
-    request: PropTypes.any,
-    config: PropTypes.any,
   }),
   hideDialog: PropTypes.func,
 };
