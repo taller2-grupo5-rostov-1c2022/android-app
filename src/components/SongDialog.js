@@ -7,7 +7,6 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import FilePicker from "./FilePicker";
 import styles from "./styles";
-import FormData from "form-data";
 
 export default function SongDialog({ hideDialog, song }) {
   const { control, setFocus, handleSubmit } = useForm({
@@ -92,46 +91,30 @@ function DeleteButton({ songKey, sendRequest }) {
   return <Button onPress={onDelete}>Delete</Button>;
 }
 
+async function getBlob(uri) {
+  let req = await fetch(uri);
+  return await req.blob();
+}
+
 async function saveRequest(songKey, formData) {
-  var body = new FormData();
-  // Object.entries(formData).forEach(([key, value]) => {
-  //   body.append(key, value);
-  // });
-  console.log("formData", formData);
+  let { file, ...rest } = formData;
+  const method = songKey ? "PUT" : "POST";
+  const url = webApi + "/songs/" + (songKey ? "?song_id=" + songKey : "");
 
-  body.append("name", "fdelu");
-  body.append("description", "a song");
-  body.append("creator", "SJRPTQKlGqfEhHUnkGfpuA4Cses1");
-  body.append("artists", "rostovFC");
+  let body = new globalThis.FormData();
+  Object.entries(rest).forEach(([key, value]) => body.append(key, value));
 
-  const data = {
-    method: songKey ? "PUT" : "POST",
+  if (file) body.append("file", await getBlob(file.uri), file.name);
+
+  return fetch(url, {
+    method,
     headers: {
       Accept: "application/json",
       "Content-Type": "multipart/form-data",
     },
     body: body,
-  };
-
-  return fetch(
-    webApi + "/songs/" + (songKey ? "?song_id=" + songKey : ""),
-    data
-  );
+  });
 }
-/*
-Expected response ( when file is missing )
-
-curl -X 'POST' \
-  'https://rostov-song-server.herokuapp.com/api/v2/songs/' \
-  -H 'accept: application/json' \
-  -H 'api_key: key' \
-  -H 'Content-Type: multipart/form-data' \
-  -F 'name=e' \
-  -F 'description=e' \
-  -F 'creator=e' \
-  -F 'artists=e'  
-{"detail":[{"loc":["body","file"],"msg":"field required","type":"value_error.missing"}]}
-*/
 
 function FormDefinition({ creating, ...rest }) {
   return (

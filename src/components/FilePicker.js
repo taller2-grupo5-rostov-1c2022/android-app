@@ -30,11 +30,13 @@ export default function FilePicker(props) {
   const err = control.getFieldState(name).error?.message;
 
   const getFile = async () => {
-    let result = await DocumentPicker.getDocumentAsync({ type: fileType });
+    let { type, name, uri, mimeType } = await DocumentPicker.getDocumentAsync({
+      type: fileType,
+    });
 
-    if (result.type != "success") return;
+    if (type != "success") return;
 
-    if (!result.mimeType.match(fileType)) {
+    if (!mimeType || !mimeType.match(fileType)) {
       setErrorMsg("Invalid file type");
       setCaption(null);
       field.onChange(null);
@@ -42,8 +44,8 @@ export default function FilePicker(props) {
     }
 
     setErrorMsg(null);
-    field.onChange(result.uri);
-    setCaption(result.name);
+    field.onChange({ name, uri, mimeType });
+    setCaption(name);
   };
 
   return (
