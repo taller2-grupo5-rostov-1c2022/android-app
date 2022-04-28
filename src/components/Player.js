@@ -11,7 +11,7 @@ var audio = {
 
 const play = async (uri) => {
   if (uri && audio.uri !== uri) {
-    audio.sound?.stopAsync();
+    await audio.sound?.stopAsync();
     audio.sound?.unloadAsync();
     const { sound } = await Audio.Sound.createAsync({ uri });
     audio.uri = uri;
@@ -26,8 +26,7 @@ const pause = () => {
 
 const Player = () => {
   const [paused, setPaused] = React.useState(false);
-  // const [active, setActive] = React.useState(true);
-  // const playerContext = React.createContext();
+
   const context = React.useContext(appContext);
   const playIcon = paused ? "play" : "pause";
 
