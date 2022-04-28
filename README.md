@@ -61,7 +61,7 @@ cd android && ./gradlew assembleRelease
 
 ```
 $ git tag v0.1.0
-$ gut push origin --tags
+$ git push origin --tags
 ```
 
 > keep tag version aligned with `package.json`

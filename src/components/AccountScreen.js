@@ -44,7 +44,7 @@ export default function AccountScreen() {
             <List.Icon {...props} icon="music-box-multiple"></List.Icon>
           )}
           onPress={() => {
-            navigation.navigate("ManageMySongs");
+            navigation.push("ManageMySongs");
           }}
         />
       </List.Section>

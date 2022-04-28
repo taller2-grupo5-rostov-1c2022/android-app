@@ -10,21 +10,19 @@ import {
 import styles from "./styles.js";
 import ExternalView from "./ExternalView";
 import SongDialog from "./SongDialog";
-import { useNavigation } from "@react-navigation/native";
+import PropTypes from "prop-types";
 
 export default function ManageMySongs() {
   const songs = useSWR(webApi + "/songs/", json_fetcher);
   const [dialog, setDialog] = React.useState(null);
-  const [adderEnabled, setAdderEnabled] = React.useState(true);
-  const navigation = useNavigation();
 
   const hideDialog = () => {
     setDialog(null);
-    navigation.replace("ManageMySongs");
+    //navigation.replace("ManageMySongs");
+    songs.mutate();
   };
 
   const addDialog = (props) => {
-    setAdderEnabled(false);
     setDialog(
       <Portal>
         <SongDialog hideDialog={hideDialog} {...props} />
@@ -33,7 +31,7 @@ export default function ManageMySongs() {
   };
 
   const content = () => {
-    if (songs.isValidating)
+    if (!songs.data && songs.isValidating)
       return (
         <ActivityIndicator size="large" style={styles.activityIndicator} />
       );
@@ -52,7 +50,7 @@ export default function ManageMySongs() {
         <FAB
           icon="plus"
           style={styles.fab}
-          disabled={!adderEnabled}
+          disabled={dialog != null}
           onPress={addDialog}
         />
       </Portal>
@@ -76,3 +74,9 @@ function mapData(data, addDialog) {
     );
   });
 }
+
+ManageMySongs.propTypes = {
+  navigation: PropTypes.shape({
+    replace: PropTypes.func.isRequired,
+  }).isRequired,
+};
