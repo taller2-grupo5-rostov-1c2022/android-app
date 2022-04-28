@@ -10,7 +10,9 @@ var audio = {
 };
 
 const play = async (uri) => {
-  if (audio.uri !== uri) {
+  if (uri && audio.uri !== uri) {
+    audio.sound?.stopAsync();
+    audio.sound?.unloadAsync();
     const { sound } = await Audio.Sound.createAsync({ uri });
     audio.uri = uri;
     audio.sound = sound;
@@ -23,7 +25,7 @@ const pause = () => {
 };
 
 const Player = () => {
-  const [paused, setPaused] = React.useState(true);
+  const [paused, setPaused] = React.useState(false);
   // const [active, setActive] = React.useState(true);
   // const playerContext = React.createContext();
   const context = React.useContext(appContext);
@@ -38,6 +40,12 @@ const Player = () => {
       setPaused(true);
     }
   };
+
+  React.useEffect(() => {
+    if (!paused) {
+        play(context.songUrl);
+    }
+  }, [context.songUrl]);
 
   return (
     <Appbar style={styles.bottom}>
