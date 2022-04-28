@@ -1,15 +1,10 @@
 import axios from "axios";
+import { webApi } from "./services";
 const FormData = global.FormData;
 
-export const webApi = "https://rostov-gateway.herokuapp.com";
-export const trueApi = "";
-
 const axiosInstance = axios.create({
-  baseURL: webApi, // use with scheme
+  baseURL: webApi,
   timeout: 30000,
-  // headers: {
-  //   api_key: "key",
-  // },
 });
 
 async function getBlob(uri) {
@@ -17,30 +12,30 @@ async function getBlob(uri) {
   return await req.blob();
 }
 
-// send post request and get response
-const postSong = async (data) => {
-  console.log("postSong data: ", data);
+async function saveRequest(songKey, formData) {
+  let { file, ...rest } = formData;
+  const method = songKey ? "PUT" : "POST";
+  const url = songKey ?? "";
 
-  const formData = new FormData();
-  formData.append("name", "fdelu");
-  formData.append("description", "a song");
-  formData.append("creator", "SJRPTQKlGqfEhHUnkGfpuA4Cses1");
-  formData.append("artists", "rostovFC");
-  formData.append("file", await getBlob(data.file.uri), data.file.name);
+  let body = new FormData();
+  Object.entries(rest).forEach(([key, value]) => body.append(key, value));
+
+  if (method === "POST") body.append("creator", "SJRPTQKlGqfEhHUnkGfpuA4Cses1");
+
+  if (file) body.append("file", await getBlob(file.uri), file.name);
 
   const config = {
-    method: "post",
-    url: "/songs/",
+    method,
+    url: "/songs/" + url,
     responseType: "json",
     headers: {
       "Content-Type": "multipart/form-data",
     },
-    transformRequest: () => formData,
-    data: formData,
+    transformRequest: () => body,
+    data: body,
   };
 
-  const res = await axiosInstance.request(config);
-  console.log("res", res);
-};
+  return axiosInstance.request(config);
+}
 
-export default postSong;
+export default saveRequest;
