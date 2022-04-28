@@ -34,22 +34,23 @@ function content(isLoading, data, error, setName, setArtist, setSongUrl) {
 }
 
 function mapData(data, setName, setArtist, setSongUrl) {
+  const onPress = (song) => {
+    setName(song.name);
+    setArtist(song.artists);
+    fetch(webApi + "/songs/" + song.id)
+      .then((res) => res.json())
+      .then((res) => {
+        setSongUrl(res.file);
+      });
+  };
+
   return data.map((song) => {
     return (
       <List.Item
         title={song.name}
         description={"by " + song.artists}
         key={song.id}
-        onPress={() => {
-          setName(song.name);
-          setArtist(song.artist_name);
-          fetch(webApi + "/songs/" + song.id)
-            .then((res) => res.json())
-            .then((res) => {
-              setSongUrl(res.file);
-              console.log("song url: " + res.file);
-            });
-        }}
+        onPress={() => onPress(song)}
       />
     );
   });
