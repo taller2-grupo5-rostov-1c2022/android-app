@@ -17,22 +17,23 @@ export default function SongsScreen() {
         songs.data,
         songs.error,
         context.setName,
-        context.setArtist
+        context.setArtist,
+        context.setSongUrl
       )}
       <Player />
     </ExternalView>
   );
 }
 
-function content(isLoading, data, error, setName, setArtist) {
+function content(isLoading, data, error, setName, setArtist, setSongUrl) {
   if (isLoading) return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (error) return <Headline>Error: {error.message}</Headline>;
 
-  return mapData(data, setName, setArtist);
+  return mapData(data, setName, setArtist, setSongUrl);
 }
 
-function mapData(data, setName, setArtist) {
+function mapData(data, setName, setArtist, setSongUrl) {
   return data.map((song) => {
     return (
       <List.Item
@@ -42,6 +43,12 @@ function mapData(data, setName, setArtist) {
         onPress={() => {
           setName(song.name);
           setArtist(song.artist_name);
+          fetch(webApi + "/songs/" + song.id)
+            .then((res) => res.json())
+            .then((res) => {
+              setSongUrl(res.file);
+              console.log("song url: " + res.file);
+            });
         }}
       />
     );

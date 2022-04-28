@@ -12,7 +12,7 @@ const AlbumsScreen = () => {
   return (
     <ExternalView style={styles.container}>
       <Text> TODO </Text>
-      <Player/>
+      <Player />
     </ExternalView>
   );
 };
@@ -33,9 +33,12 @@ export default function HomeScreen() {
 
   const [name, setName] = React.useState("");
   const [artist, setArtist] = React.useState("");
-  
+  const [songUrl, setSongUrl] = React.useState("");
+
   return (
-    <appContext.Provider value={{name, artist, setName, setArtist}}>
+    <appContext.Provider
+      value={{ name, artist, songUrl, setName, setArtist, setSongUrl }}
+    >
       <BottomNavigation
         navigationState={{ index, routes }}
         onIndexChange={setIndex}
