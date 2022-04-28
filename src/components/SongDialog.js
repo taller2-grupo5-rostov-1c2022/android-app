@@ -69,6 +69,7 @@ export default function SongDialog({ hideDialog, song }) {
 }
 
 function ErrorDialog({ error, hideDialog }) {
+  console.error(JSON.stringify(error));
   return (
     <Dialog visible="true" onDismiss={hideDialog}>
       <Dialog.Title>Error completing request</Dialog.Title>
@@ -88,7 +89,9 @@ function SaveButton({ songKey, handleSubmit, sendRequest }) {
       console.log("Saving song " + data.name);
 
       const response = await saveRequest(songKey, data);
-      console.log("Song saved. Received response: ", response);
+      response
+        .json()
+        .then((data) => console.log("Song saved. Received response: ", data));
     });
   };
 
@@ -102,9 +105,9 @@ function DeleteButton({ songKey, sendRequest }) {
     sendRequest(async () => {
       const response = await deleteRequest(songKey);
 
-      response.then((data) => {
-        console.log("Song deleted. Received response: ", data);
-      });
+      response
+        .json()
+        .then((data) => console.log("Song deleted. Received response: ", data));
     });
   };
 
@@ -206,6 +209,9 @@ DeleteButton.propTypes = {
 ErrorDialog.propTypes = {
   error: PropTypes.shape({
     message: PropTypes.string,
+    response: PropTypes.string,
+    request: PropTypes.any,
+    config: PropTypes.any,
   }),
   hideDialog: PropTypes.func,
 };
