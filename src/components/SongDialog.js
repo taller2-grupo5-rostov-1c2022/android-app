@@ -85,7 +85,6 @@ function ErrorDialog({ error, hideDialog }) {
 async function makeRequest(req) {
   const resp = await req();
   const json = await resp.json();
-  console.log("json: ", json);
   if (!resp.ok)
     throw new Error(
       `${resp.statusText} (${resp.status}):\n${JSON.stringify(json.detail)}`
