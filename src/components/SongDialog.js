@@ -1,13 +1,17 @@
 import React from "react";
-import { Dialog, Button, ActivityIndicator } from "react-native-paper";
+import {
+  Dialog,
+  Button,
+  ActivityIndicator,
+  Subheading,
+} from "react-native-paper";
 import { ScrollView, View } from "react-native";
-import { webApi } from "../util/services";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import FilePicker from "./FilePicker";
 import styles from "./styles";
-import saveRequest from "../util/post_song";
+import { saveRequest, deleteRequest } from "../util/songRequests";
 
 export default function SongDialog({ hideDialog, song }) {
   const { control, setFocus, handleSubmit } = useForm({
@@ -19,21 +23,27 @@ export default function SongDialog({ hideDialog, song }) {
     },
     mode: "onChange",
   });
+  const [status, setStatus] = React.useState({ error: null, loading: false });
 
-  const [loading, setLoading] = React.useState(false);
+  if (status.error)
+    return <ErrorDialog error={status.error} hideDialog={hideDialog} />;
+
+  if (status.loading)
+    return <ActivityIndicator size="large" style={styles.activityIndicator} />;
 
   const sendRequest = async (requestSender) => {
-    setLoading(true);
-    await requestSender();
-    hideDialog();
+    setStatus((prev) => ({ ...prev, loading: true }));
+    try {
+      await requestSender();
+      hideDialog();
+    } catch (err) {
+      setStatus({ loading: false, error: err });
+    }
   };
-
-  if (loading)
-    return <ActivityIndicator size="large" style={styles.activityIndicator} />;
 
   return (
     <Dialog visible="true" onDismiss={hideDialog}>
-      <Dialog.Title>Edit Song</Dialog.Title>
+      <Dialog.Title>{song?.id ? "Edit" : "Add"} Song</Dialog.Title>
       <Dialog.Content>
         <ScrollView>
           <FormDefinition
@@ -58,6 +68,20 @@ export default function SongDialog({ hideDialog, song }) {
   );
 }
 
+function ErrorDialog({ error, hideDialog }) {
+  return (
+    <Dialog visible="true" onDismiss={hideDialog}>
+      <Dialog.Title>Error completing request</Dialog.Title>
+      <Dialog.Content>
+        <Subheading>{error?.message}</Subheading>
+      </Dialog.Content>
+      <Dialog.Actions>
+        <Button onPress={hideDialog}>Ok</Button>
+      </Dialog.Actions>
+    </Dialog>
+  );
+}
+
 function SaveButton({ songKey, handleSubmit, sendRequest }) {
   const onSave = async (data) => {
     sendRequest(async () => {
@@ -76,11 +100,9 @@ function DeleteButton({ songKey, sendRequest }) {
 
   const onDelete = async () => {
     sendRequest(async () => {
-      const response = await fetch(webApi + "/songs/" + songKey, {
-        method: "DELETE",
-      });
+      const response = await deleteRequest(songKey);
 
-      response.json().then((data) => {
+      response.then((data) => {
         console.log("Song deleted. Received response: ", data);
       });
     });
@@ -88,6 +110,7 @@ function DeleteButton({ songKey, sendRequest }) {
 
   return <Button onPress={onDelete}>Delete</Button>;
 }
+
 function FormDefinition({ creating, ...rest }) {
   return (
     <FormBuilder
@@ -178,4 +201,11 @@ SaveButton.propTypes = {
 DeleteButton.propTypes = {
   songKey: PropTypes.any,
   sendRequest: PropTypes.func,
+};
+
+ErrorDialog.propTypes = {
+  error: PropTypes.shape({
+    message: PropTypes.string,
+  }),
+  hideDialog: PropTypes.func,
 };

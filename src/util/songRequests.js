@@ -12,7 +12,7 @@ async function getBlob(uri) {
   return await req.blob();
 }
 
-async function saveRequest(songKey, formData) {
+export async function saveRequest(songKey, formData) {
   let { file, ...rest } = formData;
   const method = songKey ? "PUT" : "POST";
   const url = songKey ?? "";
@@ -38,4 +38,11 @@ async function saveRequest(songKey, formData) {
   return axiosInstance.request(config);
 }
 
-export default saveRequest;
+export async function deleteRequest(songKey) {
+  const config = {
+    method: "DELETE",
+    url: "/songs/" + songKey,
+  };
+
+  return axiosInstance.request(config);
+}
