@@ -12,7 +12,7 @@ var audio = {
 const play = async (uri) => {
   if (uri && audio.uri !== uri) {
     await audio.sound?.stopAsync();
-    audio.sound?.unloadAsync();
+    await audio.sound?.unloadAsync();
     const { sound } = await Audio.Sound.createAsync({ uri });
     audio.uri = uri;
     audio.sound = sound;
