@@ -1,17 +1,12 @@
 import { StyleSheet } from "react-native";
 
-const containerDefault = {
-  flex: 1,
-  margin: "2%",
-  padding: 4,
-};
-
 const styles = StyleSheet.create({
   container: {
-    ...containerDefault,
+    flex: 1,
+    margin: "2%",
+    padding: 4,
   },
   containerCenter: {
-    ...containerDefault,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -36,8 +31,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  disabledContainer: {
-    ...containerDefault,
+  disabled: {
     opacity: 0.5,
   },
   bottom: {
@@ -50,6 +44,9 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: "stretch",
+  },
+  errorText: {
+    color: "#b00020",
   },
 });
 

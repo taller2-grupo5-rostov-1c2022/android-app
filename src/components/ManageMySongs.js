@@ -43,7 +43,7 @@ export default function ManageMySongs() {
 
   return (
     <ExternalView
-      style={dialog ? styles.disabledContainer : styles.container}
+      style={[styles.container].concat(dialog ? styles.disabled : [])}
       pointerEvents={dialog ? "none" : "auto"}
     >
       <Portal>

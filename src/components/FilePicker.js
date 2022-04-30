@@ -4,6 +4,7 @@ import { View } from "react-native";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
 import * as DocumentPicker from "expo-document-picker";
+import styles from "./styles";
 
 // File picker para usar con los forms
 export default function FilePicker(props) {
@@ -64,7 +65,7 @@ export default function FilePicker(props) {
         </Button>
         <Caption>{caption ?? "No file selected"}</Caption>
       </View>
-      <Text style={{ color: "#b00020" }}>{errorMsg ?? err}</Text>
+      <Text style={styles.errorText}>{errorMsg ?? err}</Text>
     </View>
   );
 }

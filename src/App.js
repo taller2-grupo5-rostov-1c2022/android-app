@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
-import LoginScreen from "./components/LoginScreen";
+import LoginScreen from "./components/login/LoginScreen";
 import HomeScreen from "./components/HomeScreen";
 import ManageMySongs from "./components/ManageMySongs";
 import { initializeApp } from "firebase/app";
