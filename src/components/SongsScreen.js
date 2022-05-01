@@ -27,7 +27,6 @@ export default function SongsScreen() {
 }
 
 function content(songs, setName, setArtist, setSongUrl) {
-  console.log(songs);
   if (!songs.data && songs.isLoading)
     return <ActivityIndicator style={styles.activityIndicator} />;
 

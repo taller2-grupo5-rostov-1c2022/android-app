@@ -28,14 +28,13 @@ export default function LoginScreen({ navigation }) {
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
 
-  const [, response, signInWithGoogle] = Google.useAuthRequest({
+  const [, response, signInWithGoogle] = Google.useIdTokenAuthRequest({
     expoClientId:
       "186491690051-hk2abraqmkudskf2fvqqc7lqnps4u9jt.apps.googleusercontent.com",
     androidClientId:
       "186491690051-qvufeofgq51qk39mobagt53m2da2sea2.apps.googleusercontent.com",
     webClientId:
       "186491690051-i9dh8a8phlea0521ibilvp8ha6b8nr03.apps.googleusercontent.com",
-    responseType: "token",
   });
 
   const signIn = async (method) => {
@@ -54,10 +53,10 @@ export default function LoginScreen({ navigation }) {
     if (response?.type != "success") return;
 
     //console.log(response);
-    const { idToken, accessToken } = response.params;
-    const credential = GoogleAuthProvider.credential(idToken, accessToken);
 
     signIn(async () => {
+      const { id_token: idToken, access_token: accessToken } = response.params;
+      const credential = GoogleAuthProvider.credential(idToken, accessToken);
       await signInWithCredential(auth, credential);
     });
   }, [response]);

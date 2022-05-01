@@ -17,7 +17,6 @@ function errorMsg(errorCode) {
 export function LoginError({ error }) {
   var text = error ? errorMsg(error?.code) : "";
   if (error?.code) console.log("Error code: " + error.code);
-  else if (error) console.error("Unexpected error: ", error);
 
   return <Text style={[styles.errorText, { margin: "2%" }]}>{text}</Text>;
 }
@@ -25,5 +24,6 @@ export function LoginError({ error }) {
 LoginError.propTypes = {
   error: PropTypes.shape({
     code: PropTypes.string,
+    message: PropTypes.string,
   }),
 };

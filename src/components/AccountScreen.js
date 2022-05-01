@@ -13,7 +13,6 @@ export default function AccountScreen() {
   const onLogOut = () => {
     signOut(auth)
       .then(() => {
-        console.log("log out");
         navigation.replace("Login");
       })
       .catch((error) => {
