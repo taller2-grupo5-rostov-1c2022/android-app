@@ -13,6 +13,7 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithCredential,
 } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../styles.js";
@@ -21,11 +22,22 @@ import image from "../../img/logo.png";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { LoginError } from "./LoginError";
+import * as Google from "expo-auth-session/providers/google";
 
 export default function LoginScreen({ navigation }) {
   const auth = getAuth();
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId:
+      "186491690051-hk2abraqmkudskf2fvqqc7lqnps4u9jt.apps.googleusercontent.com",
+    androidClientId:
+      "186491690051-qvufeofgq51qk39mobagt53m2da2sea2.apps.googleusercontent.com",
+    webClientId:
+      "186491690051-i9dh8a8phlea0521ibilvp8ha6b8nr03.apps.googleusercontent.com",
+    responseType: "token",
+  });
 
   const signIn = async (method) => {
     setError(null);
@@ -40,7 +52,11 @@ export default function LoginScreen({ navigation }) {
   };
 
   const signInWithGoogle = async () => {
-    return signIn(() => signInWithPopup(auth, new GoogleAuthProvider()));
+    //return signIn(() => signInWithPopup(auth, new GoogleAuthProvider()));
+    await promptAsync();
+    console.log(request);
+    console.log(response);
+    //const req = await signInWithCredential(auth, );
   };
 
   const signInWithEmail = async (credentials) => {

@@ -9,7 +9,8 @@
       "adaptiveIcon": {
         "foregroundImage": "src/img/icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "ar.uba.fi.rostov.spotifiuby"
     },
     "assetBundlePatterns": [
       "**/*"
