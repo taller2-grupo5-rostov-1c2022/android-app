@@ -103,15 +103,17 @@ function LoginForm({ control, setFocus }) {
           textInputProps: {
             mode: "flat",
             label: "Email",
+            style: styles.formTextInput,
           },
         },
         {
           type: "password",
           name: "password",
-          rules: { required: true, message: "Password required" },
+          rules: { required: { value: true, message: "Password required" } },
           textInputProps: {
             mode: "flat",
             label: "Passowrd",
+            style: styles.formTextInput,
           },
         },
       ]}
