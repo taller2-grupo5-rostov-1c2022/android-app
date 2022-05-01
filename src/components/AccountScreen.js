@@ -34,7 +34,7 @@ export default function AccountScreen() {
         </View>
         <View style={{ flex: 1 }}>
           <IconButton
-            icon="logout"
+            icon="logout-variant"
             onPress={onLogOut}
             accessibilityLabel="Logout"
           />
