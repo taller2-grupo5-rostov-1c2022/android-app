@@ -1,4 +1,4 @@
-package com.androidapp;
+package ar.uba.fi.rostov.spotifiuby;
 
 import android.os.Build;
 import android.os.Bundle;

@@ -13,7 +13,6 @@ export default function AccountScreen() {
   const onLogOut = () => {
     signOut(auth)
       .then(() => {
-        console.log("log out");
         navigation.replace("Login");
       })
       .catch((error) => {
@@ -24,13 +23,18 @@ export default function AccountScreen() {
   return (
     <ExternalView style={styles.container}>
       <Headline>My Account</Headline>
-      <View style={{ flexDirection: "row", margin: "4%" }}>
+      <View style={[styles.row, { margin: "4%" }]}>
         <View style={{ justifyContent: "center", flex: 9 }}>
-          <Subheading>Logged in as {auth?.currentUser?.displayName}</Subheading>
+          <Subheading>
+            Logged in as
+            <Subheading style={styles.bold}>
+              {" " + auth?.currentUser?.displayName}
+            </Subheading>
+          </Subheading>
         </View>
         <View style={{ flex: 1 }}>
           <IconButton
-            icon="logout"
+            icon="logout-variant"
             onPress={onLogOut}
             accessibilityLabel="Logout"
           />
