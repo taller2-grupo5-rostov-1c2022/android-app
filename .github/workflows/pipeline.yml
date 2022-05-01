@@ -71,9 +71,9 @@ jobs:
       - run: npm ci
       - name: Build Android Release
         run: >
-          echo "Event: ${github.event_name}";
-          echo "Ref: ${github.ref}";
-          echo "Attempt: ${github.run_attempt}";
+          echo "Event: ${{github.event_name}}";
+          echo "Ref: ${{github.ref}}";
+          echo "Attempt: ${{github.run_attempt}}";
           cd android && ./gradlew clean assembleRelease &&
           cd app/build/outputs/apk/release/ && mv app-release.apk spotifiuby.apk
       - name: Release

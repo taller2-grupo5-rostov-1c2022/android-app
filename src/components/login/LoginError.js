@@ -11,12 +11,14 @@ const firebaseErrors = {
 };
 
 function errorMsg(errorCode) {
-  return firebaseErrors[errorCode] ?? "Internal error, try again later";
+  return (
+    firebaseErrors[errorCode] ??
+    `Internal error, try again later\nError code: ${errorCode}`
+  );
 }
 
 export function LoginError({ error }) {
   var text = error ? errorMsg(error?.code) : "";
-  if (error?.code) console.log("Error code: " + error.code);
 
   return <Text style={[styles.errorText, { margin: "2%" }]}>{text}</Text>;
 }
