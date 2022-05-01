@@ -1,52 +1,44 @@
 import React, { useState } from "react";
-import { Image, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import {
-  Subheading,
-  Headline,
   Button,
   Portal,
   ActivityIndicator,
+  Headline,
 } from "react-native-paper";
 import {
   getAuth,
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
+  createUserWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../styles.js";
 import ExternalView from "../ExternalView.js";
-import image from "../../img/logo.png";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { LoginError } from "./LoginError";
 
-export default function LoginScreen({ navigation }) {
+export default function RegisterScreen({ navigation }) {
   const auth = getAuth();
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
 
-  const signIn = async (method) => {
+  const register = async (data) => {
     setError(null);
     setAuthing(true);
     try {
-      await method();
-      navigation.replace("Home");
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      updateProfile(auth.currentUser, {
+        displayName: data.displayName.trim(),
+      });
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      });
     } catch (err) {
       setError(err);
       setAuthing(false);
     }
-  };
-
-  const signInWithGoogle = async () => {
-    return signIn(() => signInWithPopup(auth, new GoogleAuthProvider()));
-  };
-
-  const signInWithEmail = async (credentials) => {
-    return signIn(() =>
-      signInWithEmailAndPassword(auth, credentials.email, credentials.password)
-    );
   };
 
   const { handleSubmit, control, setFocus } = useForm({
@@ -54,6 +46,7 @@ export default function LoginScreen({ navigation }) {
     defaultValues: {
       email: "",
       password: "",
+      displayName: "  ",
     },
   });
 
@@ -64,28 +57,14 @@ export default function LoginScreen({ navigation }) {
       )}
       pointerEvents={authing ? "none" : "auto"}
     >
-      <Image source={image} style={styles.bigLogo} />
-      <Headline>Spotifiuby</Headline>
-      <Subheading>Log In</Subheading>
-      <LoginForm control={control} setFocus={setFocus} />
-      <View style={[styles.row, styles.formWidth]}>
-        <Button
-          mode="contained"
-          style={[{ flex: 1 }, styles.button]}
-          onPress={() => navigation.push("RegisterScreen")}
-        >
-          Register
-        </Button>
-        <Button
-          onPress={handleSubmit(signInWithEmail)}
-          mode="contained"
-          style={[{ flex: 1 }, styles.button]}
-        >
-          Log in
-        </Button>
-      </View>
-      <Button onPress={() => signInWithGoogle()} style={styles.button}>
-        Sign in with Google
+      <Headline>Join Spotifiuby</Headline>
+      <RegisterForm control={control} setFocus={setFocus} />
+      <Button
+        mode="contained"
+        style={[styles.button, styles.formWidth]}
+        onPress={handleSubmit(register)}
+      >
+        Register
       </Button>
       <LoginError error={error} />
       <StatusBar style="auto" />
@@ -98,12 +77,24 @@ export default function LoginScreen({ navigation }) {
   );
 }
 
-function LoginForm({ control, setFocus }) {
+function RegisterForm({ control, setFocus }) {
   return (
     <FormBuilder
       control={control}
       setFocus={setFocus}
       formConfigArray={[
+        {
+          type: "text",
+          name: "displayName",
+          rules: {
+            required: { value: true, message: "Display name required" },
+          },
+          textInputProps: {
+            mode: "flat",
+            label: "Display name",
+            style: styles.formWidth,
+          },
+        },
         {
           type: "email",
           name: "email",
@@ -134,14 +125,13 @@ function LoginForm({ control, setFocus }) {
   );
 }
 
-LoginScreen.propTypes = {
+RegisterScreen.propTypes = {
   navigation: PropTypes.shape({
-    replace: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
+    reset: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-LoginForm.propTypes = {
+RegisterForm.propTypes = {
   control: PropTypes.any.isRequired,
   setFocus: PropTypes.any.isRequired,
 };

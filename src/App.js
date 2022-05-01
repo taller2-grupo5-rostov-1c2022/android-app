@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import LoginScreen from "./components/login/LoginScreen";
+import RegisterScreen from "./components/login/RegisterScreen";
 import HomeScreen from "./components/HomeScreen";
 import ManageMySongs from "./components/ManageMySongs";
 import { initializeApp } from "firebase/app";
@@ -33,6 +34,11 @@ export default function App() {
               name="ManageMySongs"
               component={ManageMySongs}
               options={{ title: "Manage my songs" }}
+            />
+            <Stack.Screen
+              name="RegisterScreen"
+              component={RegisterScreen}
+              options={{ title: "Create your account" }}
             />
           </Stack.Navigator>
         </NavigationContainer>

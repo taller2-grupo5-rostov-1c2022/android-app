@@ -54,7 +54,7 @@ export default function SongDialog({ hideDialog, song }) {
         </ScrollView>
       </Dialog.Content>
       <Dialog.Actions>
-        <View style={{ flexDirection: "row" }}>
+        <View style={styles.row}>
           <Button onPress={hideDialog}>Cancel</Button>
           <DeleteButton songKey={song?.id} sendRequest={sendRequest} />
           <SaveButton
@@ -134,6 +134,7 @@ function FormDefinition({ creating, ...rest }) {
           textInputProps: {
             mode: "flat",
             label: "Song name",
+            style: styles.textInput,
           },
         },
         {
@@ -148,6 +149,7 @@ function FormDefinition({ creating, ...rest }) {
           textInputProps: {
             mode: "flat",
             label: "Song authors",
+            style: styles.textInput,
           },
         },
         {
@@ -162,6 +164,7 @@ function FormDefinition({ creating, ...rest }) {
           textInputProps: {
             mode: "flat",
             label: "Song description",
+            style: styles.textInput,
           },
         },
         {

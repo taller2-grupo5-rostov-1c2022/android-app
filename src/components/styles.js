@@ -3,22 +3,17 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: "2%",
-    padding: 4,
+    margin: "3%",
+    padding: "1%",
   },
   containerCenter: {
     alignItems: "center",
     justifyContent: "center",
   },
-  input: {
-    height: 40,
-    borderWidth: 1,
-    width: "80%",
-    margin: 1,
-  },
   button: {
     height: 40,
-    margin: 1,
+    margin: 2,
+    justifyContent: "center",
   },
   fab: {
     position: "absolute",
@@ -48,12 +43,15 @@ const styles = StyleSheet.create({
   errorText: {
     color: "#b00020",
   },
-  formTextInput: {
+  row: {
+    flexDirection: "row",
+  },
+  formWidth: {
     width: "80%",
-    margin: "2%",
+  },
+  bold: {
+    fontWeight: "bold",
   },
 });
 
 export default styles;
-
-// Hacer algo para que cuando dialog no es null se ponga gris lo de atras

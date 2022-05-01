@@ -11,7 +11,7 @@ export default function SongsScreen() {
   const context = React.useContext(appContext);
   return (
     <ExternalView style={styles.container}>
-      <Headline> Songs </Headline>
+      <Headline>Songs</Headline>
       {content(
         songs.isValidating,
         songs.data,
