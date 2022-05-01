@@ -10,9 +10,8 @@ import ManageMySongs from "./components/ManageMySongs";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../config/firebase";
 
-initializeApp(firebaseConfig);
-
 const Stack = createNativeStackNavigator();
+initializeApp(firebaseConfig);
 
 export default function App() {
   return (

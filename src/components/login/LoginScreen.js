@@ -12,7 +12,6 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup,
   signInWithCredential,
 } from "firebase/auth";
 import PropTypes from "prop-types";
@@ -29,7 +28,7 @@ export default function LoginScreen({ navigation }) {
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
+  const [, response, signInWithGoogle] = Google.useAuthRequest({
     expoClientId:
       "186491690051-hk2abraqmkudskf2fvqqc7lqnps4u9jt.apps.googleusercontent.com",
     androidClientId:
@@ -51,13 +50,17 @@ export default function LoginScreen({ navigation }) {
     }
   };
 
-  const signInWithGoogle = async () => {
-    //return signIn(() => signInWithPopup(auth, new GoogleAuthProvider()));
-    await promptAsync();
-    console.log(request);
-    console.log(response);
-    //const req = await signInWithCredential(auth, );
-  };
+  React.useEffect(() => {
+    if (response?.type != "success") return;
+
+    //console.log(response);
+    const { idToken, accessToken } = response.params;
+    const credential = GoogleAuthProvider.credential(idToken, accessToken);
+
+    signIn(async () => {
+      await signInWithCredential(auth, credential);
+    });
+  }, [response]);
 
   const signInWithEmail = async (credentials) => {
     return signIn(() =>
