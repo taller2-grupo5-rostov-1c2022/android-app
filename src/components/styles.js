@@ -48,6 +48,10 @@ const styles = StyleSheet.create({
   errorText: {
     color: "#b00020",
   },
+  formTextInput: {
+    width: "80%",
+    margin: "2%",
+  },
 });
 
 export default styles;
