@@ -1,44 +1,34 @@
 import React from "react";
-import { webApi, useSWR, json_fetcher } from "../../util/services";
-import {
-  Headline,
-  List,
-  ActivityIndicator,
-  Portal,
-  FAB,
-} from "react-native-paper";
+import { Portal, FAB } from "react-native-paper";
 import styles from "../styles.js";
 import ExternalView from "../ExternalView";
 import SongDialog from "./SongDialog";
 import PropTypes from "prop-types";
+import SongList from "../SongList";
+import { webApi, json_fetcher, useSWR } from "../../util/services";
 
 export default function ManageMySongs() {
-  const songs = useSWR(webApi + "/songs/", json_fetcher);
   const [dialog, setDialog] = React.useState(null);
+  const songs = useSWR(webApi + "/songs/", json_fetcher);
 
   const hideDialog = () => {
     setDialog(null);
-    //navigation.replace("ManageMySongs");
     songs.mutate();
   };
 
-  const addDialog = (props) => {
+  const addDialog = (song) => {
     setDialog(
       <Portal>
-        <SongDialog hideDialog={hideDialog} {...props} />
+        <SongDialog hideDialog={hideDialog} song={song} />
       </Portal>
     );
   };
 
-  const content = () => {
-    if (!songs.data && songs.isValidating)
-      return (
-        <ActivityIndicator size="large" style={styles.activityIndicator} />
-      );
-
-    if (songs.error) return <Headline>Error: {songs.error.message}</Headline>;
-
-    return mapData(songs.data, addDialog);
+  const propGen = (song) => {
+    return {
+      title: song.name,
+      description: "by " + song.artists,
+    };
   };
 
   return (
@@ -55,24 +45,13 @@ export default function ManageMySongs() {
         />
       </Portal>
       <Portal>{dialog}</Portal>
-      {content()}
+      <SongList
+        songs={songs}
+        onPress={(song) => addDialog(song)}
+        propGen={propGen}
+      />
     </ExternalView>
   );
-}
-
-function mapData(data, addDialog) {
-  return data.map((song) => {
-    return (
-      <List.Item
-        title={song.name}
-        description={"by " + song.artists}
-        key={song.id}
-        onPress={() => {
-          addDialog({ song });
-        }}
-      />
-    );
-  });
 }
 
 ManageMySongs.propTypes = {

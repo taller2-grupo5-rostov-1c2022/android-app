@@ -14,8 +14,11 @@ export async function fetch(url, request) {
 
   if (auth) {
     const idToken = await auth.currentUser.getIdToken(true);
-    const headers = { ...request?.headers, Authorization: `Bearer ${idToken}` };
-    request = request ? { ...request, headers } : { headers };
+    const headers = {
+      ...request?.headers,
+      Authorization: `Bearer ${idToken}`,
+    };
+    request = { ...request, headers, credentials: "include" };
   }
 
   return globalThis.fetch(url, request);
