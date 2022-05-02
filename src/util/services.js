@@ -13,7 +13,7 @@ export async function fetch(url, request) {
   const auth = getAuth();
 
   if (auth) {
-    const idToken = await auth.currentUser.getIdToken();
+    const idToken = await auth.currentUser.getIdToken(true);
     const headers = { ...request?.headers, Authorization: `Bearer ${idToken}` };
     request = request ? { ...request, headers } : { headers };
   }

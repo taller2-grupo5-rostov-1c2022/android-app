@@ -79,7 +79,8 @@
     "globals": {
       "global": true,
       "fetch": false,
-      "console": false
+      "console": false,
+      "toast": true
     }
   }
 }

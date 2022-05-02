@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
   containerCenter: {
     alignItems: "center",
     justifyContent: "center",
+    flex: 1,
   },
   button: {
     height: 40,

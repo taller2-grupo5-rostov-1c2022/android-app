@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Image, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -23,24 +23,6 @@ export default function LoginScreen({ navigation }) {
   const auth = getAuth();
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
-
-  function onAuthStateChanged(user) {
-    if (user) {
-      let greet = "";
-      if (user.displayName) greet = `Welcome back, ${user.displayName}!`;
-      else greet = "Welcome to Spotifiuby!";
-
-      globalThis.toast.show(greet, {
-        duration: 3000,
-      });
-      navigation.replace("Home");
-    }
-  }
-
-  useEffect(() => {
-    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
 
   const signIn = async (method) => {
     setError(null);
