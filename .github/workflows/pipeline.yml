@@ -80,7 +80,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: app-release.apk
+          name: spotifiuby.apk
           path: android/app/build/outputs/apk/release/
       - name: Release
         if: startsWith(github.ref, 'refs/tags/v')
