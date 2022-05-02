@@ -17,7 +17,7 @@ import ExternalView from "../ExternalView.js";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { LoginError } from "./LoginError";
-import { emailRegex, notEmptyRegex } from "../util.js";
+import { emailRegex, notEmptyRegex } from "../../util/regex.js";
 
 export default function RegisterScreen({ navigation }) {
   const auth = getAuth();

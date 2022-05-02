@@ -1,4 +1,4 @@
-import { webApi } from "./services";
+import { webApi, fetch } from "./services";
 const FormData = global.FormData;
 
 async function addFile(body, file) {

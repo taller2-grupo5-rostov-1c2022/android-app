@@ -1,5 +1,5 @@
 import React from "react";
-import { webApi, useSWR, json_fetcher } from "../util/services";
+import { webApi, useSWR, json_fetcher, fetch } from "../util/services";
 import {
   Headline,
   List,
