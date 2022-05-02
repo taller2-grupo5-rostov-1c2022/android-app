@@ -78,7 +78,7 @@ jobs:
           echo "Event: ${{github.event_name}}";
           echo "Ref: ${{github.ref}}";
           echo "Attempt: ${{github.run_attempt}}";
-          cd android && ./gradlew clean assembleRelease &&
+          (cd android && ./gradlew clean assembleRelease) &&
           cd $BUILD_PATH && mv app-release.apk spotifiuby.apk
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
