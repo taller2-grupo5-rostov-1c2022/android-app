@@ -1,5 +1,8 @@
 name: Pipeline
 
+env:
+  BUILD_PATH: android/app/build/outputs/apk/release
+
 on:
   push:
     branches: ["**"]
@@ -76,16 +79,16 @@ jobs:
           echo "Ref: ${{github.ref}}";
           echo "Attempt: ${{github.run_attempt}}";
           cd android && ./gradlew clean assembleRelease &&
-          cd app/build/outputs/apk/release/ && mv app-release.apk spotifiuby.apk
+          cd $BUILD_PATH && mv app-release.apk spotifiuby.apk
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
           name: spotifiuby.apk
-          path: android/app/build/outputs/apk/release/
+          path: $BUILD_PATH
       - name: Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v1
         with:
-          files: android/app/build/outputs/apk/release/spotifiuby.apk
+          files: ${BUILD_PATH}/spotifiuby.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
