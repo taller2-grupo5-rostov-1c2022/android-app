@@ -10,8 +10,8 @@ import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import FilePicker from "./FilePicker";
-import styles from "./styles";
-import { saveRequest, deleteRequest } from "../util/songRequests";
+import styles from "../styles";
+import { saveRequest, deleteRequest } from "../../util/songRequests";
 
 export default function SongDialog({ hideDialog, song }) {
   const { control, setFocus, handleSubmit } = useForm({
@@ -31,10 +31,14 @@ export default function SongDialog({ hideDialog, song }) {
   if (status.loading)
     return <ActivityIndicator size="large" style={styles.activityIndicator} />;
 
-  const sendRequest = async (requestSender) => {
+  const sendRequest = async (requestSender, message) => {
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
       await makeRequest(requestSender);
+      if (message)
+        globalThis.toast.show(message, {
+          duration: 3000,
+        });
       hideDialog();
     } catch (err) {
       setStatus({ loading: false, error: err });
@@ -97,7 +101,7 @@ function SaveButton({ songKey, handleSubmit, sendRequest }) {
   return (
     <Button
       onPress={handleSubmit((data) =>
-        sendRequest(async () => await saveRequest(songKey, data))
+        sendRequest(async () => await saveRequest(songKey, data), "Song saved")
       )}
     >
       Save
@@ -110,7 +114,9 @@ function DeleteButton({ songKey, sendRequest }) {
 
   return (
     <Button
-      onPress={() => sendRequest(async () => await deleteRequest(songKey))}
+      onPress={() =>
+        sendRequest(async () => await deleteRequest(songKey), "Song deleted")
+      }
     >
       Delete
     </Button>

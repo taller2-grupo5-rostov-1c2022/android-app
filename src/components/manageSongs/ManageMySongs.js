@@ -1,5 +1,5 @@
 import React from "react";
-import { webApi, useSWR, json_fetcher } from "../util/services";
+import { webApi, useSWR, json_fetcher } from "../../util/services";
 import {
   Headline,
   List,
@@ -7,8 +7,8 @@ import {
   Portal,
   FAB,
 } from "react-native-paper";
-import styles from "./styles.js";
-import ExternalView from "./ExternalView";
+import styles from "../styles.js";
+import ExternalView from "../ExternalView";
 import SongDialog from "./SongDialog";
 import PropTypes from "prop-types";
 

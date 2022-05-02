@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./login/LoginScreen";
 import RegisterScreen from "./login/RegisterScreen";
 import HomeScreen from "./HomeScreen";
-import ManageMySongs from "./ManageMySongs";
+import ManageMySongs from "./manageSongs/ManageMySongs";
 ("../config/firebase");
 
 const StackNavigator = createNativeStackNavigator();
