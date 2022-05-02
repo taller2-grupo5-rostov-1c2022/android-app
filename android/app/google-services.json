@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "186491690051",
+    "project_id": "rostov-spotifiuby",
+    "storage_bucket": "rostov-spotifiuby.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186491690051:android:78a861f2f0e9557237c8f6",
+        "android_client_info": {
+          "package_name": "ar.uba.fi.rostov.spotifiuby"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186491690051-i9dh8a8phlea0521ibilvp8ha6b8nr03.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT_ro_CWSZ6oTn3cvZ5gX2Zb5WbvYUpYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186491690051-hk2abraqmkudskf2fvqqc7lqnps4u9jt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

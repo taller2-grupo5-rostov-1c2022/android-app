@@ -28,6 +28,21 @@ export default function LoginScreen({ navigation }) {
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
 
+  // Handle user state changes
+  function onAuthStateChanged(user) {
+    if (user) {
+      globalThis.toast.show(`Welcome back, ${user.displayName}`, {
+        duration: 3000,
+      });
+      navigation.replace("Home");
+    }
+  }
+
+  React.useEffect(() => {
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
   const [, response, signInWithGoogle] = Google.useIdTokenAuthRequest({
     expoClientId:
       "186491690051-hk2abraqmkudskf2fvqqc7lqnps4u9jt.apps.googleusercontent.com",
@@ -41,8 +56,7 @@ export default function LoginScreen({ navigation }) {
     setError(null);
     setAuthing(true);
     try {
-      await method();
-      navigation.replace("Home");
+      method();
     } catch (err) {
       setError(err);
       setAuthing(false);
@@ -51,8 +65,6 @@ export default function LoginScreen({ navigation }) {
 
   React.useEffect(() => {
     if (response?.type != "success") return;
-
-    //console.log(response);
 
     signIn(async () => {
       const { id_token: idToken, access_token: accessToken } = response.params;
@@ -105,7 +117,7 @@ export default function LoginScreen({ navigation }) {
       <Button onPress={() => signInWithGoogle()} style={styles.button}>
         Sign in with Google
       </Button>
-      <LoginError error={error} />
+      <LoginError error={error} style={{ textAlign: "center" }} />
       <StatusBar style="auto" />
       <Portal>
         {authing ? (

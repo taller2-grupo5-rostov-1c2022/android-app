@@ -17,10 +17,15 @@ function errorMsg(errorCode) {
   );
 }
 
-export function LoginError({ error }) {
+export function LoginError({ error, style }) {
   var text = error ? errorMsg(error?.code) : "";
+  if (error && !error.code) console.error(error);
 
-  return <Text style={[styles.errorText, { margin: "2%" }]}>{text}</Text>;
+  return (
+    <Text style={[styles.errorText, { margin: "2%" }].concat(style ?? [])}>
+      {text}
+    </Text>
+  );
 }
 
 LoginError.propTypes = {
@@ -28,4 +33,5 @@ LoginError.propTypes = {
     code: PropTypes.string,
     message: PropTypes.string,
   }),
+  style: PropTypes.any,
 };
