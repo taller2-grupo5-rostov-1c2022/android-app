@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -8,12 +8,7 @@ import {
   Portal,
   ActivityIndicator,
 } from "react-native-paper";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithCredential,
-} from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../styles.js";
 import ExternalView from "../ExternalView.js";
@@ -21,36 +16,31 @@ import image from "../../img/logo.png";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { LoginError } from "./LoginError";
-import * as Google from "expo-auth-session/providers/google";
+import { emailRegex } from "../util.js";
+import { GoogleSignIn } from "./GoogleSignIn.js";
 
 export default function LoginScreen({ navigation }) {
   const auth = getAuth();
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
 
-  // Handle user state changes
   function onAuthStateChanged(user) {
     if (user) {
-      globalThis.toast.show(`Welcome back, ${user.displayName}`, {
+      let greet = "";
+      if (user.displayName) greet = `Welcome back, ${user.displayName}!`;
+      else greet = "Welcome to Spotifiuby!";
+
+      globalThis.toast.show(greet, {
         duration: 3000,
       });
       navigation.replace("Home");
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
-
-  const [, response, signInWithGoogle] = Google.useIdTokenAuthRequest({
-    expoClientId:
-      "186491690051-hk2abraqmkudskf2fvqqc7lqnps4u9jt.apps.googleusercontent.com",
-    androidClientId:
-      "186491690051-qvufeofgq51qk39mobagt53m2da2sea2.apps.googleusercontent.com",
-    webClientId:
-      "186491690051-i9dh8a8phlea0521ibilvp8ha6b8nr03.apps.googleusercontent.com",
-  });
 
   const signIn = async (method) => {
     setError(null);
@@ -63,20 +53,14 @@ export default function LoginScreen({ navigation }) {
     }
   };
 
-  React.useEffect(() => {
-    if (response?.type != "success") return;
-
-    signIn(async () => {
-      const { id_token: idToken, access_token: accessToken } = response.params;
-      const credential = GoogleAuthProvider.credential(idToken, accessToken);
-      await signInWithCredential(auth, credential);
-    });
-  }, [response]);
-
   const signInWithEmail = async (credentials) => {
-    return signIn(() =>
-      signInWithEmailAndPassword(auth, credentials.email, credentials.password)
-    );
+    return signIn(async () => {
+      await signInWithEmailAndPassword(
+        auth,
+        credentials.email,
+        credentials.password
+      );
+    });
   };
 
   const { handleSubmit, control, setFocus } = useForm({
@@ -114,9 +98,7 @@ export default function LoginScreen({ navigation }) {
           Log in
         </Button>
       </View>
-      <Button onPress={() => signInWithGoogle()} style={styles.button}>
-        Sign in with Google
-      </Button>
+      <GoogleSignIn onSignIn={signIn} />
       <LoginError error={error} style={{ textAlign: "center" }} />
       <StatusBar style="auto" />
       <Portal>
@@ -137,11 +119,12 @@ function LoginForm({ control, setFocus }) {
         {
           type: "email",
           name: "email",
-          rules: { required: { value: true, message: "Email required" } },
-          pattern: {
-            value:
-              /[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})/,
-            message: "Email is invalid",
+          rules: {
+            required: { value: true, message: "Email required" },
+            pattern: {
+              value: emailRegex,
+              message: "Email is invalid",
+            },
           },
           textInputProps: {
             mode: "flat",

@@ -17,6 +17,7 @@ import ExternalView from "../ExternalView.js";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { LoginError } from "./LoginError";
+import { emailRegex, notEmptyRegex } from "../util.js";
 
 export default function RegisterScreen({ navigation }) {
   const auth = getAuth();
@@ -46,7 +47,7 @@ export default function RegisterScreen({ navigation }) {
     defaultValues: {
       email: "",
       password: "",
-      displayName: "  ",
+      displayName: "",
     },
   });
 
@@ -57,7 +58,7 @@ export default function RegisterScreen({ navigation }) {
       )}
       pointerEvents={authing ? "none" : "auto"}
     >
-      <Headline>Join Spotifiuby</Headline>
+      <Headline style={{ margin: "2%" }}>Join Spotifiuby</Headline>
       <RegisterForm control={control} setFocus={setFocus} />
       <Button
         mode="contained"
@@ -88,6 +89,7 @@ function RegisterForm({ control, setFocus }) {
           name: "displayName",
           rules: {
             required: { value: true, message: "Display name required" },
+            pattern: { value: notEmptyRegex, message: "Display name required" },
           },
           textInputProps: {
             mode: "flat",
@@ -98,11 +100,12 @@ function RegisterForm({ control, setFocus }) {
         {
           type: "email",
           name: "email",
-          rules: { required: { value: true, message: "Email required" } },
-          pattern: {
-            value:
-              /[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})/,
-            message: "Email is invalid",
+          rules: {
+            required: { value: true, message: "Email required" },
+            pattern: {
+              value: emailRegex,
+              message: "Email is invalid",
+            },
           },
           textInputProps: {
             mode: "flat",

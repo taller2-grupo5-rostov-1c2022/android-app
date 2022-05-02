@@ -27,7 +27,7 @@ export default function SongsScreen() {
 }
 
 function content(songs, setName, setArtist, setSongUrl) {
-  if (!songs.data && songs.isLoading)
+  if (!songs.data && songs.isValidating)
     return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (songs.error) return <ErrorMessage error={songs.error} />;
