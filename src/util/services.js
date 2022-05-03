@@ -10,16 +10,13 @@ export const text_fetcher = async (url) =>
   fetch(url).then(async (res) => res.text());
 
 export async function fetch(url, request) {
-  const auth = getAuth();
+  const { headers, ...rest } = request ?? {};
 
-  if (auth) {
-    const idToken = await auth.currentUser.getIdToken(true);
-    const headers = {
-      ...request?.headers,
-      Authorization: `Bearer ${idToken}`,
-    };
-    request = { ...request, headers, credentials: "include" };
-  }
-
-  return globalThis.fetch(url, request);
+  return globalThis.fetch(url, {
+    headers: {
+      ...headers,
+      authorization: `Bearer ${await getAuth()?.currentUser?.getIdToken()}`,
+    },
+    ...rest,
+  });
 }

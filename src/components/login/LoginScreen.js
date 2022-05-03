@@ -25,7 +25,6 @@ export default function LoginScreen({ navigation }) {
   const [error, setError] = useState(null);
 
   const signIn = async (method) => {
-    console.log("HERE!");
     setError(null);
     setAuthing(true);
     try {
