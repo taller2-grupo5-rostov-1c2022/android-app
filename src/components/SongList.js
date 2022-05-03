@@ -8,16 +8,12 @@ import PropTypes from "prop-types";
 // onPress es una funcion que recibe songs (objeto con key, name, artists) y se ejecuta cuando tocas una cancion
 // propGen es una funcion que recibe songs (objeto con key, name, artists) y devuelva las props del item de la lista
 export default function SongList({ songs, onPress, propGen, ...viewProps }) {
-  return <View {...viewProps}>{content(songs, onPress, propGen)}</View>;
-}
-
-function content(songs, onPress, propGen) {
   if (!songs.data && songs.isValidating)
     return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (songs.error) return <ErrorMessage error={songs.error} />;
 
-  return mapData(songs.data, onPress, propGen);
+  return <View {...viewProps}>{mapData(songs.data, onPress, propGen)}</View>;
 }
 
 function mapData(data, onPress, propGen) {
