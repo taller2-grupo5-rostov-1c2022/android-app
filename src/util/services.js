@@ -9,13 +9,21 @@ export const json_fetcher = async (url) =>
 export const text_fetcher = async (url) =>
   fetch(url).then(async (res) => res.text());
 
+async function getAuthHeaders() {
+  const auth = await getAuth();
+  if (!auth?.currentUser) return null;
+  return {
+    authorization: `Bearer ${await getAuth()?.currentUser?.getIdToken()}`,
+  };
+}
+
 export async function fetch(url, request) {
   const { headers, ...rest } = request ?? {};
 
   return globalThis.fetch(url, {
     headers: {
       ...headers,
-      authorization: `Bearer ${await getAuth()?.currentUser?.getIdToken()}`,
+      ...(await getAuthHeaders()),
     },
     ...rest,
   });
