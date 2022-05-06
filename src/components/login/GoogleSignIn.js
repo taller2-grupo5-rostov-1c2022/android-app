@@ -24,8 +24,8 @@ export function GoogleSignIn({ onSignIn }) {
     if (response?.type != "success") return;
 
     onSignIn(async () => {
-      const { id_token: idToken, access_token: accessToken } = response.params;
-      const credential = GoogleAuthProvider.credential(idToken, accessToken);
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
       await signInWithCredential(auth, credential);
     });
   }, [response]);
