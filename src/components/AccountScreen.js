@@ -5,12 +5,15 @@ import styles from "./styles.js";
 import { getAuth, signOut } from "firebase/auth";
 import ExternalView from "./ExternalView.js";
 import { useNavigation } from "@react-navigation/native";
+import appContext from "./appContext";
 
 export default function AccountScreen() {
   const auth = getAuth();
   const navigation = useNavigation();
+  const context = React.useContext(appContext);
 
   const onLogOut = () => {
+    context.setStop(true);
     signOut(auth)
       .then(() => {
         navigation.replace("Login");

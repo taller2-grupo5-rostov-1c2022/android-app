@@ -11,6 +11,7 @@ var audio = {
 
 const play = async (uri) => {
   if (uri && audio.uri !== uri) {
+    console.log("play enserio");
     await audio.sound?.stopAsync();
     await audio.sound?.unloadAsync();
     const { sound } = await Audio.Sound.createAsync({ uri });
@@ -24,6 +25,15 @@ const pause = () => {
   audio?.sound?.pauseAsync();
 };
 
+const stop = async () => {
+  if (audio.sound != null) {
+    await audio.sound?.stopAsync();
+    await audio.sound?.unloadAsync();
+    audio.uri = null;
+    audio.sound = null;
+  }
+}
+
 const Player = () => {
   const [paused, setPaused] = React.useState(false);
 
@@ -32,7 +42,7 @@ const Player = () => {
 
   const onPress = () => {
     if (paused) {
-      play(context.songUrl);
+      play(context.song.url);
       setPaused(false);
     } else {
       pause();
@@ -41,14 +51,22 @@ const Player = () => {
   };
 
   React.useEffect(() => {
+    console.log("effect");
     if (!paused) {
-        play(context.songUrl);
+        play(context.song.url);
     }
-  }, [context.songUrl]);
+  }, [context.song]);
+
+  React.useEffect(() => {
+    if (context.stop) {
+      stop();
+      context.setStop(false);
+    }
+  }, [context.stop]);
 
   return (
     <Appbar style={styles.bottom}>
-      <Appbar.Content title={context.name} subtitle={context.artist} />
+      <Appbar.Content title={context.song.name} subtitle={context.song.artists} />
       <Appbar.Action
         icon="heart-outline"
         onPress={() => console.log("Pressed heart")}
@@ -56,7 +74,7 @@ const Player = () => {
       <Appbar.Action icon={playIcon} onPress={onPress} />
       <Appbar.Action
         icon="skip-next"
-        onPress={() => console.log("Pressed skip")}
+        onPress={() => context.setStop(true)}
       />
     </Appbar>
   );

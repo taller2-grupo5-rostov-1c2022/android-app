@@ -31,13 +31,12 @@ export default function HomeScreen() {
     account: AccountScreen,
   });
 
-  const [name, setName] = React.useState("");
-  const [artist, setArtist] = React.useState("");
-  const [songUrl, setSongUrl] = React.useState("");
+  const [song, setSong] = React.useState("");
+  const [stop, setStop] = React.useState(false);
 
   return (
     <appContext.Provider
-      value={{ name, artist, songUrl, setName, setArtist, setSongUrl }}
+      value={{ song, stop, setSong, setStop }}
     >
       <BottomNavigation
         navigationState={{ index, routes }}
