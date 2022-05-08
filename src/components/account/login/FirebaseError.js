@@ -1,5 +1,5 @@
 import { Text } from "react-native-paper";
-import styles from "../styles.js";
+import styles from "../../styles.js";
 import PropTypes from "prop-types";
 
 const firebaseErrors = {
@@ -10,6 +10,8 @@ const firebaseErrors = {
   "auth/weak-password": "The password is too weak",
   "auth/invalid-email": "The email is invalid",
   "auth/popup-closed-by-user": "",
+  "auth/requires-recent-login":
+    "Session expired. Please log in again\nto change your email or password",
 };
 
 function errorMsg(errorCode) {
@@ -19,7 +21,7 @@ function errorMsg(errorCode) {
   );
 }
 
-export function LoginError({ error, style }) {
+export function FirebaseError({ error, style }) {
   var text = error ? errorMsg(error?.code) : "";
   if (error && !error.code) console.error(error);
 
@@ -30,7 +32,7 @@ export function LoginError({ error, style }) {
   );
 }
 
-LoginError.propTypes = {
+FirebaseError.propTypes = {
   error: PropTypes.shape({
     code: PropTypes.string,
     message: PropTypes.string,

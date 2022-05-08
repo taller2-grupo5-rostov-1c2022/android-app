@@ -10,13 +10,13 @@ import {
 } from "react-native-paper";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import PropTypes from "prop-types";
-import styles from "../styles.js";
-import ExternalView from "../ExternalView.js";
-import image from "../../img/logo.png";
+import styles from "../../styles.js";
+import ExternalView from "../../ExternalView.js";
+import image from "../../../img/logo.png";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
-import { LoginError } from "./LoginError";
-import { emailRegex } from "../../util/regex.js";
+import { FirebaseError } from "./FirebaseError";
+import { emailRegex } from "../../../util/regex.js";
 import { GoogleSignIn } from "./GoogleSignIn.js";
 
 export default function LoginScreen({ navigation }) {
@@ -81,7 +81,7 @@ export default function LoginScreen({ navigation }) {
         </Button>
       </View>
       <GoogleSignIn onSignIn={signIn} />
-      <LoginError error={error} style={{ textAlign: "center" }} />
+      <FirebaseError error={error} style={{ textAlign: "center" }} />
       <StatusBar style="auto" />
       <Portal>
         {authing ? (

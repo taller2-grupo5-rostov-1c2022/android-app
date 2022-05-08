@@ -9,7 +9,7 @@ import { ScrollView, View } from "react-native";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
-import FilePicker from "./FilePicker";
+import FilePicker from "../FilePicker";
 import styles from "../styles";
 import { saveRequest, deleteRequest } from "../../util/songRequests";
 

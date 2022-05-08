@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 import { useEffect } from "react";
 import PropTypes from "prop-types";
-import styles from "../styles.js";
+import styles from "../../styles.js";
 
 export function GoogleSignIn({ onSignIn }) {
   const auth = getAuth();

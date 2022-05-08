@@ -4,14 +4,15 @@ import {
   createNavigationContainerRef,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LoginScreen from "./login/LoginScreen";
-import RegisterScreen from "./login/RegisterScreen";
-import LoadingScreen from "./login/LoadingScreen";
+import LoginScreen from "./account/login/LoginScreen";
+import RegisterScreen from "./account/login/RegisterScreen";
+import LoadingScreen from "./account/login/LoadingScreen";
 import HomeScreen from "./HomeScreen";
 import ManageMySongs from "./manageSongs/ManageMySongs";
 ("../config/firebase");
 import { getAuth } from "firebase/auth";
 import { StackActions } from "@react-navigation/native";
+import MyProfileScreen from "./account/MyProfileScreen";
 
 const StackNavigator = createNativeStackNavigator();
 const navigation = createNavigationContainerRef();
@@ -63,6 +64,11 @@ export default function Stack() {
           name="RegisterScreen"
           component={RegisterScreen}
           options={{ title: "Create your account", headerShown: true }}
+        />
+        <StackNavigator.Screen
+          name="MyProfileScreen"
+          component={MyProfileScreen}
+          options={{ title: "My Profile", headerShown: true }}
         />
       </StackNavigator.Navigator>
     </NavigationContainer>

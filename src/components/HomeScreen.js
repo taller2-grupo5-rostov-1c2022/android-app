@@ -1,7 +1,7 @@
 import React from "react";
 import { BottomNavigation, Text } from "react-native-paper";
 import SongsScreen from "./SongsScreen";
-import AccountScreen from "./AccountScreen.js";
+import AccountScreen from "./account/AccountScreen.js";
 import PropTypes from "prop-types";
 import styles from "./styles.js";
 import ExternalView from "./ExternalView";

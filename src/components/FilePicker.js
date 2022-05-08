@@ -4,7 +4,7 @@ import { View } from "react-native";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
 import * as DocumentPicker from "expo-document-picker";
-import styles from "../styles";
+import styles from "./styles";
 
 // File picker para usar con los forms
 export default function FilePicker(props) {
@@ -14,7 +14,7 @@ export default function FilePicker(props) {
     shouldUnregister,
     defaultValue,
     control,
-    customProps: { label, fileType },
+    customProps: { label, fileType, onPick },
   } = props;
 
   const { field } = useController({
@@ -46,7 +46,9 @@ export default function FilePicker(props) {
     }
 
     setErrorMsg(null);
-    field.onChange({ name, uri, type: mimeType });
+    let file = { name, uri, type: mimeType };
+    field.onChange(file);
+    onPick(file);
     setCaption(name);
   };
 

@@ -12,12 +12,12 @@ import {
   updateProfile,
 } from "firebase/auth";
 import PropTypes from "prop-types";
-import styles from "../styles.js";
-import ExternalView from "../ExternalView.js";
+import styles from "../../styles.js";
+import ExternalView from "../../ExternalView.js";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
-import { LoginError } from "./LoginError";
-import { emailRegex, notEmptyRegex } from "../../util/regex.js";
+import { FirebaseError } from "./FirebaseError";
+import { emailRegex, notEmptyRegex } from "../../../util/regex.js";
 
 export default function RegisterScreen({ navigation }) {
   const auth = getAuth();
@@ -67,7 +67,7 @@ export default function RegisterScreen({ navigation }) {
       >
         Register
       </Button>
-      <LoginError error={error} />
+      <FirebaseError error={error} />
       <StatusBar style="auto" />
       <Portal>
         {authing ? (

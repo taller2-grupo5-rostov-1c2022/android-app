@@ -1,5 +1,5 @@
-import image from "../../img/logo.png";
-import styles from "../styles.js";
+import image from "../../../img/logo.png";
+import styles from "../../styles.js";
 import { ActivityIndicator } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { View, Image } from "react-native";
