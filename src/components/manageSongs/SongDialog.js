@@ -174,6 +174,21 @@ function FormDefinition({ creating, ...rest }) {
           },
         },
         {
+          type: "text",
+          name: "genre",
+          rules: {
+            required: {
+              value: creating,
+              message: "Genre is required",
+            },
+          },
+          textInputProps: {
+            mode: "flat",
+            label: "Song genre",
+            style: styles.textInput,
+          },
+        },
+        {
           name: "file",
           type: "custom",
           JSX: FilePicker,

@@ -25,8 +25,6 @@ export async function saveRequest(songKey, formData) {
   Object.entries(rest).forEach(([key, value]) => body.append(key, value));
   await addFile(body, file);
 
-  if (method === "POST") body.append("creator", "SJRPTQKlGqfEhHUnkGfpuA4Cses1");
-
   return fetch(getUrl(songKey), {
     method,
     headers: {

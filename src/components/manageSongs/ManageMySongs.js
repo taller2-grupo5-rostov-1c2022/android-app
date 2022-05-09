@@ -27,7 +27,7 @@ export default function ManageMySongs() {
   const propGen = (song) => {
     return {
       title: song.name,
-      description: "by " + song.artists,
+      description: "by " + song.artists?.map((artist) => artist.artist_name),
     };
   };
 
