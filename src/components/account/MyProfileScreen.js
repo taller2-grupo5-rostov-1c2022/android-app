@@ -6,22 +6,19 @@ import {
   updateEmail,
   updatePassword,
 } from "firebase/auth";
-import ExternalView from "../ExternalView.js";
+import ExternalView from "../ExternalView";
 import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
-import { View } from "react-native";
-import { emailRegex } from "../../util/regex.js";
-import FilePicker from "../FilePicker.js";
+import { emailRegex } from "../../util/regex";
+import UserImagePicker from "./UserImagePicker";
 import { Button, Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError";
 import PropTypes from "prop-types";
-import { UserImage } from "./UserImage.js";
 
 export default function MyProfileScreen({ navigation }) {
   const user = getAuth()?.currentUser;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [imageUrl, setImageUrl] = useState(user?.photoURL);
   const { control, setFocus, handleSubmit } = useForm({
     defaultValues: {
       image: null,
@@ -64,13 +61,10 @@ export default function MyProfileScreen({ navigation }) {
       )}
       pointerEvents={loading ? "none" : "auto"}
     >
-      <View style={{ marginBottom: "10%" }}>
-        <UserImage url={imageUrl} size={200} />
-      </View>
       <FormDefinition
         control={control}
         setFocus={setFocus}
-        setImageUrl={setImageUrl}
+        initialImage={user?.photoURL}
       ></FormDefinition>
       <Button onPress={handleSubmit(onSave)}>Save</Button>
       <Portal>
@@ -83,12 +77,20 @@ export default function MyProfileScreen({ navigation }) {
   );
 }
 
-function FormDefinition({ setImageUrl, ...rest }) {
+function FormDefinition({ initialImage, ...rest }) {
   const user = getAuth()?.currentUser;
   return (
     <FormBuilder
       {...rest}
       formConfigArray={[
+        {
+          name: "image",
+          type: "custom",
+          JSX: UserImagePicker,
+          customProps: {
+            initialImage: initialImage,
+          },
+        },
         {
           type: "text",
           name: "displayName",
@@ -124,16 +126,6 @@ function FormDefinition({ setImageUrl, ...rest }) {
             style: styles.formWidth,
           },
         },
-        {
-          name: "image",
-          type: "custom",
-          JSX: FilePicker,
-          customProps: {
-            label: "Image",
-            fileType: "image/*",
-            onPick: (file) => setImageUrl(file.uri),
-          },
-        },
       ]}
     />
   );
@@ -146,5 +138,5 @@ MyProfileScreen.propTypes = {
 };
 
 FormDefinition.propTypes = {
-  setImageUrl: PropTypes.func.isRequired,
+  initialImage: PropTypes.string,
 };

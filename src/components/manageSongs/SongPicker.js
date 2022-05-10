@@ -5,8 +5,7 @@ import styles from "../styles";
 import FilePicker from "../FilePicker";
 
 export function SongPicker(props) {
-  const [fileName, setFileName] = useState(null);
-  const [error, setError] = useState(null);
+  const [status, setStatus] = useState(null);
 
   return (
     <View>
@@ -22,14 +21,13 @@ export function SongPicker(props) {
           {...props}
           customProps={{
             fileType: "audio/*",
-            setFileName,
-            setError,
+            setStatus,
             button: <Button>Pick file</Button>,
           }}
         />
-        <Caption>{fileName ?? "No file selected"}</Caption>
+        <Caption>{status?.fileName ?? "No file selected"}</Caption>
       </View>
-      <Text style={styles.errorText}>{error}</Text>
+      <Text style={styles.errorText}>{status?.error}</Text>
     </View>
   );
 }

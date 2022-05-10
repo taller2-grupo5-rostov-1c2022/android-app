@@ -11,7 +11,6 @@ var audio = {
 
 const play = async (uri) => {
   if (uri && audio.uri !== uri) {
-    console.log("play enserio");
     await audio.sound?.stopAsync();
     await audio.sound?.unloadAsync();
     const { sound } = await Audio.Sound.createAsync({ uri });

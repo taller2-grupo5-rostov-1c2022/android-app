@@ -8,30 +8,30 @@ const INVALID_FILE_MSG = "Invalid file type";
 // File picker para usar con los forms. Props:
 // * fileType: tipo de archivo (mime) aceptado
 // * button: botón a mostrar para activar el selector de archivos
-// * setFileName (opcional): función que se llama cuando se selecciona un archivo con su nombre
-// * setError (opcional): función que se llama cuando hay un error con su descripción
+// * setStatus: función para actualizar el estado del componente
+//   lo actualiza con un objeto con propiedades error, file y fileName
+//   (error y los otros 2 son excluyentes)
 export default function FilePicker(props) {
   const {
     name,
     rules,
-    shouldUnregister,
-    defaultValue,
     control,
-    customProps: { fileType, setFileName, setError, button },
+    customProps: { fileType, setStatus, button },
   } = props;
 
   const { field } = useController({
     name,
     rules,
-    shouldUnregister,
-    defaultValue,
     control,
   });
 
+  const err = control.getFieldState(name).error?.message;
   useEffect(() => {
-    const err = control.getFieldState(name).error?.message;
-    setError((prev) => (prev == INVALID_FILE_MSG ? prev : err));
-  });
+    setStatus &&
+      setStatus((prev) =>
+        prev?.error == INVALID_FILE_MSG ? prev : { error: err }
+      );
+  }, [err]);
 
   const getFile = async () => {
     let { type, name, uri, mimeType } = await DocumentPicker.getDocumentAsync({
@@ -42,15 +42,14 @@ export default function FilePicker(props) {
     if (type != "success") return;
 
     if (!mimeType || !mimeType.match(fileType)) {
-      setError && setError(INVALID_FILE_MSG);
-      setFileName && setFileName(null);
+      setStatus && setStatus({ error: INVALID_FILE_MSG });
       field.onChange(null);
       return;
     }
 
-    field.onChange({ name, uri, type: mimeType });
-    setError && setError(null);
-    setFileName && setFileName(name);
+    const file = { name, uri, type: mimeType };
+    field.onChange(file);
+    setStatus && setStatus({ file: file, fileName: name });
   };
 
   return React.cloneElement(button, { onPress: getFile });
@@ -64,9 +63,7 @@ FilePicker.propTypes = {
   control: PropTypes.any,
   customProps: PropTypes.shape({
     fileType: PropTypes.string.isRequired,
-    setFileName: PropTypes.func,
-    setError: PropTypes.func,
+    setStatus: PropTypes.func,
     button: PropTypes.any.isRequired,
-    buttonProps: PropTypes.any,
   }).isRequired,
 };
