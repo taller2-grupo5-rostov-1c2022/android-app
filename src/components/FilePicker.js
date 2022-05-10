@@ -1,54 +1,23 @@
-import React, { useState } from "react";
-import { Button, Caption, Title, Text } from "react-native-paper";
-import { View } from "react-native";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
 import * as DocumentPicker from "expo-document-picker";
-import styles from "./styles";
 
-export function SongPicker(props) {
-  const [fileName, setFileName] = useState(null);
-  const [error, setError] = useState(null);
+const INVALID_FILE_MSG = "Invalid file type";
 
-  return (
-    <View>
-      <Title>Songs</Title>
-      <View
-        style={{
-          flexDirection: "row",
-          alignContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <FilePicker
-          {...props}
-          customProps={{
-            fileType: "audio/*",
-            setFileName,
-            setError,
-            buttonComponent: <Button>Pick file</Button>,
-          }}
-        />
-        <Caption>{fileName ?? "No file selected"}</Caption>
-      </View>
-      <Text style={styles.errorText}>{error}</Text>
-    </View>
-  );
-}
-
-// File picker para usar con los forms
-export function FilePicker(props) {
+// File picker para usar con los forms. Props:
+// * fileType: tipo de archivo (mime) aceptado
+// * button: botón a mostrar para activar el selector de archivos
+// * setFileName (opcional): función que se llama cuando se selecciona un archivo con su nombre
+// * setError (opcional): función que se llama cuando hay un error con su descripción
+export default function FilePicker(props) {
   const {
     name,
     rules,
     shouldUnregister,
     defaultValue,
     control,
-<<<<<<< Updated upstream:src/components/FilePicker.js
-    customProps: { label, fileType, onPick },
-=======
-    customProps: { fileType, setFileName, setError, buttonComponent },
->>>>>>> Stashed changes:src/components/manageSongs/FilePicker.js
+    customProps: { fileType, setFileName, setError, button },
   } = props;
 
   const { field } = useController({
@@ -59,7 +28,10 @@ export function FilePicker(props) {
     control,
   });
 
-  const err = control.getFieldState(name).error?.message;
+  useEffect(() => {
+    const err = control.getFieldState(name).error?.message;
+    setError((prev) => (prev == INVALID_FILE_MSG ? prev : err));
+  });
 
   const getFile = async () => {
     let { type, name, uri, mimeType } = await DocumentPicker.getDocumentAsync({
@@ -70,28 +42,18 @@ export function FilePicker(props) {
     if (type != "success") return;
 
     if (!mimeType || !mimeType.match(fileType)) {
-      setError("Invalid file type");
-      setFileName(null);
+      setError && setError(INVALID_FILE_MSG);
+      setFileName && setFileName(null);
       field.onChange(null);
       return;
     }
 
-<<<<<<< Updated upstream:src/components/FilePicker.js
-    setErrorMsg(null);
-    let file = { name, uri, type: mimeType };
-    field.onChange(file);
-    onPick(file);
-    setCaption(name);
-=======
-    setError(null);
     field.onChange({ name, uri, type: mimeType });
-    setFileName(name);
->>>>>>> Stashed changes:src/components/manageSongs/FilePicker.js
+    setError && setError(null);
+    setFileName && setFileName(name);
   };
 
-  setError((prev) => prev ?? err);
-
-  return <buttonComponent onPress={getFile} />;
+  return React.cloneElement(button, { onPress: getFile });
 }
 
 FilePicker.propTypes = {
@@ -100,5 +62,11 @@ FilePicker.propTypes = {
   shouldUnregister: PropTypes.any,
   defaultValue: PropTypes.any,
   control: PropTypes.any,
-  customProps: PropTypes.any,
+  customProps: PropTypes.shape({
+    fileType: PropTypes.string.isRequired,
+    setFileName: PropTypes.func,
+    setError: PropTypes.func,
+    button: PropTypes.any.isRequired,
+    buttonProps: PropTypes.any,
+  }).isRequired,
 };
