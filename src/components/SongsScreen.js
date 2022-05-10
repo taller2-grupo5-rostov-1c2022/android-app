@@ -23,7 +23,8 @@ export default function SongsScreen() {
   const propGen = (song) => {
     return {
       title: song.name,
-      description: "by " + song.artists?.map((artist) => artist.artist_name),
+      description:
+        "by " + song.artists?.map((artist) => artist.artist_name).join(", "),
     };
   };
 

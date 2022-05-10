@@ -15,7 +15,7 @@ export default function UserImagePicker({ customProps, ...rest }) {
   if (initialImage || status?.file)
     avatar = <Avatar.Image size={200} source={status?.file ?? initialImage} />;
   else avatar = <Avatar.Icon size={200} icon="account" />;
-  console.log(avatar);
+
   return (
     <View>
       <FilePicker

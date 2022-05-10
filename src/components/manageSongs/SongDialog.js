@@ -13,7 +13,8 @@ export default function SongDialog({ hideDialog, song }) {
   const { control, setFocus, handleSubmit } = useForm({
     defaultValues: {
       name: song?.name ?? "",
-      artists: song?.artists ?? "",
+      artists:
+        song?.artists?.map((artist) => artist.artist_name).join(", ") ?? "",
       description: song?.description ?? "",
       genre: song?.genre ?? "",
       file: null,

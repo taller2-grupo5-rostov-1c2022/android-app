@@ -47,12 +47,19 @@ export default function FilePicker(props) {
       return;
     }
 
-    const file = { name, uri, type: mimeType };
+    const file = await buildFile({ name, uri, type: mimeType });
     field.onChange(file);
     setStatus && setStatus({ file: file, fileName: name });
   };
 
   return React.cloneElement(button, { onPress: getFile });
+}
+
+async function buildFile(fileData) {
+  if (!fileData || fileData.uri.startsWith("file:/")) return fileData;
+
+  let req = await fetch(fileData.uri);
+  return await req.blob();
 }
 
 FilePicker.propTypes = {
