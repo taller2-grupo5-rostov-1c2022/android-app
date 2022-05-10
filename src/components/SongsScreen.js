@@ -12,19 +12,18 @@ export default function SongsScreen() {
   const context = React.useContext(appContext);
 
   const onPress = (song) => {
-    context.setName(song.name);
-    context.setArtist(song.artists);
     fetch(webApi + "/songs/" + song.id)
       .then((res) => res.json())
       .then((res) => {
-        context.setSongUrl(res.file);
+        song.url = res.file;
+        context.setSong(song);
       });
   };
 
   const propGen = (song) => {
     return {
       title: song.name,
-      description: "by " + song.artists,
+      description: "by " + song.artists?.map((artist) => artist.artist_name),
     };
   };
 
