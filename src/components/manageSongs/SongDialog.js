@@ -9,7 +9,11 @@ import { ScrollView, View } from "react-native";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
+<<<<<<< Updated upstream
 import FilePicker from "../FilePicker";
+=======
+import { SongPicker } from "./FilePicker";
+>>>>>>> Stashed changes
 import styles from "../styles";
 import { saveRequest, deleteRequest } from "../../util/songRequests";
 
@@ -176,11 +180,7 @@ function FormDefinition({ creating, ...rest }) {
         {
           name: "file",
           type: "custom",
-          JSX: FilePicker,
-          customProps: {
-            label: "Songs file",
-            fileType: "audio/*",
-          },
+          JSX: SongPicker,
           rules: {
             required: {
               value: creating,
