@@ -32,7 +32,7 @@ const stop = async () => {
     audio.uri = null;
     audio.sound = null;
   }
-}
+};
 
 const Player = () => {
   const [paused, setPaused] = React.useState(false);
@@ -51,9 +51,8 @@ const Player = () => {
   };
 
   React.useEffect(() => {
-    console.log("effect");
     if (!paused) {
-        play(context.song.url);
+      play(context.song.url);
     }
   }, [context.song]);
 
@@ -66,16 +65,16 @@ const Player = () => {
 
   return (
     <Appbar style={styles.bottom}>
-      <Appbar.Content title={context.song.name} subtitle={context.song.artists} />
+      <Appbar.Content
+        title={context.song.name}
+        subtitle={context.song.artists}
+      />
       <Appbar.Action
         icon="heart-outline"
         onPress={() => console.log("Pressed heart")}
       />
       <Appbar.Action icon={playIcon} onPress={onPress} />
-      <Appbar.Action
-        icon="skip-next"
-        onPress={() => context.setStop(true)}
-      />
+      <Appbar.Action icon="skip-next" onPress={() => context.setStop(true)} />
     </Appbar>
   );
 };
