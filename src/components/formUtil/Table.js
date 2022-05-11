@@ -22,17 +22,15 @@ export default function Table(props) {
   const err = control.getFieldState(name).error?.message;
 
   const [values, setValues] = useState(field.value ?? [""]);
-  const onAdd = () =>
-    setValues((prev) => {
-      if (field.value) field.onChange(null);
-      return prev.concat([""]);
-    });
+  const onAdd = () => setValues((prev) => prev.concat([""]));
+
   const updateValues = (index, text) =>
     setValues((prev) => {
       const newValues = [...prev];
       newValues[index] = text;
-      if (newValues.some((v) => v === "")) field.onChange(null);
-      else field.onChange(newValues);
+      const withData = newValues.filter((v) => v !== "");
+      if (withData.length > 0) field.onChange(withData);
+      else field.onChange(null);
       return newValues;
     });
 
@@ -42,6 +40,19 @@ export default function Table(props) {
       newValues.splice(index, 1);
       return newValues;
     });
+
+  const getButton = (index) => {
+    if (index != values.length - 1)
+      return <TextInput.Icon name="delete" onPress={() => onDelete(index)} />;
+
+    if (values[index] === "") return null;
+
+    return <TextInput.Icon name="plus" onPress={onAdd} />;
+  };
+
+  const onBlur = (index) => {
+    if (values[index] === "" && index != values.length - 1) onDelete(index);
+  };
 
   const getInputs = () => {
     let inputs = [];
@@ -57,15 +68,10 @@ export default function Table(props) {
             {...(values[i] != "" ? {} : { ref: field.ref })}
             error={(field.value || values[i] == "") && err}
             onChangeText={(text) => updateValues(i, text)}
+            onBlur={() => onBlur(i)}
             value={values[i]}
             {...props}
-            right={
-              i == values.length - 1 ? (
-                <TextInput.Icon name="plus" onPress={onAdd} />
-              ) : (
-                <TextInput.Icon name="delete" onPress={() => onDelete(i)} />
-              )
-            }
+            right={getButton(i)}
           />
         </Fragment>
       );
