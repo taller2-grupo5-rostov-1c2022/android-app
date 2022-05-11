@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Caption, Title, Text } from "react-native-paper";
 import { View } from "react-native";
 import styles from "../styles";
-import FilePicker from "../FilePicker";
+import FilePicker from "../formUtil/FilePicker";
 
 export function SongPicker(props) {
   const [status, setStatus] = useState(null);

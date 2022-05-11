@@ -8,13 +8,13 @@ import { SongPicker } from "./SongPicker";
 import styles from "../styles";
 import { saveRequest, deleteRequest } from "../../util/songRequests";
 import { ErrorDialog } from "../ErrorDialog";
+import Table from "../formUtil/Table";
 
 export default function SongDialog({ hideDialog, song }) {
-  const { control, setFocus, handleSubmit } = useForm({
+  const { handleSubmit, ...rest } = useForm({
     defaultValues: {
       name: song?.name ?? "",
-      artists:
-        song?.artists?.map((artist) => artist.artist_name).join(", ") ?? "",
+      artists: song?.artists?.map((artist) => artist.artist_name) ?? null,
       description: song?.description ?? "",
       genre: song?.genre ?? "",
       file: null,
@@ -52,15 +52,11 @@ export default function SongDialog({ hideDialog, song }) {
   return (
     <Dialog visible="true" onDismiss={hideDialog}>
       <Dialog.Title>{song?.id ? "Edit" : "Add"} Song</Dialog.Title>
-      <Dialog.Content>
-        <ScrollView>
-          <FormDefinition
-            control={control}
-            setFocus={setFocus}
-            creating={!song?.id}
-          ></FormDefinition>
+      <Dialog.ScrollArea>
+        <ScrollView style={{ flex: 1 }}>
+          <FormDefinition {...rest} creating={!song?.id}></FormDefinition>
         </ScrollView>
-      </Dialog.Content>
+      </Dialog.ScrollArea>
       <Dialog.Actions>
         <View style={styles.row}>
           <Button onPress={hideDialog}>Cancel</Button>
@@ -111,18 +107,22 @@ function FormDefinition({ creating, ...rest }) {
           },
         },
         {
-          type: "text",
+          type: "custom",
           name: "artists",
+          JSX: Table,
           rules: {
             required: {
               value: creating,
               message: "Authors are required",
             },
           },
-          textInputProps: {
-            mode: "flat",
-            label: "Song authors",
-            style: styles.textInput,
+          customProps: {
+            textInputProps: {
+              mode: "flat",
+              label: "Author",
+              style: styles.textInput,
+            },
+            addIndex: true,
           },
         },
         {

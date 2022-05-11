@@ -6,12 +6,13 @@ function getUrl(songKey) {
 }
 
 export async function saveRequest(songKey, formData) {
-  let { file, ...rest } = formData;
+  let { file, artists, ...rest } = formData;
   const method = songKey ? "PUT" : "POST";
 
   let body = new FormData();
   Object.entries(rest).forEach(([key, value]) => body.append(key, value));
   if (file) body.append("file", file, "song");
+  if (artists) body.append("artists", JSON.stringify(artists));
 
   return fetch(getUrl(songKey), {
     method,

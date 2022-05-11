@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native";
 import styles from "../styles";
 import { Text } from "react-native-paper";
 import { View } from "react-native";
-import FilePicker from "../FilePicker";
+import FilePicker from "../formUtil/FilePicker";
 
 export default function UserImagePicker({ customProps, ...rest }) {
   const { initialImage } = customProps;
