@@ -10,11 +10,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-notifications";
 
 export default function App() {
-  React.useEffect(async () => {
-    const defaultApp = initializeApp(firebaseConfig);
-    initializeAuth(defaultApp, {
-      persistence: getReactNativePersistence(AsyncStorage),
-    });
+  React.useEffect(() => {
+    async function initializeFirebase() {
+      const defaultApp = initializeApp(firebaseConfig);
+      initializeAuth(defaultApp, {
+        persistence: getReactNativePersistence(AsyncStorage),
+      });
+    }
+    initializeFirebase();
   }, []);
 
   return (
@@ -38,24 +41,3 @@ const theme = {
     accent: "#f1c40f",
   },
 };
-/*
-const toastConfig = {
-  info: (props) => (
-    <InfoToast
-      {...props}
-      style={{
-        height: "auto",
-        width: "auto",
-        maxWidth: "80%",
-        alignSelf: "center",
-      }}
-      contentContainerStyle={{
-        alignItems: "center",
-        paddingHorizontal: 0,
-        marginHorizontal: 0,
-      }}
-      text1Style={{ textAlign: "center", padding: 10, width: "auto" }}
-    />
-  ),
-};
-*/

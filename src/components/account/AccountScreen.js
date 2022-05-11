@@ -6,16 +6,22 @@ import { getAuth, signOut } from "firebase/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { UserImage } from "./UserImage.js";
+import PropTypes from "prop-types";
+
+const ALLOWED_ROLES = ["artist", "admin"];
 
 export default function AccountScreen() {
   const navigation = useNavigation();
   const user = getAuth()?.currentUser;
+  const [role, setRole] = useState(null);
+
   let [{ displayName, photoURL }, setUser] = useState(user);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       setUser({ ...getAuth()?.currentUser });
     });
+    updateRole(setRole);
     return unsubscribe;
   }, [navigation]);
 
@@ -58,18 +64,43 @@ export default function AccountScreen() {
           </Button>
         </View>
       </View>
-      <List.Section>
-        <List.Subheader>Artist settings</List.Subheader>
-        <List.Item
-          title="Manage my songs..."
-          left={(props) => (
-            <List.Icon {...props} icon="music-box-multiple"></List.Icon>
-          )}
-          onPress={() => {
-            navigation.push("ManageMySongs");
-          }}
-        />
-      </List.Section>
+      <ArtistMenu role={role} navigation={navigation} />
     </SafeAreaView>
   );
 }
+
+function ArtistMenu({ role, navigation }) {
+  if (!role || !ALLOWED_ROLES.includes(role)) return null;
+
+  return (
+    <List.Section>
+      <List.Subheader>Artist settings</List.Subheader>
+      <List.Item
+        title="Manage my songs..."
+        left={(props) => (
+          <List.Icon {...props} icon="music-box-multiple"></List.Icon>
+        )}
+        onPress={() => {
+          navigation.push("ManageMySongs");
+        }}
+      />
+    </List.Section>
+  );
+}
+
+async function updateRole(setRole) {
+  try {
+    const user = getAuth()?.currentUser;
+    const token = await user?.getIdTokenResult(false);
+    setRole(token.claims.role);
+  } catch (e) {
+    console.error("Could not get user role: ", e);
+  }
+}
+
+ArtistMenu.propTypes = {
+  role: PropTypes.string,
+  navigation: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
