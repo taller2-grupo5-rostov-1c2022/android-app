@@ -2,17 +2,17 @@ import React from "react";
 import { webApi, useSWR, json_fetcher, fetch } from "../util/services";
 import { Headline } from "react-native-paper";
 import styles from "./styles.js";
-import ExternalView from "./ExternalView";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Player from "./Player";
 import appContext from "./appContext";
-import SongList from "./SongList";
+import FetchedList from "./general/FetchedList";
 
 export default function SongsScreen() {
-  const songs = useSWR(webApi + "/songs/", json_fetcher);
+  const songs = useSWR(webApi + "/songs/songs/", json_fetcher);
   const context = React.useContext(appContext);
 
   const onPress = (song) => {
-    fetch(webApi + "/songs/" + song.id)
+    fetch(webApi + "/songs/songs/" + song.id)
       .then((res) => res.json())
       .then((res) => {
         song.url = res.file;
@@ -24,15 +24,15 @@ export default function SongsScreen() {
     return {
       title: song.name,
       description:
-        "by " + song.artists?.map((artist) => artist.artist_name).join(", "),
+        "by " + song.artists?.map((artist) => artist.name).join(", "),
     };
   };
 
   return (
-    <ExternalView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Headline>Songs</Headline>
-      <SongList songs={songs} onPress={onPress} propGen={propGen} />
+      <FetchedList response={songs} onPress={onPress} propGen={propGen} />
       <Player />
-    </ExternalView>
+    </SafeAreaView>
   );
 }

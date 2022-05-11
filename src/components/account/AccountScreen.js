@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { List, Headline, Subheading, Button } from "react-native-paper";
 import styles from "../styles.js";
 import { getAuth, signOut } from "firebase/auth";
-import ExternalView from "../ExternalView.js";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { UserImage } from "./UserImage.js";
 
@@ -30,7 +30,7 @@ export default function AccountScreen() {
   };
 
   return (
-    <ExternalView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Headline>My Account</Headline>
       <View style={[styles.row, { margin: "4%" }]}>
         <UserImage
@@ -70,6 +70,6 @@ export default function AccountScreen() {
           }}
         />
       </List.Section>
-    </ExternalView>
+    </SafeAreaView>
   );
 }

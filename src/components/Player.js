@@ -66,7 +66,7 @@ const Player = () => {
     <Appbar style={styles.bottom}>
       <Appbar.Content
         title={context.song.name}
-        subtitle={context.song.artists}
+        subtitle={context.song.artists?.map((artist) => artist.name).join(", ")}
       />
       <Appbar.Action
         icon="heart-outline"

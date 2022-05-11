@@ -4,16 +4,16 @@ import SongsScreen from "./SongsScreen";
 import AccountScreen from "./account/AccountScreen.js";
 import PropTypes from "prop-types";
 import styles from "./styles.js";
-import ExternalView from "./ExternalView";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Player from "./Player";
 import appContext from "./appContext";
 
 const AlbumsScreen = () => {
   return (
-    <ExternalView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text> TODO </Text>
       <Player />
-    </ExternalView>
+    </SafeAreaView>
   );
 };
 
@@ -35,9 +35,7 @@ export default function HomeScreen() {
   const [stop, setStop] = React.useState(false);
 
   return (
-    <appContext.Provider
-      value={{ song, stop, setSong, setStop }}
-    >
+    <appContext.Provider value={{ song, stop, setSong, setStop }}>
       <BottomNavigation
         navigationState={{ index, routes }}
         onIndexChange={setIndex}

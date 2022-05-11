@@ -1,15 +1,15 @@
 import React from "react";
 import { Portal, FAB } from "react-native-paper";
 import styles from "../styles.js";
-import ExternalView from "../ExternalView";
+import { SafeAreaView } from "react-native-safe-area-context";
 import SongDialog from "./SongDialog";
 import PropTypes from "prop-types";
-import SongList from "../SongList";
+import FetchedList from "../general/FetchedList";
 import { webApi, json_fetcher, useSWR } from "../../util/services";
 
 export default function ManageMySongs() {
   const [dialog, setDialog] = React.useState(null);
-  const songs = useSWR(webApi + "/songs/", json_fetcher);
+  const songs = useSWR(webApi + "/my_albums/", json_fetcher);
 
   const hideDialog = () => {
     setDialog(null);
@@ -32,7 +32,7 @@ export default function ManageMySongs() {
   };
 
   return (
-    <ExternalView
+    <SafeAreaView
       style={[styles.container].concat(dialog ? styles.disabled : [])}
       pointerEvents={dialog ? "none" : "auto"}
     >
@@ -45,12 +45,12 @@ export default function ManageMySongs() {
         />
       </Portal>
       <Portal>{dialog}</Portal>
-      <SongList
-        songs={songs}
+      <FetchedList
+        response={songs}
         onPress={(song) => addDialog(song)}
         propGen={propGen}
       />
-    </ExternalView>
+    </SafeAreaView>
   );
 }
 

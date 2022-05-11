@@ -2,7 +2,7 @@ import { webApi, fetch } from "./services";
 const FormData = global.FormData;
 
 function getUrl(songKey) {
-  return webApi + "/songs/" + (songKey ?? "");
+  return webApi + "/songs/songs/" + (songKey ?? "");
 }
 
 export async function saveRequest(songKey, formData) {

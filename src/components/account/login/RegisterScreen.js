@@ -13,7 +13,7 @@ import {
 } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../../styles.js";
-import ExternalView from "../../ExternalView.js";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
@@ -52,7 +52,7 @@ export default function RegisterScreen({ navigation }) {
   });
 
   return (
-    <ExternalView
+    <SafeAreaView
       style={[styles.container, styles.containerCenter].concat(
         authing ? styles.disabled : []
       )}
@@ -74,7 +74,7 @@ export default function RegisterScreen({ navigation }) {
           <ActivityIndicator size="large" style={styles.activityIndicator} />
         ) : null}
       </Portal>
-    </ExternalView>
+    </SafeAreaView>
   );
 }
 

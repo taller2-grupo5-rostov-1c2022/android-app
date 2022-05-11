@@ -11,7 +11,7 @@ import {
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../../styles.js";
-import ExternalView from "../../ExternalView.js";
+import { SafeAreaView } from "react-native-safe-area-context";
 import image from "../../../img/logo.png";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
@@ -54,7 +54,7 @@ export default function LoginScreen({ navigation }) {
   });
 
   return (
-    <ExternalView
+    <SafeAreaView
       style={[styles.container, styles.containerCenter].concat(
         authing ? styles.disabled : []
       )}
@@ -88,7 +88,7 @@ export default function LoginScreen({ navigation }) {
           <ActivityIndicator size="large" style={styles.activityIndicator} />
         ) : null}
       </Portal>
-    </ExternalView>
+    </SafeAreaView>
   );
 }
 

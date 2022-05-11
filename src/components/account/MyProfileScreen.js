@@ -6,7 +6,7 @@ import {
   updateEmail,
   updatePassword,
 } from "firebase/auth";
-import ExternalView from "../ExternalView";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { emailRegex } from "../../util/regex";
@@ -55,7 +55,7 @@ export default function MyProfileScreen({ navigation }) {
   };
 
   return (
-    <ExternalView
+    <SafeAreaView
       style={[styles.container, styles.containerCenter].concat(
         loading ? styles.disabled : []
       )}
@@ -73,7 +73,7 @@ export default function MyProfileScreen({ navigation }) {
         ) : null}
       </Portal>
       <FirebaseError error={error} style={{ textAlign: "center" }} />
-    </ExternalView>
+    </SafeAreaView>
   );
 }
 
