@@ -35,11 +35,19 @@ const stop = async () => {
 
 const Player = () => {
   const [paused, setPaused] = React.useState(false);
+  const [isPrevious, setIsPrevious] = React.useState(false);
+  const [currentSong, setCurrentSong] = React.useState({
+    name: "",
+    artists: [],
+    url: "",
+ });
+  const [prevSongs, setprevSongs] = React.useState([]);
 
   const context = React.useContext(appContext);
   const playIcon = paused ? "play" : "pause";
-
+ 
   const onPress = () => {
+    console.log(prevSongs);
     if (paused) {
       play(context.song.url);
       setPaused(false);
@@ -49,7 +57,36 @@ const Player = () => {
     }
   };
 
+  const previous = () => {
+    console.log(prevSongs.length);
+    if (prevSongs.length == 0) return;
+    const prevSong = prevSongs.at(-1);
+    setprevSongs(prevSongs.slice(0, -1));
+    setIsPrevious(true);
+    context.setQueue(queue => [currentSong, ...queue]);
+    context.setSong(prevSong);
+  }
+
+  const next = () => {
+    console.log(context.queue);
+    if (context.queue.length == 0) return;
+    const nextSong = context.queue[0];
+    context.setQueue(queue => queue.slice(1));
+    context.setSong(nextSong);
+  };
+
   React.useEffect(() => {
+    console.log(context.song.name);
+    if (currentSong.name && !isPrevious) {
+      setprevSongs(prevSongs => [...prevSongs, currentSong]);
+      console.log(prevSongs);
+    }
+    setIsPrevious(false);
+    setCurrentSong({
+      name: context.song.name,
+      artists: context.song.artists,
+      url: context.song.url,
+   })
     if (!paused) {
       play(context.song.url);
     }
@@ -64,16 +101,18 @@ const Player = () => {
 
   return (
     <Appbar style={styles.bottom}>
-      <Appbar.Content
-        title={context.song.name}
-        subtitle={context.song.artists?.map((artist) => artist.name).join(", ")}
-      />
+      <Appbar.Content 
+      title={context.song.name} 
+      subtitle={context.song.artists?.map((artist) => artist.name).join(", ")} />
       <Appbar.Action
-        icon="heart-outline"
-        onPress={() => console.log("Pressed heart")}
+        icon="skip-previous"
+        onPress={previous}
       />
       <Appbar.Action icon={playIcon} onPress={onPress} />
-      <Appbar.Action icon="skip-next" onPress={() => context.setStop(true)} />
+      <Appbar.Action
+        icon="skip-next"
+        onPress={next}
+      />
     </Appbar>
   );
 };

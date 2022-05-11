@@ -33,9 +33,10 @@ export default function HomeScreen() {
 
   const [song, setSong] = React.useState("");
   const [stop, setStop] = React.useState(false);
+  const [queue, setQueue] = React.useState([]);
 
   return (
-    <appContext.Provider value={{ song, stop, setSong, setStop }}>
+    <appContext.Provider value={{ song, stop, queue, setSong, setStop, setQueue }}>
       <BottomNavigation
         navigationState={{ index, routes }}
         onIndexChange={setIndex}
