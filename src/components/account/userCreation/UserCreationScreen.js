@@ -155,11 +155,13 @@ function SelectPreferences({ preferences, setPreferences }) {
           color: "#777",
         }}
       >
-        Preferences:{" "}
+        Preferences:
+        {"\n "}
       </Text>
       {allPreferences.map((preference, i) => (
         <Button
           key={i}
+          style={{margin: 6}}
           mode={preferences.includes(preference) ? "contained" : "outlined"}
           onPress={() => {
             if (preferences.includes(preference)) {
