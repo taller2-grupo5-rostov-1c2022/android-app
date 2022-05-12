@@ -22,8 +22,8 @@ export default function MyProfileScreen({ navigation }) {
   const { control, setFocus, handleSubmit } = useForm({
     defaultValues: {
       image: null,
-      displayName: "",
-      email: "",
+      displayName: user?.displayName ?? "",
+      email: user?.email ?? "",
       password: "",
     },
     mode: "onChange",
@@ -37,8 +37,9 @@ export default function MyProfileScreen({ navigation }) {
       // TODO: Fix subir imagen, no podemos subir la uri de una, hay que hostearla en algun lado
       if (photoURL || displayName)
         await updateProfile(user, {
-          ...(displayName ? { displayName } : {}),
-          ...(photoURL ? { photoURL } : {}),
+          ...(displayName && displayName != user?.displayName
+            ? { displayName }
+            : {}),
         });
 
       if (email && email != user?.email) await updateEmail(user, email);
@@ -64,7 +65,7 @@ export default function MyProfileScreen({ navigation }) {
       <FormDefinition
         control={control}
         setFocus={setFocus}
-        initialImage={user?.photoURL}
+        initialImage={user?.photoURL && { uri: user?.photoURL }}
       ></FormDefinition>
       <Button onPress={handleSubmit(onSave)}>Save</Button>
       <Portal>
@@ -138,5 +139,7 @@ MyProfileScreen.propTypes = {
 };
 
 FormDefinition.propTypes = {
-  initialImage: PropTypes.string,
+  initialImage: PropTypes.shape({
+    uri: PropTypes.string.isRequired,
+  }),
 };

@@ -1,20 +1,14 @@
 import React, { useState } from "react";
-import { Avatar } from "react-native-paper";
-import PropTypes from "prop-types";
-import { TouchableOpacity } from "react-native";
-import styles from "../styles";
 import { Text } from "react-native-paper";
+import PropTypes from "prop-types";
+import styles from "../styles";
 import { View } from "react-native";
 import FilePicker from "../formUtil/FilePicker";
+import { UserImage } from "./UserImage";
 
 export default function UserImagePicker({ customProps, ...rest }) {
   const { initialImage } = customProps;
   const [status, setStatus] = useState(null);
-  let avatar = null;
-
-  if (initialImage || status?.file)
-    avatar = <Avatar.Image size={200} source={status?.file ?? initialImage} />;
-  else avatar = <Avatar.Icon size={200} icon="account" />;
 
   return (
     <View>
@@ -23,7 +17,7 @@ export default function UserImagePicker({ customProps, ...rest }) {
         customProps={{
           fileType: "image/*",
           setStatus,
-          button: <TouchableOpacity>{avatar}</TouchableOpacity>,
+          button: <UserImage size={200} image={status?.file ?? initialImage} />,
         }}
       />
       <Text style={[styles.errorText, { textAlign: "center" }]}>
@@ -35,6 +29,8 @@ export default function UserImagePicker({ customProps, ...rest }) {
 
 UserImagePicker.propTypes = {
   customProps: PropTypes.shape({
-    initialImage: PropTypes.any,
+    initialImage: PropTypes.shape({
+      uri: PropTypes.string.isRequired,
+    }),
   }).isRequired,
 };

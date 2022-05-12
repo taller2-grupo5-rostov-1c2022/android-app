@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import { UserImage } from "./UserImage.js";
 import PropTypes from "prop-types";
 
-const ALLOWED_ROLES = ["artist", "admin"];
+const ARTIST_ROLES = ["artist", "admin"];
 
 export default function AccountScreen() {
   const navigation = useNavigation();
@@ -40,7 +40,7 @@ export default function AccountScreen() {
       <Headline>My Account</Headline>
       <View style={[styles.row, { margin: "4%" }]}>
         <UserImage
-          url={photoURL}
+          image={photoURL ? { uri: photoURL } : null}
           onPress={() => navigation.push("MyProfileScreen")}
           size={100}
         />
@@ -70,7 +70,7 @@ export default function AccountScreen() {
 }
 
 function ArtistMenu({ role, navigation }) {
-  if (!role || !ALLOWED_ROLES.includes(role)) return null;
+  if (!role || !ARTIST_ROLES.includes(role)) return null;
 
   return (
     <List.Section>

@@ -1,13 +1,24 @@
 import React from "react";
 import { Avatar } from "react-native-paper";
 import PropTypes from "prop-types";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Image, View } from "react-native";
 
-export function UserImage({ onPress, url, size }) {
-  const image = url ? { uri: url } : null;
+export function UserImage({ onPress, image, size }) {
   let avatar = null;
 
-  if (image) avatar = <Avatar.Image size={size} source={image} />;
+  if (image)
+    avatar = (
+      <View
+        style={{
+          overflow: "hidden",
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+        }}
+      >
+        <Image style={{ width: size, height: size }} source={image} />
+      </View>
+    );
   else avatar = <Avatar.Icon size={size} icon="account" />;
 
   if (onPress)
@@ -17,6 +28,8 @@ export function UserImage({ onPress, url, size }) {
 
 UserImage.propTypes = {
   onPress: PropTypes.func,
-  url: PropTypes.string,
+  image: PropTypes.shape({
+    uri: PropTypes.string.isRequired,
+  }),
   size: PropTypes.number,
 };

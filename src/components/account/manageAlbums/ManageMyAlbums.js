@@ -2,24 +2,24 @@ import React from "react";
 import { Portal, FAB } from "react-native-paper";
 import styles from "../styles.js";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SongDialog from "./SongDialog";
+import AlbumDialog from "./SongDialog";
 import PropTypes from "prop-types";
 import FetchedList from "../general/FetchedList";
 import { webApi, json_fetcher, useSWR } from "../../util/services";
 
-export default function ManageMySongs() {
+export default function ManageMyAlbums() {
   const [dialog, setDialog] = React.useState(null);
-  const songs = useSWR(webApi + "/my_albums/", json_fetcher);
+  const response = useSWR(webApi + "/my_albums/", json_fetcher);
 
   const hideDialog = () => {
     setDialog(null);
-    songs.mutate();
+    response.mutate();
   };
 
-  const addDialog = (song) => {
+  const addDialog = (album) => {
     setDialog(
       <Portal>
-        <SongDialog hideDialog={hideDialog} song={song} />
+        <AlbumDialog hideDialog={hideDialog} album={album} />
       </Portal>
     );
   };
@@ -46,15 +46,15 @@ export default function ManageMySongs() {
       </Portal>
       <Portal>{dialog}</Portal>
       <FetchedList
-        response={songs}
-        onPress={(song) => addDialog(song)}
+        response={response}
+        onPress={(album) => addDialog(album)}
         propGen={propGen}
       />
     </SafeAreaView>
   );
 }
 
-ManageMySongs.propTypes = {
+ManageMyAlbums.propTypes = {
   navigation: PropTypes.shape({
     replace: PropTypes.func.isRequired,
   }).isRequired,
