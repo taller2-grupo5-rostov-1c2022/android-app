@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, Button, ActivityIndicator } from "react-native-paper";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Dimensions } from "react-native";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
@@ -50,10 +50,14 @@ export default function SongDialog({ hideDialog, song }) {
   };
 
   return (
-    <Dialog visible="true" onDismiss={hideDialog}>
+    <Dialog
+      visible="true"
+      onDismiss={hideDialog}
+      style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
+    >
       <Dialog.Title>{song?.id ? "Edit" : "Add"} Song</Dialog.Title>
       <Dialog.ScrollArea>
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={{ marginVertical: 5 }}>
           <FormDefinition {...rest} creating={!song?.id}></FormDefinition>
         </ScrollView>
       </Dialog.ScrollArea>

@@ -43,11 +43,19 @@ export default function Table(props) {
 
   const getButton = (index) => {
     if (index != values.length - 1)
-      return <TextInput.Icon name="delete" onPress={() => onDelete(index)} />;
+      return (
+        <TextInput.Icon
+          name="delete"
+          onPress={() => onDelete(index)}
+          forceTextInputFocus={false}
+        />
+      );
 
     if (values[index] === "") return null;
 
-    return <TextInput.Icon name="plus" onPress={onAdd} />;
+    return (
+      <TextInput.Icon name="plus" onPress={onAdd} forceTextInputFocus={false} />
+    );
   };
 
   const onBlur = (index) => {

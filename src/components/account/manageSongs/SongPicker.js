@@ -9,7 +9,7 @@ export function SongPicker(props) {
 
   return (
     <View>
-      <Title>Songs</Title>
+      <Title>Song</Title>
       <View
         style={{
           flexDirection: "row",
