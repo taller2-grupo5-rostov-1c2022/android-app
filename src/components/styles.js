@@ -50,6 +50,12 @@ const styles = StyleSheet.create({
   formWidth: {
     width: "80%",
   },
+  formWidthFlex: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap:'wrap',
+  },
   bold: {
     fontWeight: "bold",
   },

@@ -1,58 +1,51 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "../styles.js";
-import {
-  getAuth,
-  updateProfile,
-  updateEmail,
-  updatePassword,
-} from "firebase/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useForm } from "react-hook-form";
-import { FormBuilder } from "react-native-paper-form-builder";
-import { emailRegex } from "../../util/regex";
-import UserImagePicker from "./UserImagePicker";
-import { Button, Portal, ActivityIndicator } from "react-native-paper";
+import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError";
 import PropTypes from "prop-types";
+import { json_fetcher, useSWR, webApi, fetch } from "../../util/services.js";
+import { UserForm } from "./userCreation/UserCreationScreen.js";
+const FormData = global.FormData;
 
-export default function MyProfileScreen({ navigation }) {
-  const user = getAuth()?.currentUser;
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const { control, setFocus, handleSubmit } = useForm({
-    defaultValues: {
-      image: null,
-      displayName: user?.displayName ?? "",
-      email: user?.email ?? "",
-      password: "",
-    },
-    mode: "onChange",
-  });
+export default function MyProfileScreen() {
+  const [_loading, setLoading] = useState(false);
 
-  const onSave = async (inputs) => {
+  let {
+    data: user,
+    error,
+    isValidating,
+  } = useSWR(webApi + "/songs/my_users/", json_fetcher);
+  const loading = _loading || (isValidating && !user && !error);
+
+  const onSubmit = async (data) => {
     setLoading(true);
-    try {
-      let { email, password, image, displayName } = inputs;
-      let photoURL = image?.uri;
-      // TODO: Fix subir imagen, no podemos subir la uri de una, hay que hostearla en algun lado
-      if (photoURL || displayName)
-        await updateProfile(user, {
-          ...(displayName && displayName != user?.displayName
-            ? { displayName }
-            : {}),
+
+    let { image, preferences, ...rest } = data;
+    let body = new FormData();
+    Object.entries(rest).forEach(([key, value]) => body.append(key, value));
+    if (image) body.append("img", image, "pfp");
+    if (preferences) body.append("interests", JSON.stringify(preferences));
+
+    fetch(webApi + "/songs/users/" + user.id, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+      },
+      body,
+    })
+      .then(() => {
+        globalThis.toast.show("Updated Profile", {
+          duration: 3000,
         });
-
-      if (email && email != user?.email) await updateEmail(user, email);
-
-      if (password) await updatePassword(user, password);
-
-      await user?.reload();
-
-      navigation.goBack({ user: user });
-    } catch (e) {
-      setError(e);
-      setLoading(false);
-    }
+        setLoading(false);
+      })
+      .catch(() => {
+        globalThis.toast.show("An error has occurred", {
+          duration: 3000,
+        });
+        setLoading(false);
+      });
   };
 
   return (
@@ -62,12 +55,14 @@ export default function MyProfileScreen({ navigation }) {
       )}
       pointerEvents={loading ? "none" : "auto"}
     >
-      <FormDefinition
-        control={control}
-        setFocus={setFocus}
-        initialImageUri={user?.photoURL}
-      ></FormDefinition>
-      <Button onPress={handleSubmit(onSave)}>Save</Button>
+      <UserForm
+        onSubmit={onSubmit}
+        defaultValues={{
+          ...user,
+          preferences: JSON.parse(user?.interests ?? "[]"),
+          image: user.pfp,
+        }}
+      />
       <Portal>
         {loading ? (
           <ActivityIndicator size="large" style={styles.activityIndicator} />
@@ -78,66 +73,8 @@ export default function MyProfileScreen({ navigation }) {
   );
 }
 
-function FormDefinition({ initialImageUri, ...rest }) {
-  const user = getAuth()?.currentUser;
-  return (
-    <FormBuilder
-      {...rest}
-      formConfigArray={[
-        {
-          name: "image",
-          type: "custom",
-          JSX: UserImagePicker,
-          customProps: {
-            initialImageUri: initialImageUri,
-          },
-        },
-        {
-          type: "text",
-          name: "displayName",
-          textInputProps: {
-            mode: "flat",
-            label: "Display Name",
-            style: styles.formWidth,
-            placeholder: user?.displayName,
-          },
-        },
-        {
-          type: "text",
-          name: "email",
-          textInputProps: {
-            mode: "flat",
-            label: "Email",
-            style: styles.formWidth,
-            placeholder: user?.email,
-          },
-          rules: {
-            pattern: {
-              value: emailRegex,
-              message: "Email is invalid",
-            },
-          },
-        },
-        {
-          type: "password",
-          name: "password",
-          textInputProps: {
-            mode: "flat",
-            label: "Password",
-            style: styles.formWidth,
-          },
-        },
-      ]}
-    />
-  );
-}
-
 MyProfileScreen.propTypes = {
   navigation: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
   }).isRequired,
-};
-
-FormDefinition.propTypes = {
-  initialImageUri: PropTypes.string,
 };
