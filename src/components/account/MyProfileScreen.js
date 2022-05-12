@@ -65,7 +65,7 @@ export default function MyProfileScreen({ navigation }) {
       <FormDefinition
         control={control}
         setFocus={setFocus}
-        initialImage={user?.photoURL && { uri: user?.photoURL }}
+        initialImageUri={user?.photoURL}
       ></FormDefinition>
       <Button onPress={handleSubmit(onSave)}>Save</Button>
       <Portal>
@@ -78,7 +78,7 @@ export default function MyProfileScreen({ navigation }) {
   );
 }
 
-function FormDefinition({ initialImage, ...rest }) {
+function FormDefinition({ initialImageUri, ...rest }) {
   const user = getAuth()?.currentUser;
   return (
     <FormBuilder
@@ -89,7 +89,7 @@ function FormDefinition({ initialImage, ...rest }) {
           type: "custom",
           JSX: UserImagePicker,
           customProps: {
-            initialImage: initialImage,
+            initialImageUri: initialImageUri,
           },
         },
         {
@@ -139,7 +139,5 @@ MyProfileScreen.propTypes = {
 };
 
 FormDefinition.propTypes = {
-  initialImage: PropTypes.shape({
-    uri: PropTypes.string.isRequired,
-  }),
+  initialImageUri: PropTypes.string,
 };

@@ -40,7 +40,7 @@ export default function AccountScreen() {
       <Headline>My Account</Headline>
       <View style={[styles.row, { margin: "4%" }]}>
         <UserImage
-          image={photoURL ? { uri: photoURL } : null}
+          imageUri={photoURL}
           onPress={() => navigation.push("MyProfileScreen")}
           size={100}
         />

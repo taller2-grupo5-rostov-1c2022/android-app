@@ -9,8 +9,8 @@ const INVALID_FILE_MSG = "Invalid file type";
 // * fileType: tipo de archivo (mime) aceptado
 // * button: botón a mostrar para activar el selector de archivos
 // * setStatus: función para actualizar el estado del componente
-//   lo actualiza con un objeto con propiedades error, file y fileName
-//   (error y los otros 2 son excluyentes)
+//   lo actualiza con un objeto con propiedades error, file, uri y fileName
+//   (error y los otros 3 son excluyentes)
 export default function FilePicker(props) {
   const {
     name,
@@ -49,7 +49,7 @@ export default function FilePicker(props) {
 
     const file = await buildFile({ name, uri, type: mimeType });
     field.onChange(file);
-    setStatus && setStatus({ file: file, fileName: name });
+    setStatus && setStatus({ file: file, fileName: name, uri: uri });
   };
 
   return React.cloneElement(button, { onPress: getFile });

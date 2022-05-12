@@ -7,7 +7,7 @@ import FilePicker from "../formUtil/FilePicker";
 import { UserImage } from "./UserImage";
 
 export default function UserImagePicker({ customProps, ...rest }) {
-  const { initialImage } = customProps;
+  const { initialImageUri } = customProps;
   const [status, setStatus] = useState(null);
 
   return (
@@ -17,7 +17,9 @@ export default function UserImagePicker({ customProps, ...rest }) {
         customProps={{
           fileType: "image/*",
           setStatus,
-          button: <UserImage size={200} image={status?.file ?? initialImage} />,
+          button: (
+            <UserImage size={200} imageUri={status?.uri ?? initialImageUri} />
+          ),
         }}
       />
       <Text style={[styles.errorText, { textAlign: "center" }]}>
@@ -29,8 +31,6 @@ export default function UserImagePicker({ customProps, ...rest }) {
 
 UserImagePicker.propTypes = {
   customProps: PropTypes.shape({
-    initialImage: PropTypes.shape({
-      uri: PropTypes.string.isRequired,
-    }),
+    initialImageUri: PropTypes.string.isRequired,
   }).isRequired,
 };
