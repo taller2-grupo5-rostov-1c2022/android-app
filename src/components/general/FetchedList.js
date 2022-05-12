@@ -1,9 +1,9 @@
 import React from "react";
-import { List, ActivityIndicator, Subheading, Text } from "react-native-paper";
+import { List, ActivityIndicator, Subheading, Text, IconButton, Portal, Modal } from "react-native-paper";
 import { View } from "react-native";
 import styles from "../styles.js";
 import PropTypes from "prop-types";
-
+import PlaylistMenuAdd from "./PlaylistMenuAdd.js";
 // onPress es una funcion que recibe la data de un elemento del response y se ejecuta cuando tocas una cancion
 // propGen es una funcion que recibe la data de un elemento del response y devuelva las props del item de la lista
 export default function FetchedList({
@@ -12,15 +12,21 @@ export default function FetchedList({
   propGen,
   ...viewProps
 }) {
+  const [visible, setVisible] = React.useState(false);
+
   if (!response.data && response.isValidating)
     return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (response.error) return <ErrorMessage error={response.error} />;
 
-  return <View {...viewProps}>{mapData(response.data, onPress, propGen)}</View>;
+  return <View {...viewProps}>
+    {mapData(response.data, onPress, propGen, setVisible)}
+    <PlaylistMenuAdd props={{visible, setVisible}}></PlaylistMenuAdd>
+  </View>;
 }
 
-function mapData(data, onPress, propGen) {
+function mapData(data, onPress, propGen, setVisible) {
+
   let i = 0;
   return data?.map((element) => {
     return (
@@ -28,6 +34,11 @@ function mapData(data, onPress, propGen) {
         key={i++}
         {...propGen(element)}
         onPress={() => onPress(element)}
+        right={props => <IconButton
+          onPress={() => setVisible(true)}
+          icon="playlist-plus" 
+          color="black"
+        />}
       />
     );
   });

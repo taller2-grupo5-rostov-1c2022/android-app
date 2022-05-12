@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Player from "./Player";
 import appContext from "./appContext";
 import FetchedList from "./general/FetchedList";
+import { Portal } from 'react-native-paper';
 
 export default function SongsScreen() {
   const songs = useSWR(webApi + "/songs/songs/", json_fetcher);
@@ -30,9 +31,11 @@ export default function SongsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Portal.Host>
       <Headline>Songs</Headline>
       <FetchedList response={songs} onPress={onPress} propGen={propGen} />
       <Player />
+      </Portal.Host>
     </SafeAreaView>
   );
 }
