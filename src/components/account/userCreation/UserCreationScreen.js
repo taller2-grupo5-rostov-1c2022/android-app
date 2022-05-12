@@ -35,10 +35,10 @@ export default function UserCreationScreen({ navigation }) {
   const onSubmit = async (data) => {
     setLoading(true);
 
-    let { file, preferences, ...rest } = data;
+    let { image, preferences, ...rest } = data;
     let body = new FormData();
     Object.entries(rest).forEach(([key, value]) => body.append(key, value));
-    if (file) body.append("img", file, "pfp");
+    if (image) body.append("img", image, "pfp");
     if (preferences) body.append("interests", JSON.stringify(preferences));
 
     fetch(webApi + "/songs/users/", {
