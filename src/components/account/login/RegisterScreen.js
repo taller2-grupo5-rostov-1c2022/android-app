@@ -6,18 +6,14 @@ import {
   ActivityIndicator,
   Headline,
 } from "react-native-paper";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../../styles.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
-import { emailRegex, notEmptyRegex } from "../../../util/regex.js";
+import { emailRegex } from "../../../util/regex.js";
 
 export default function RegisterScreen({ navigation }) {
   const auth = getAuth();
@@ -29,12 +25,10 @@ export default function RegisterScreen({ navigation }) {
     setAuthing(true);
     try {
       await createUserWithEmailAndPassword(auth, data.email, data.password);
-      updateProfile(auth.currentUser, {
-        displayName: data.displayName.trim(),
-      });
+
       navigation.reset({
         index: 0,
-        routes: [{ name: "Home" }],
+        routes: [{ name: "UserCreation" }],
       });
     } catch (err) {
       setError(err);
@@ -47,7 +41,6 @@ export default function RegisterScreen({ navigation }) {
     defaultValues: {
       email: "",
       password: "",
-      displayName: "",
     },
   });
 
@@ -84,19 +77,6 @@ function RegisterForm({ control, setFocus }) {
       control={control}
       setFocus={setFocus}
       formConfigArray={[
-        {
-          type: "text",
-          name: "displayName",
-          rules: {
-            required: { value: true, message: "Display name required" },
-            pattern: { value: notEmptyRegex, message: "Display name required" },
-          },
-          textInputProps: {
-            mode: "flat",
-            label: "Display name",
-            style: styles.formWidth,
-          },
-        },
         {
           type: "email",
           name: "email",
