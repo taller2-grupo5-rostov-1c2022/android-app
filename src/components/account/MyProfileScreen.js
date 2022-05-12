@@ -1,22 +1,51 @@
-import React from "react";
+import { useState } from "react";
 import styles from "../styles.js";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Portal, ActivityIndicator, Button } from "react-native-paper";
+import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError";
 import PropTypes from "prop-types";
-import { json_fetcher, useSWR, webApi } from "../../util/services.js";
+import { json_fetcher, useSWR, webApi, fetch } from "../../util/services.js";
 import { UserForm } from "./userCreation/UserCreationScreen.js";
+const FormData = global.FormData;
 
 export default function MyProfileScreen() {
+  const [_loading, setLoading] = useState(false);
+
   let {
     data: user,
     error,
     isValidating,
   } = useSWR(webApi + "/songs/my_users/", json_fetcher);
-  const loading = isValidating && !user && !error;
+  const loading = _loading || (isValidating && !user && !error);
 
   const onSubmit = async (data) => {
-    console.log("data", data);
+    setLoading(true);
+
+    let { image, preferences, ...rest } = data;
+    let body = new FormData();
+    Object.entries(rest).forEach(([key, value]) => body.append(key, value));
+    if (image) body.append("img", image, "pfp");
+    if (preferences) body.append("interests", JSON.stringify(preferences));
+
+    fetch(webApi + "/songs/users/" + user.id, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+      },
+      body,
+    })
+      .then(() => {
+        globalThis.toast.show("Updated Profile", {
+          duration: 3000,
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        globalThis.toast.show("An error has occurred", {
+          duration: 3000,
+        });
+        setLoading(false);
+      });
   };
 
   return (
