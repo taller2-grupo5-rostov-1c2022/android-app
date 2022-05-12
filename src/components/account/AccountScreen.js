@@ -25,8 +25,15 @@ export default function AccountScreen() {
   const loading = isValidating && !user && !error;
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      updateRole(setRole);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
     updateRole(setRole);
-  }, []);
+  });
 
   const onLogOut = () => {
     signOut(getAuth())

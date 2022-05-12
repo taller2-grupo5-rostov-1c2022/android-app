@@ -14,6 +14,7 @@ export default function MyProfileScreen() {
     data: user,
     error,
     isValidating,
+    mutate,
   } = useSWR(webApi + "/songs/my_users/", json_fetcher);
   const loading = _loading || (isValidating && !user && !error);
 
@@ -26,25 +27,25 @@ export default function MyProfileScreen() {
     if (image) body.append("img", image, "pfp");
     if (preferences) body.append("interests", JSON.stringify(preferences));
 
-    fetch(webApi + "/songs/users/" + user.id, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-      },
-      body,
-    })
-      .then(() => {
-        globalThis.toast.show("Updated Profile", {
-          duration: 3000,
-        });
-        setLoading(false);
-      })
-      .catch(() => {
-        globalThis.toast.show("An error has occurred", {
-          duration: 3000,
-        });
-        setLoading(false);
+    try {
+      await fetch(webApi + "/songs/users/" + user.id, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+        },
+        body,
       });
+      globalThis.toast.show("Updated Profile", {
+        duration: 3000,
+      });
+    } catch {
+      globalThis.toast.show("An error has occurred", {
+        duration: 3000,
+      });
+    }
+
+    await mutate();
+    setLoading(false);
   };
 
   return (
@@ -58,7 +59,7 @@ export default function MyProfileScreen() {
         onSubmit={onSubmit}
         defaultValues={{
           ...user,
-          preferences: JSON.parse(user?.interests ?? "[]"),
+          preferences: JSON.parse(user?.interests),
           image: user.pfp,
         }}
       />

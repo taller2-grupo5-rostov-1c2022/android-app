@@ -6,10 +6,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
 import UserImagePicker from "../../formUtil/ImagePicker";
-import { Button, ActivityIndicator } from "react-native-paper";
-import { View, Text } from "react-native";
+import { Button, ActivityIndicator, Title } from "react-native-paper";
 import PropTypes from "prop-types";
 import { VALID_GENRES } from "../../../util/constants.js";
+import Checklist from "../../formUtil/Checklist";
 const FormData = global.FormData;
 
 export default function UserCreationScreen({ navigation }) {
@@ -85,17 +85,10 @@ export function UserForm({ onSubmit, defaultValues }) {
       image: null,
       name: defaultValues?.name ?? "",
       location: defaultValues?.location ?? "",
+      preferences: defaultValues?.preferences,
     },
     mode: "onChange",
   });
-
-  const [preferences, setPreferences] = useState(
-    defaultValues?.preferences ?? []
-  );
-
-  const _onSubmit = (data) => {
-    onSubmit({ ...data, preferences });
-  };
 
   return (
     <>
@@ -129,16 +122,33 @@ export function UserForm({ onSubmit, defaultValues }) {
               style: styles.formWidth,
             },
           },
+          {
+            name: "preferences",
+            type: "custom",
+            JSX: Checklist,
+            customProps: {
+              allOptions: VALID_GENRES.map((name) => ({
+                title: name,
+              })),
+              formProp: "title",
+              title: (
+                <Title style={{ width: "100%", textAlign: "center" }}>
+                  Interests
+                </Title>
+              ),
+              viewProps: {
+                style: {
+                  alignItems: "flex-start",
+                },
+              },
+            },
+          },
         ]}
-      />
-      <SelectPreferences
-        preferences={preferences}
-        setPreferences={setPreferences}
       />
       <Button
         style={{ marginTop: 20 }}
         mode="contained"
-        onPress={handleSubmit(_onSubmit)}
+        onPress={handleSubmit(onSubmit)}
       >
         Submit
       </Button>
@@ -154,41 +164,4 @@ UserForm.propTypes = {
     location: PropTypes.string,
     preferences: PropTypes.arrayOf(PropTypes.string),
   }),
-};
-
-function SelectPreferences({ preferences, setPreferences }) {
-  return (
-    <View style={styles.formWidthFlex}>
-      <Text
-        style={{
-          fontSize: 20,
-          color: "#777",
-        }}
-      >
-        Preferences:
-        {"\n "}
-      </Text>
-      {VALID_GENRES.map((preference, i) => (
-        <Button
-          key={i}
-          style={{ margin: 6 }}
-          mode={preferences.includes(preference) ? "contained" : "outlined"}
-          onPress={() => {
-            if (preferences.includes(preference)) {
-              setPreferences(preferences.filter((p) => p !== preference));
-            } else {
-              setPreferences([...preferences, preference]);
-            }
-          }}
-        >
-          {preference}
-        </Button>
-      ))}
-    </View>
-  );
-}
-
-SelectPreferences.propTypes = {
-  preferences: PropTypes.arrayOf(PropTypes.string).isRequired,
-  setPreferences: PropTypes.func.isRequired,
 };
