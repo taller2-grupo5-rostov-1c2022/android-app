@@ -4,11 +4,11 @@ import { IconButton, Portal, Modal } from "react-native-paper";
 export const PlaylistMenuAdd = (visible, setVisible) => {
   return (
     <Portal>
-      <Modal visible={false} onDismiss={() => console.log("dismiss")}>
+      <Modal visible={false} onDismiss={() => console.log(visible)}>
         <IconButton
           icon="camera"
           size={20}
-          onPress={() => console.log("Pressed")}
+          onPress={() => setVisible(false)}
         />
       </Modal>
     </Portal>
