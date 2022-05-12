@@ -74,17 +74,19 @@ UserCreationScreen.propTypes = {
   }).isRequired,
 };
 
-function UserForm({ onSubmit }) {
+export function UserForm({ onSubmit, defaultValues }) {
   const { control, setFocus, handleSubmit } = useForm({
     defaultValues: {
       image: null,
-      name: "",
-      location: "",
+      name: defaultValues?.name ?? "",
+      location: defaultValues?.location ?? "",
     },
     mode: "onChange",
   });
 
-  const [preferences, setPreferences] = useState([]);
+  const [preferences, setPreferences] = useState(
+    defaultValues?.preferences ?? []
+  );
 
   const _onSubmit = (data) => {
     onSubmit({ ...data, preferences });
@@ -101,7 +103,7 @@ function UserForm({ onSubmit }) {
             type: "custom",
             JSX: UserImagePicker,
             customProps: {
-              initialImage: undefined,
+              initialImageUri: defaultValues?.image ?? undefined,
             },
           },
           {
@@ -141,6 +143,12 @@ function UserForm({ onSubmit }) {
 
 UserForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  defaultValues: PropTypes.shape({
+    image: PropTypes.string,
+    name: PropTypes.string,
+    location: PropTypes.string,
+    preferences: PropTypes.arrayOf(PropTypes.string),
+  }),
 };
 
 function SelectPreferences({ preferences, setPreferences }) {
