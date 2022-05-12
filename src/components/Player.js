@@ -60,7 +60,7 @@ const Player = () => {
   const previous = () => {
     console.log(prevSongs.length);
     if (prevSongs.length == 0) return;
-    const prevSong = prevSongs.at(-1);
+    const prevSong = prevSongs[prevSongs.length - 1];
     setprevSongs(prevSongs.slice(0, -1));
     setIsPrevious(true);
     context.setQueue(queue => [currentSong, ...queue]);

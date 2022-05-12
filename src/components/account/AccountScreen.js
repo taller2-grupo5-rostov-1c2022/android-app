@@ -7,23 +7,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { UserImage } from "./UserImage.js";
 import PropTypes from "prop-types";
+import { Portal, ActivityIndicator } from "react-native-paper";
+import { FirebaseError } from "./login/FirebaseError.js";
+import { useSWR, json_fetcher, webApi } from "../../util/services.js";
 
 const ARTIST_ROLES = ["artist", "admin"];
 
 export default function AccountScreen() {
   const navigation = useNavigation();
-  const user = getAuth()?.currentUser;
   const [role, setRole] = useState(null);
 
-  let [{ displayName, photoURL }, setUser] = useState(user);
+  let {
+    data: user,
+    error,
+    isValidating,
+  } = useSWR(webApi + "/songs/my_users/", json_fetcher);
+  const loading = isValidating && !user && !error;
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      setUser({ ...getAuth()?.currentUser });
-    });
     updateRole(setRole);
-    return unsubscribe;
-  }, [navigation]);
+  }, []);
 
   const onLogOut = () => {
     signOut(getAuth())
@@ -40,13 +43,13 @@ export default function AccountScreen() {
       <Headline>My Account</Headline>
       <View style={[styles.row, { margin: "4%" }]}>
         <UserImage
-          imageUri={photoURL}
+          imageUri={user?.pfp}
           onPress={() => navigation.push("MyProfileScreen")}
           size={100}
         />
         <View style={{ marginLeft: "5%", justifyContent: "center", flex: 1 }}>
           <Subheading style={{ fontSize: 20, flexWrap: "wrap", maxHeight: 45 }}>
-            {displayName}
+            {user?.name}
           </Subheading>
           <Button
             style={{
@@ -65,6 +68,12 @@ export default function AccountScreen() {
         </View>
       </View>
       <ArtistMenu role={role} navigation={navigation} />
+      <Portal>
+        {loading ? (
+          <ActivityIndicator size="large" style={styles.activityIndicator} />
+        ) : null}
+      </Portal>
+      <FirebaseError error={error} style={{ textAlign: "center" }} />
     </SafeAreaView>
   );
 }
