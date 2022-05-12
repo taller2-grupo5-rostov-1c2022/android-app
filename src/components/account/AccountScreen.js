@@ -93,6 +93,13 @@ function ArtistMenu({ role, navigation }) {
           navigation.push("ManageMySongs");
         }}
       />
+      <List.Item
+        title="Manage my albums..."
+        left={(props) => <List.Icon {...props} icon="archive"></List.Icon>}
+        onPress={() => {
+          navigation.push("ManageMyAlbums");
+        }}
+      />
     </List.Section>
   );
 }

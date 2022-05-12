@@ -5,7 +5,7 @@ function getUrl(songKey) {
   return webApi + "/songs/songs/" + (songKey ?? "");
 }
 
-export async function saveRequest(songKey, formData) {
+export async function saveSong(songKey, formData) {
   let { file, artists, ...rest } = formData;
   const method = songKey ? "PUT" : "POST";
 
@@ -25,8 +25,20 @@ export async function saveRequest(songKey, formData) {
   });
 }
 
-export async function deleteRequest(songKey) {
+export async function deleteSong(songKey) {
   return fetch(getUrl(songKey), {
     method: "DELETE",
   });
+}
+
+export async function saveAlbum(albumKey, formData) {
+  return async () => {
+    null;
+  };
+}
+
+export async function deleteAlbum(albumKey, formData) {
+  return async () => {
+    null;
+  };
 }

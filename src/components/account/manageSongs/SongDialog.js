@@ -6,7 +6,7 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { SongPicker } from "./SongPicker";
 import styles from "../../styles";
-import { saveRequest, deleteRequest } from "../../../util/songRequests";
+import { saveSong, deleteSong } from "../../../util/songRequests";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Table from "../../formUtil/Table";
 
@@ -67,7 +67,7 @@ export default function SongDialog({ hideDialog, song }) {
           <Button
             onPress={() =>
               sendRequest(
-                async () => await deleteRequest(song?.id),
+                async () => await deleteSong(song?.id),
                 "Song deleted"
               )
             }
@@ -77,7 +77,7 @@ export default function SongDialog({ hideDialog, song }) {
           <Button
             onPress={handleSubmit((data) =>
               sendRequest(
-                async () => await saveRequest(song?.id, data),
+                async () => await saveSong(song?.id, data),
                 "Song saved"
               )
             )}
@@ -178,10 +178,14 @@ function FormDefinition({ creating, ...rest }) {
 SongDialog.propTypes = {
   hideDialog: PropTypes.func,
   song: PropTypes.shape({
-    id: PropTypes.any,
+    id: PropTypes.number,
     name: PropTypes.string,
     description: PropTypes.string,
-    artists: PropTypes.string,
+    artists: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string.isRequired,
+      })
+    ),
     genre: PropTypes.string,
   }),
 };

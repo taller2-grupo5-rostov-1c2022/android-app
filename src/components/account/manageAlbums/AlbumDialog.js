@@ -1,23 +1,22 @@
 import React from "react";
 import { Dialog, Button, ActivityIndicator } from "react-native-paper";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Dimensions } from "react-native";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { SongPicker } from "./SongPicker";
-import styles from "../styles";
-import { saveRequest, deleteRequest } from "../../util/songRequests";
-import { ErrorDialog } from "../ErrorDialog";
-import Table from "../formUtil/Table";
+import styles from "../../styles";
+import { saveAlbum, deleteAlbum } from "../../../util/requests";
+import { ErrorDialog } from "../../general/ErrorDialog";
+import Table from "../../formUtil/Table";
 
-export default function SongDialog({ hideDialog, song }) {
+export default function AlbumDialog({ hideDialog, album }) {
   const { handleSubmit, ...rest } = useForm({
     defaultValues: {
-      name: song?.name ?? "",
-      artists: song?.artists?.map((artist) => artist.artist_name) ?? null,
-      description: song?.description ?? "",
-      genre: song?.genre ?? "",
-      file: null,
+      name: album?.name ?? "",
+      description: album?.description ?? "",
+      genre: album?.genre ?? "",
+      songs: album?.songs,
     },
     mode: "onChange",
   });
@@ -50,11 +49,15 @@ export default function SongDialog({ hideDialog, song }) {
   };
 
   return (
-    <Dialog visible="true" onDismiss={hideDialog}>
-      <Dialog.Title>{song?.id ? "Edit" : "Add"} Song</Dialog.Title>
+    <Dialog
+      visible="true"
+      onDismiss={hideDialog}
+      style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
+    >
+      <Dialog.Title>{album?.id ? "Edit" : "Add"} Album</Dialog.Title>
       <Dialog.ScrollArea>
-        <ScrollView style={{ flex: 1 }}>
-          <FormDefinition {...rest} creating={!song?.id}></FormDefinition>
+        <ScrollView style={{ marginVertical: 5 }}>
+          {/*<FormDefinition {...rest} creating={!song?.id}></FormDefinition>*/}
         </ScrollView>
       </Dialog.ScrollArea>
       <Dialog.Actions>
@@ -63,7 +66,7 @@ export default function SongDialog({ hideDialog, song }) {
           <Button
             onPress={() =>
               sendRequest(
-                async () => await deleteRequest(song?.id),
+                async () => await deleteAlbum(album?.id),
                 "Song deleted"
               )
             }
@@ -73,7 +76,7 @@ export default function SongDialog({ hideDialog, song }) {
           <Button
             onPress={handleSubmit((data) =>
               sendRequest(
-                async () => await saveRequest(song?.id, data),
+                async () => await saveAlbum(album?.id, data),
                 "Song saved"
               )
             )}
@@ -102,7 +105,7 @@ function FormDefinition({ creating, ...rest }) {
           },
           textInputProps: {
             mode: "flat",
-            label: "Song name",
+            label: "Album name",
             style: styles.textInput,
           },
         },
@@ -136,7 +139,7 @@ function FormDefinition({ creating, ...rest }) {
           },
           textInputProps: {
             mode: "flat",
-            label: "Song description",
+            label: "Album description",
             style: styles.textInput,
           },
         },
@@ -171,14 +174,26 @@ function FormDefinition({ creating, ...rest }) {
   );
 }
 
-SongDialog.propTypes = {
+AlbumDialog.propTypes = {
   hideDialog: PropTypes.func,
-  song: PropTypes.shape({
+  album: PropTypes.shape({
     id: PropTypes.any,
     name: PropTypes.string,
     description: PropTypes.string,
-    artists: PropTypes.string,
     genre: PropTypes.string,
+    songs: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+        artists: PropTypes.arrayOf(
+          PropTypes.shape({
+            name: PropTypes.string.isRequired,
+          }).isRequired
+        ),
+        genre: PropTypes.string.isRequired,
+      })
+    ),
   }),
 };
 
