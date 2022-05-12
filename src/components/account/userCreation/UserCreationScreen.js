@@ -5,7 +5,7 @@ import { webApi, fetch } from "../../../util/services.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
-import UserImagePicker from "../UserImagePicker";
+import UserImagePicker from "../../formUtil/ImagePicker";
 import { Button, ActivityIndicator } from "react-native-paper";
 import { View, Text } from "react-native";
 import PropTypes from "prop-types";
@@ -63,8 +63,11 @@ export default function UserCreationScreen({ navigation }) {
       )}
       pointerEvents={loading ? "none" : "auto"}
     >
-      {loading ? <ActivityIndicator size="large" style={styles.activityIndicator} />
-      : <UserForm onSubmit={onSubmit} />}
+      {loading ? (
+        <ActivityIndicator size="large" style={styles.activityIndicator} />
+      ) : (
+        <UserForm onSubmit={onSubmit} />
+      )}
     </SafeAreaView>
   );
 }
@@ -169,7 +172,7 @@ function SelectPreferences({ preferences, setPreferences }) {
       {allPreferences.map((preference, i) => (
         <Button
           key={i}
-          style={{margin: 6}}
+          style={{ margin: 6 }}
           mode={preferences.includes(preference) ? "contained" : "outlined"}
           onPress={() => {
             if (preferences.includes(preference)) {

@@ -12,12 +12,9 @@ import ManageMySongs from "./account/manageSongs/ManageMySongs";
 import { getAuth } from "firebase/auth";
 import { StackActions } from "@react-navigation/native";
 import MyProfileScreen from "./account/MyProfileScreen";
-<<<<<<< Updated upstream
 import UserCreationScreen from "./account/userCreation/UserCreationScreen";
 import appContext from "./appContext";
-=======
 import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
->>>>>>> Stashed changes
 
 const StackNavigator = createNativeStackNavigator();
 const navigation = createNavigationContainerRef();
@@ -56,7 +53,6 @@ export default function Stack() {
   }, []);
 
   return (
-<<<<<<< Updated upstream
     <appContext.Provider
       value={{ song, stop, queue, setSong, setStop, setQueue }}
     >
@@ -87,40 +83,13 @@ export default function Stack() {
             component={MyProfileScreen}
             options={{ title: "My Profile", headerShown: true }}
           />
+          <StackNavigator.Screen
+            name="ManageMyAlbums"
+            component={ManageMyAlbums}
+            options={{ title: "Manage my albums", headerShown: true }}
+          />
         </StackNavigator.Navigator>
       </NavigationContainer>
     </appContext.Provider>
-=======
-    <NavigationContainer ref={navigation}>
-      <StackNavigator.Navigator
-        initialRouteName="Loading"
-        screenOptions={{ headerShown: false }}
-      >
-        <StackNavigator.Screen name="Loading" component={LoadingScreen} />
-        <StackNavigator.Screen name="Login" component={LoginScreen} />
-        <StackNavigator.Screen name="Home" component={HomeScreen} />
-        <StackNavigator.Screen
-          name="ManageMySongs"
-          component={ManageMySongs}
-          options={{ title: "Manage my songs", headerShown: true }}
-        />
-        <StackNavigator.Screen
-          name="RegisterScreen"
-          component={RegisterScreen}
-          options={{ title: "Create your account", headerShown: true }}
-        />
-        <StackNavigator.Screen
-          name="MyProfileScreen"
-          component={MyProfileScreen}
-          options={{ title: "My Profile", headerShown: true }}
-        />
-        <StackNavigator.Screen
-          name="ManageMyAlbums"
-          component={ManageMyAlbums}
-          options={{ title: "Manage my albums", headerShown: true }}
-        />
-      </StackNavigator.Navigator>
-    </NavigationContainer>
->>>>>>> Stashed changes
   );
 }

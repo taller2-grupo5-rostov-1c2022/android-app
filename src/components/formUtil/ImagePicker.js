@@ -3,8 +3,8 @@ import { Text } from "react-native-paper";
 import PropTypes from "prop-types";
 import styles from "../styles";
 import { View } from "react-native";
-import FilePicker from "../formUtil/FilePicker";
-import { UserImage } from "./UserImage";
+import FilePicker from "./FilePicker";
+import { UserImage } from "../general/RoundedImage";
 
 export default function UserImagePicker({ customProps, ...rest }) {
   const { initialImageUri } = customProps;
@@ -18,7 +18,11 @@ export default function UserImagePicker({ customProps, ...rest }) {
           fileType: "image/*",
           setStatus,
           button: (
-            <UserImage size={200} imageUri={status?.uri ?? initialImageUri} />
+            <UserImage
+              size={200}
+              imageUri={status?.uri ?? initialImageUri}
+              icon="account"
+            />
           ),
         }}
       />

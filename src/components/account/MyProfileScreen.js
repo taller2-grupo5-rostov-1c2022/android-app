@@ -10,7 +10,6 @@ const FormData = global.FormData;
 
 export default function MyProfileScreen() {
   const [_loading, setLoading] = useState(false);
-
   let {
     data: user,
     error,

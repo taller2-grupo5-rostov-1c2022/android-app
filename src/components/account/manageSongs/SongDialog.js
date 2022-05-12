@@ -6,7 +6,7 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { SongPicker } from "./SongPicker";
 import styles from "../../styles";
-import { saveSong, deleteSong } from "../../../util/songRequests";
+import { saveSong, deleteSong } from "../../../util/requests";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Table from "../../formUtil/Table";
 

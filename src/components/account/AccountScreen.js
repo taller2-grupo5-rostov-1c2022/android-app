@@ -5,7 +5,7 @@ import styles from "../styles.js";
 import { getAuth, signOut } from "firebase/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { UserImage } from "./UserImage.js";
+import { UserImage } from "../general/RoundedImage.js";
 import PropTypes from "prop-types";
 import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError.js";
@@ -46,6 +46,7 @@ export default function AccountScreen() {
           imageUri={user?.pfp}
           onPress={() => navigation.push("MyProfileScreen")}
           size={100}
+          icon="account"
         />
         <View style={{ marginLeft: "5%", justifyContent: "center", flex: 1 }}>
           <Subheading style={{ fontSize: 20, flexWrap: "wrap", maxHeight: 45 }}>

@@ -3,7 +3,7 @@ import { Avatar } from "react-native-paper";
 import PropTypes from "prop-types";
 import { TouchableOpacity, Image, View } from "react-native";
 
-export function UserImage({ onPress, imageUri, size }) {
+export function UserImage({ onPress, imageUri, size, icon }) {
   let avatar = null;
 
   if (imageUri)
@@ -22,7 +22,7 @@ export function UserImage({ onPress, imageUri, size }) {
         />
       </View>
     );
-  else avatar = <Avatar.Icon size={size} icon="account" />;
+  else avatar = <Avatar.Icon size={size} icon={icon} />;
 
   if (onPress)
     return <TouchableOpacity onPress={onPress}>{avatar}</TouchableOpacity>;
@@ -32,5 +32,6 @@ export function UserImage({ onPress, imageUri, size }) {
 UserImage.propTypes = {
   onPress: PropTypes.func,
   imageUri: PropTypes.string,
-  size: PropTypes.number,
+  size: PropTypes.number.isRequired,
+  icon: PropTypes.string.isRequired,
 };
