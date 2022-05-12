@@ -9,6 +9,7 @@ import UserImagePicker from "../../formUtil/ImagePicker";
 import { Button, ActivityIndicator } from "react-native-paper";
 import { View, Text } from "react-native";
 import PropTypes from "prop-types";
+import { VALID_GENRES } from "../../../util/constants.js";
 const FormData = global.FormData;
 
 export default function UserCreationScreen({ navigation }) {
@@ -156,8 +157,6 @@ UserForm.propTypes = {
 };
 
 function SelectPreferences({ preferences, setPreferences }) {
-  const allPreferences = ["Rock", "Pop", "Classic", "Indie"];
-
   return (
     <View style={styles.formWidthFlex}>
       <Text
@@ -169,7 +168,7 @@ function SelectPreferences({ preferences, setPreferences }) {
         Preferences:
         {"\n "}
       </Text>
-      {allPreferences.map((preference, i) => (
+      {VALID_GENRES.map((preference, i) => (
         <Button
           key={i}
           style={{ margin: 6 }}
