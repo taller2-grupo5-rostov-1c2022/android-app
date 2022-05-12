@@ -4,11 +4,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError";
 import PropTypes from "prop-types";
-import { json_fetcher, useSWR, webApi, fetch } from "../../util/services.js";
+import {
+  json_fetcher,
+  useSWR,
+  useSWRConfig,
+  webApi,
+  fetch,
+} from "../../util/services.js";
 import { UserForm } from "./userCreation/UserCreationScreen.js";
 const FormData = global.FormData;
 
 export default function MyProfileScreen() {
+  const { mutate } = useSWRConfig();
   const [_loading, setLoading] = useState(false);
 
   let {
@@ -35,6 +42,7 @@ export default function MyProfileScreen() {
       body,
     })
       .then(() => {
+        mutate(webApi + "/songs/my_users/");
         globalThis.toast.show("Updated Profile", {
           duration: 3000,
         });
