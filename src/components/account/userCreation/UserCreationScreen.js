@@ -9,6 +9,7 @@ import UserImagePicker from "../UserImagePicker";
 import { Button, ActivityIndicator } from "react-native-paper";
 import { View, Text } from "react-native";
 import PropTypes from "prop-types";
+import { VALID_GENRES } from "../../../util/constants.js";
 const FormData = global.FormData;
 
 export default function UserCreationScreen({ navigation }) {
@@ -63,8 +64,11 @@ export default function UserCreationScreen({ navigation }) {
       )}
       pointerEvents={loading ? "none" : "auto"}
     >
-      {loading ? <ActivityIndicator size="large" style={styles.activityIndicator} />
-      : <UserForm onSubmit={onSubmit} />}
+      {loading ? (
+        <ActivityIndicator size="large" style={styles.activityIndicator} />
+      ) : (
+        <UserForm onSubmit={onSubmit} />
+      )}
     </SafeAreaView>
   );
 }
@@ -153,8 +157,6 @@ UserForm.propTypes = {
 };
 
 function SelectPreferences({ preferences, setPreferences }) {
-  const allPreferences = ["Rock", "Pop", "Classic", "Indie"];
-
   return (
     <View style={styles.formWidthFlex}>
       <Text
@@ -166,10 +168,10 @@ function SelectPreferences({ preferences, setPreferences }) {
         Preferences:
         {"\n "}
       </Text>
-      {allPreferences.map((preference, i) => (
+      {VALID_GENRES.map((preference, i) => (
         <Button
           key={i}
-          style={{margin: 6}}
+          style={{ margin: 6 }}
           mode={preferences.includes(preference) ? "contained" : "outlined"}
           onPress={() => {
             if (preferences.includes(preference)) {
