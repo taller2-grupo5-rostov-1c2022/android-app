@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
 import UserImagePicker from "../UserImagePicker";
-import { Button } from "react-native-paper";
+import { Button, ActivityIndicator } from "react-native-paper";
 import { View, Text } from "react-native";
 import PropTypes from "prop-types";
 const FormData = global.FormData;
@@ -63,7 +63,8 @@ export default function UserCreationScreen({ navigation }) {
       )}
       pointerEvents={loading ? "none" : "auto"}
     >
-      {loading ? <>LOADER</> : <UserForm onSubmit={onSubmit} />}
+      {loading ? <ActivityIndicator size="large" style={styles.activityIndicator} />
+      : <UserForm onSubmit={onSubmit} />}
     </SafeAreaView>
   );
 }
