@@ -25,11 +25,7 @@ export default function RegisterScreen({ navigation }) {
     setAuthing(true);
     try {
       await createUserWithEmailAndPassword(auth, data.email, data.password);
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "UserCreation" }],
-      });
+      navigation.pop();
     } catch (err) {
       setError(err);
       setAuthing(false);
@@ -110,7 +106,7 @@ function RegisterForm({ control, setFocus }) {
 
 RegisterScreen.propTypes = {
   navigation: PropTypes.shape({
-    reset: PropTypes.func.isRequired,
+    pop: PropTypes.func.isRequired,
   }).isRequired,
 };
 

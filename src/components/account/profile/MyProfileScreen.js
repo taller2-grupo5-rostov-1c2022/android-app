@@ -1,16 +1,16 @@
 import { useState } from "react";
-import styles from "../styles.js";
+import styles from "../../styles.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Portal, ActivityIndicator } from "react-native-paper";
-import { FirebaseError } from "./login/FirebaseError";
+import { FirebaseError } from "../login/FirebaseError";
 import PropTypes from "prop-types";
 import {
   json_fetcher,
   useSWRImmutable,
   webApi,
   fetch,
-} from "../../util/services.js";
-import { UserForm } from "./userCreation/UserCreationScreen.js";
+} from "../../../util/services.js";
+import { UserForm } from "./UserForm";
 const FormData = global.FormData;
 
 export default function MyProfileScreen() {

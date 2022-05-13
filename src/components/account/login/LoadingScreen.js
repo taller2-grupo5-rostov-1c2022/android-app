@@ -6,7 +6,7 @@ import { View, Image } from "react-native";
 
 export default function LoadingScreen() {
   return (
-    <View style={styles.containerCenter}>
+    <View style={[styles.container, styles.containerCenter]}>
       <Image source={image} style={styles.bigLogo} />
       <ActivityIndicator
         size="large"
