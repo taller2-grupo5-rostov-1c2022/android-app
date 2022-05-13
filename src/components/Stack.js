@@ -7,18 +7,23 @@ import ManageMySongs from "./account/manageSongs/ManageMySongs";
 import MyProfileScreen from "./account/profile/MyProfileScreen";
 import SessionManager from "./account/profile/SessionManager";
 import appContext from "./appContext";
+import AudioController from "./general/AudioController";
 import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 
 const StackNavigator = createNativeStackNavigator();
 
 export default function Stack() {
   const [song, setSong] = useState("");
+  const [paused, setPaused] = useState(false);
   const [stop, setStop] = useState(false);
+  const [previous, setPrevious] = useState(false);
+  const [next, setNext] = useState(false);
   const [queue, setQueue] = useState([]);
 
   return (
     <appContext.Provider
-      value={{ song, stop, queue, setSong, setStop, setQueue }}
+      value={{ song, paused, stop, queue, previous, next,
+      setSong, setPaused, setStop, setQueue, setPrevious, setNext }}
     >
       <NavigationContainer>
         <StackNavigator.Navigator
@@ -52,6 +57,7 @@ export default function Stack() {
           />
         </StackNavigator.Navigator>
       </NavigationContainer>
+      <AudioController/>
     </appContext.Provider>
   );
 }
