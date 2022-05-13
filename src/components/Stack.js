@@ -14,6 +14,7 @@ import { StackActions } from "@react-navigation/native";
 import MyProfileScreen from "./account/MyProfileScreen";
 import UserCreationScreen from "./account/userCreation/UserCreationScreen";
 import appContext from "./appContext";
+import AudioController from "./general/AudioController";
 
 const StackNavigator = createNativeStackNavigator();
 const navigation = createNavigationContainerRef();
@@ -43,7 +44,10 @@ export default function Stack() {
   const auth = getAuth();
 
   const [song, setSong] = useState("");
+  const [paused, setPaused] = useState(false);
   const [stop, setStop] = useState(false);
+  const [previous, setPrevious] = useState(false);
+  const [next, setNext] = useState(false);
   const [queue, setQueue] = useState([]);
 
   useEffect(() => {
@@ -53,7 +57,8 @@ export default function Stack() {
 
   return (
     <appContext.Provider
-      value={{ song, stop, queue, setSong, setStop, setQueue }}
+      value={{ song, paused, stop, queue, previous, next,
+      setSong, setPaused, setStop, setQueue, setPrevious, setNext }}
     >
       <NavigationContainer ref={navigation}>
         <StackNavigator.Navigator
@@ -84,6 +89,7 @@ export default function Stack() {
           />
         </StackNavigator.Navigator>
       </NavigationContainer>
+      <AudioController/>
     </appContext.Provider>
   );
 }
