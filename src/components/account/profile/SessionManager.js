@@ -17,10 +17,9 @@ export default function SessionManager({ navigation }) {
     loggedIn: false,
   });
 
-  const onUser = () => {
-    let user = getAuth()?.currentUser;
+  const onUser = (name) => {
     let greet = "";
-    if (user?.displayName) greet = `Welcome back, ${user?.displayName}!`;
+    if (name) greet = `Welcome back, ${name}!`;
     else greet = "Welcome to Spotifiuby!";
     toast.show(greet, {
       duration: 3000,
@@ -61,7 +60,7 @@ export default function SessionManager({ navigation }) {
     signOut(getAuth()).catch();
   };
 
-  if (status.loading && !status.loggedIn) return <LoadingScreen />;
+  if (status.loading) return <LoadingScreen />;
   if (!status.loggedIn) return <LoginScreen navigation={navigation} />;
 
   return (
@@ -80,22 +79,26 @@ export default function SessionManager({ navigation }) {
 }
 
 async function fetchUser(onUser, setStatus, url, options) {
+  setStatus((prev) => ({ ...prev, loading: true }));
   try {
     let data = await fetch(url, options);
     data = await data.json();
-    if (data.id) onUser();
+    if (data.id) onUser(data?.name);
     else setStatus({ fetched: true, loading: false, loggedIn: true });
   } catch (e) {
     console.error(e);
+    const auth = getAuth();
+    if (auth?.currentUser) await signOut(auth);
+
     toast.show(
       `Error ${
         options ? "creating your account" : "logging you in"
-      }, please try again later`,
+      }, please try again later :(`,
       {
         duration: 3000,
       }
     );
-    setStatus({ loading: false, loggedIn: false, fetched: false });
+    setStatus((prev) => ({ ...prev, loading: false }));
   }
 }
 

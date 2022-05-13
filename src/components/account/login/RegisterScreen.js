@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
-import { emailRegex } from "../../../util/regex.js";
+import { emailRegex } from "../../../util/constants";
 
 export default function RegisterScreen({ navigation }) {
   const auth = getAuth();
@@ -33,7 +33,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   const { handleSubmit, control, setFocus } = useForm({
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: {
       email: "",
       password: "",

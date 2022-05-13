@@ -16,7 +16,7 @@ import image from "../../../img/logo.png";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
-import { emailRegex } from "../../../util/regex.js";
+import { emailRegex } from "../../../util/constants";
 import { GoogleSignIn } from "./GoogleSignIn.js";
 
 export default function LoginScreen({ navigation }) {
@@ -46,7 +46,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   const { handleSubmit, control, setFocus } = useForm({
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: {
       email: "",
       password: "",

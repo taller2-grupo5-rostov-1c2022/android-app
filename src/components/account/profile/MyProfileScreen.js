@@ -11,6 +11,7 @@ import {
   fetch,
 } from "../../../util/services.js";
 import { UserForm } from "./UserForm";
+import { ScrollView } from "react-native";
 const FormData = global.FormData;
 
 export default function MyProfileScreen() {
@@ -57,19 +58,20 @@ export default function MyProfileScreen() {
 
   return (
     <SafeAreaView
-      style={[styles.container, styles.containerCenter].concat(
-        loading ? styles.disabled : []
-      )}
+      style={[styles.container].concat(loading ? styles.disabled : [])}
       pointerEvents={loading ? "none" : "auto"}
     >
-      <UserForm
-        onSubmit={onSubmit}
-        defaultValues={{
-          ...user,
-          preferences: JSON.parse(user?.interests),
-          image: user.pfp,
-        }}
-      />
+      <ScrollView contentContainerStyle={styles.containerCenter}>
+        <UserForm
+          onSubmit={onSubmit}
+          defaultValues={{
+            ...user,
+            preferences: JSON.parse(user?.interests),
+            image: user.pfp,
+          }}
+        />
+      </ScrollView>
+
       <Portal>
         {loading ? (
           <ActivityIndicator size="large" style={styles.activityIndicator} />
