@@ -26,7 +26,7 @@ export default function AlbumDialog({ hideDialog, data }) {
         VALID_SUB_LEVELS.map((lvl) => lvl.value).includes(data.sub_level)
           ? data.sub_level
           : VALID_SUB_LEVELS[0].value,
-      songs: data?.songs?.map((song) => song.id) ?? null,
+      songs_ids: data?.songs?.map((song) => song.id) ?? null,
     },
     mode: "onChange",
   });
@@ -221,7 +221,7 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           options: VALID_SUB_LEVELS,
         },
         {
-          name: "songs",
+          name: "songs_ids",
           type: "custom",
           JSX: Checklist,
           rules: {
