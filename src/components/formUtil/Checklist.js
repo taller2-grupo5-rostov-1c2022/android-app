@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
-import { Checkbox, HelperText, List } from "react-native-paper";
-import { View } from "react-native";
+import { Checkbox, HelperText, Title, List } from "react-native-paper";
+import { View, TouchableOpacity } from "react-native";
+import styles from "../styles";
 
 // Checklist para usar con los forms.
 // allOptions es un array con todas las opciones que se pueden seleccionar
-// en forma de props de un List.Item.
-// formProp es la propiedad que se devuelve en el array de salida
+// allOptions.out es la propiedad que devuelve el formulario para ese valor
+// allOptions.listProps son las props del elemento de la lista
+// alignment es "center" o "left"
 export default function Checklist(props) {
   const {
     name,
     rules,
     control,
     defaultValue,
-    customProps: { allOptions, formProp, title, viewProps },
+    customProps: { allOptions, width, title },
   } = props;
 
   const { field } = useController({
@@ -29,41 +31,61 @@ export default function Checklist(props) {
     field.value?.length > 0 ? field.value : null
   );
 
-  const onPress = (props) =>
+  const onPress = (value) =>
     setValues((prev) => {
       const newValues = prev ? [...prev] : [];
-      if (newValues.includes(props[formProp]))
-        newValues.splice(newValues.indexOf(props[formProp]), 1);
-      else newValues.push(props[formProp]);
+      if (newValues.includes(value))
+        newValues.splice(newValues.indexOf(value), 1);
+      else newValues.push(value);
 
       if (newValues.length > 0) field.onChange(newValues);
       else field.onChange(null);
       return newValues;
     });
 
-  const getStatus = (props) => {
-    return values && values.includes(props[formProp]) ? "checked" : "unchecked";
+  const getStatus = (value) => {
+    return values && values.includes(value) ? "checked" : "unchecked";
   };
 
   let i = 0;
+  const padding = useMemo(() => getPadding(width), [width]);
   return (
-    <View {...viewProps}>
-      {title}
-      {allOptions.map((props) => (
-        <List.Item
+    <View
+      style={{ paddingHorizontal: padding, alignSelf: "center", width: "100%" }}
+    >
+      <Title>{title}</Title>
+      {allOptions.map((option) => (
+        <TouchableOpacity
+          style={styles.row}
           key={i++}
-          {...props}
-          left={() => (
-            <Checkbox
-              status={getStatus(props)}
-              onPress={() => onPress(props)}
-            />
-          )}
-        />
+          onPress={() => onPress(option.out)}
+        >
+          <List.Item
+            style={{
+              alignSelf: "center",
+              width: "100%",
+              paddingVertical: 4,
+              paddingHorizontal: 0,
+            }}
+            {...option.listProps}
+            left={() => (
+              <View style={{ alignSelf: "center" }}>
+                <Checkbox status={getStatus(option.out)} />
+              </View>
+            )}
+          />
+        </TouchableOpacity>
       ))}
       {err && <HelperText type={"error"}>{err}</HelperText>}
     </View>
   );
+}
+
+function getPadding(width) {
+  if (!width) return "0%";
+  const widthNumber = parseInt(width.replace("%", ""));
+  const padding = (100 - widthNumber) / 2;
+  return `${padding}%`;
 }
 
 Checklist.propTypes = {
@@ -73,9 +95,13 @@ Checklist.propTypes = {
   defaultValue: PropTypes.any,
   control: PropTypes.any,
   customProps: PropTypes.shape({
-    allOptions: PropTypes.array.isRequired,
-    formProp: PropTypes.string.isRequired,
-    viewProps: PropTypes.any,
-    title: PropTypes.any,
+    allOptions: PropTypes.arrayOf(
+      PropTypes.shape({
+        out: PropTypes.any.isRequired,
+        listProps: PropTypes.any,
+      }).isRequired
+    ).isRequired,
+    width: PropTypes.string.isRequired,
+    title: PropTypes.string,
   }).isRequired,
 };

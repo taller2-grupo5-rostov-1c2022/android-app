@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Dialog, Button, ActivityIndicator, Title } from "react-native-paper";
+import { Dialog, Button, ActivityIndicator } from "react-native-paper";
 import { ScrollView, View, Dimensions } from "react-native";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
@@ -118,10 +118,12 @@ async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
     songs = songs.filter(
       (song) => !song.album || (album && song.album?.id == album.id)
     );
-    songs = songs.map(({ name, artists, id }) => ({
-      title: name,
-      description: artists.map((artist) => artist.name).join(", "),
-      id,
+    songs = songs.map(({ name, id, artists }) => ({
+      listProps: {
+        title: name,
+        description: artists?.map((artist) => artist.name).join(", "),
+      },
+      out: id,
     }));
     if (songs.length == 0) {
       setStatus({ error: "You have no songs to add to an album" });
@@ -231,9 +233,9 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
             },
           },
           customProps: {
-            formProp: "id",
             allOptions: validSongs,
-            title: <Title>Songs</Title>,
+            title: "Songs",
+            width: "100%",
           },
         },
       ]}
@@ -270,9 +272,11 @@ FormDefinition.propTypes = {
   creating: PropTypes.bool,
   validSongs: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
+      out: PropTypes.number.isRequired,
+      listProps: PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+      }).isRequired,
     }).isRequired
   ).isRequired,
   initialImageUri: PropTypes.string,

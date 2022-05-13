@@ -6,7 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
 import ImagePicker from "../../formUtil/ImagePicker";
-import { Button, Title } from "react-native-paper";
+import { Button } from "react-native-paper";
+import { StyleSheet } from "react-native";
 import LoadingScreen from "../login/LoadingScreen.js";
 import PropTypes from "prop-types";
 import { VALID_GENRES } from "../../../util/constants.js";
@@ -150,19 +151,11 @@ export function UserForm({ onSubmit, defaultValues }) {
             JSX: Checklist,
             customProps: {
               allOptions: VALID_GENRES.map((name) => ({
-                title: name,
+                listProps: { title: name },
+                out: name,
               })),
-              formProp: "title",
-              title: (
-                <Title style={{ width: "100%", textAlign: "center" }}>
-                  Interests
-                </Title>
-              ),
-              viewProps: {
-                style: {
-                  alignItems: "flex-start",
-                },
-              },
+              title: "Interests",
+              width: StyleSheet.flatten(styles.formWidth).width,
             },
           },
         ]}
