@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import styles from "../styles";
 import { View } from "react-native";
 import FilePicker from "./FilePicker";
-import { UserImage } from "../general/RoundedImage";
+import { ShapedImage } from "../general/ShapedImage";
 
 export default function UserImagePicker({ customProps, ...rest }) {
   const { initialImageUri } = customProps;
@@ -18,10 +18,11 @@ export default function UserImagePicker({ customProps, ...rest }) {
           fileType: "image/*",
           setStatus,
           button: (
-            <UserImage
+            <ShapedImage
               size={200}
               imageUri={status?.uri ?? initialImageUri}
               icon="account"
+              shape="circle"
             />
           ),
         }}

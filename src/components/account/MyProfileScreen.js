@@ -4,7 +4,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError";
 import PropTypes from "prop-types";
-import { json_fetcher, useSWR, webApi, fetch } from "../../util/services.js";
+import {
+  json_fetcher,
+  useSWRImmutable,
+  webApi,
+  fetch,
+} from "../../util/services.js";
 import { UserForm } from "./userCreation/UserCreationScreen.js";
 const FormData = global.FormData;
 
@@ -15,7 +20,8 @@ export default function MyProfileScreen() {
     error,
     isValidating,
     mutate,
-  } = useSWR(webApi + "/songs/my_users/", json_fetcher);
+  } = useSWRImmutable(webApi + "/songs/my_users/", json_fetcher);
+  // uso el immutable ya que esto se usa solo para popular el formulario al inico
   const loading = _loading || (isValidating && !user && !error);
 
   const onSubmit = async (data) => {
@@ -35,16 +41,17 @@ export default function MyProfileScreen() {
         },
         body,
       });
+      await mutate();
       globalThis.toast.show("Updated Profile", {
         duration: 3000,
       });
-    } catch {
+    } catch (e) {
+      console.error(e);
       globalThis.toast.show("An error has occurred", {
         duration: 3000,
       });
     }
 
-    await mutate();
     setLoading(false);
   };
 

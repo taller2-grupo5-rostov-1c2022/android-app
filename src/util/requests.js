@@ -8,7 +8,7 @@ function getUrl(songKey) {
 export async function saveSong(songKey, formData) {
   let { file, artists, ...rest } = formData;
   const method = songKey ? "PUT" : "POST";
-
+  console.log("key: ", songKey);
   let body = new FormData();
   Object.entries(rest).forEach(([key, value]) => body.append(key, value));
   if (file) body.append("file", file, "song");
@@ -32,12 +32,14 @@ export async function deleteSong(songKey) {
 }
 
 export async function saveAlbum(albumKey, formData) {
+  console.log(albumKey, formData);
   return async () => {
     null;
   };
 }
 
-export async function deleteAlbum(albumKey, formData) {
+export async function deleteAlbum(albumKey) {
+  console.log(albumKey);
   return async () => {
     null;
   };

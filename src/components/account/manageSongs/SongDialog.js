@@ -9,14 +9,15 @@ import styles from "../../styles";
 import { saveSong, deleteSong } from "../../../util/requests";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Table from "../../formUtil/Table";
+import { VALID_GENRES } from "../../../util/constants";
 
-export default function SongDialog({ hideDialog, song }) {
+export default function SongDialog({ hideDialog, data }) {
   const { handleSubmit, ...rest } = useForm({
     defaultValues: {
-      name: song?.name ?? "",
-      artists: song?.artists?.map((artist) => artist.name) ?? null,
-      description: song?.description ?? "",
-      genre: song?.genre ?? "",
+      name: data?.name ?? "",
+      artists: data?.artists?.map((artist) => artist.name) ?? null,
+      description: data?.description ?? "",
+      genre: data?.genre ?? "",
       file: null,
     },
     mode: "onChange",
@@ -55,10 +56,10 @@ export default function SongDialog({ hideDialog, song }) {
       onDismiss={hideDialog}
       style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
     >
-      <Dialog.Title>{song?.id ? "Edit" : "Add"} Song</Dialog.Title>
+      <Dialog.Title>{data?.id ? "Edit" : "Add"} Song</Dialog.Title>
       <Dialog.ScrollArea>
         <ScrollView style={{ marginVertical: 5 }}>
-          <FormDefinition {...rest} creating={!song?.id}></FormDefinition>
+          <FormDefinition {...rest} creating={!data?.id}></FormDefinition>
         </ScrollView>
       </Dialog.ScrollArea>
       <Dialog.Actions>
@@ -67,7 +68,7 @@ export default function SongDialog({ hideDialog, song }) {
           <Button
             onPress={() =>
               sendRequest(
-                async () => await deleteSong(song?.id),
+                async () => await deleteSong(data?.id),
                 "Song deleted"
               )
             }
@@ -75,9 +76,9 @@ export default function SongDialog({ hideDialog, song }) {
             Delete
           </Button>
           <Button
-            onPress={handleSubmit((data) =>
+            onPress={handleSubmit((formData) =>
               sendRequest(
-                async () => await saveSong(song?.id, data),
+                async () => await saveSong(data?.id, formData),
                 "Song saved"
               )
             )}
@@ -145,7 +146,7 @@ function FormDefinition({ creating, ...rest }) {
           },
         },
         {
-          type: "text",
+          type: "select",
           name: "genre",
           rules: {
             required: {
@@ -158,6 +159,10 @@ function FormDefinition({ creating, ...rest }) {
             label: "Song genre",
             style: styles.textInput,
           },
+          options: VALID_GENRES.map((genre) => ({
+            value: genre,
+            label: genre,
+          })),
         },
         {
           name: "file",
@@ -177,7 +182,7 @@ function FormDefinition({ creating, ...rest }) {
 
 SongDialog.propTypes = {
   hideDialog: PropTypes.func,
-  song: PropTypes.shape({
+  data: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
     description: PropTypes.string,

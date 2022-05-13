@@ -1,26 +1,33 @@
-import React from "react";
-import { Dialog, Button, ActivityIndicator } from "react-native-paper";
+import React, { useEffect } from "react";
+import { Dialog, Button, ActivityIndicator, Title } from "react-native-paper";
 import { ScrollView, View, Dimensions } from "react-native";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
-import { SongPicker } from "./SongPicker";
 import styles from "../../styles";
 import { saveAlbum, deleteAlbum } from "../../../util/requests";
+import { VALID_GENRES } from "../../../util/constants";
 import { ErrorDialog } from "../../general/ErrorDialog";
-import Table from "../../formUtil/Table";
+import Checklist from "../../formUtil/Checklist";
+import { fetch, webApi } from "../../../util/services";
 
-export default function AlbumDialog({ hideDialog, album }) {
+export default function AlbumDialog({ hideDialog, data }) {
+  console.log(data);
   const { handleSubmit, ...rest } = useForm({
     defaultValues: {
-      name: album?.name ?? "",
-      description: album?.description ?? "",
-      genre: album?.genre ?? "",
-      songs: album?.songs,
+      name: data?.name ?? "",
+      description: data?.description ?? "",
+      genre: data?.genre ?? "",
+      songs: data?.songs?.map((song) => song.id) ?? null,
     },
     mode: "onChange",
   });
-  const [status, setStatus] = React.useState({ error: null, loading: false });
+  const [status, setStatus] = React.useState({ error: null, loading: true });
+  const [validSongs, setValidSongs] = React.useState([]);
+
+  useEffect(() => {
+    getMySongs(hideDialog, setStatus, setValidSongs, data);
+  }, []);
 
   if (status.error)
     return <ErrorDialog error={status.error} hideDialog={hideDialog} />;
@@ -54,10 +61,14 @@ export default function AlbumDialog({ hideDialog, album }) {
       onDismiss={hideDialog}
       style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
     >
-      <Dialog.Title>{album?.id ? "Edit" : "Add"} Album</Dialog.Title>
+      <Dialog.Title>{data?.id ? "Edit" : "Add"} Album</Dialog.Title>
       <Dialog.ScrollArea>
         <ScrollView style={{ marginVertical: 5 }}>
-          {/*<FormDefinition {...rest} creating={!song?.id}></FormDefinition>*/}
+          <FormDefinition
+            {...rest}
+            creating={!data?.id}
+            validSongs={validSongs}
+          ></FormDefinition>
         </ScrollView>
       </Dialog.ScrollArea>
       <Dialog.Actions>
@@ -66,7 +77,7 @@ export default function AlbumDialog({ hideDialog, album }) {
           <Button
             onPress={() =>
               sendRequest(
-                async () => await deleteAlbum(album?.id),
+                async () => await deleteAlbum(data?.id),
                 "Song deleted"
               )
             }
@@ -76,7 +87,7 @@ export default function AlbumDialog({ hideDialog, album }) {
           <Button
             onPress={handleSubmit((data) =>
               sendRequest(
-                async () => await saveAlbum(album?.id, data),
+                async () => await saveAlbum(data?.id, data),
                 "Song saved"
               )
             )}
@@ -89,7 +100,36 @@ export default function AlbumDialog({ hideDialog, album }) {
   );
 }
 
-function FormDefinition({ creating, ...rest }) {
+async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
+  try {
+    let songs = await fetch(webApi + "/songs/my_songs/", {
+      method: "GET",
+    });
+    songs = await songs.json();
+    songs = songs.filter(
+      (song) => !song.album_info || (album && song.album_info?.id == album.id)
+    );
+    songs = songs.map(({ name, artists, id }) => ({
+      title: name,
+      description: artists.map((artist) => artist.name).join(", "),
+      id,
+    }));
+    if (songs.length == 0) {
+      setStatus({ error: "You have no songs to add to an album" });
+    } else {
+      setValidSongs(songs);
+      setStatus({ loading: false });
+    }
+  } catch (e) {
+    hideDialog();
+    console.error(e);
+    toast.show("Could not get songs to edit album", {
+      duration: 3000,
+    });
+  }
+}
+
+function FormDefinition({ creating, validSongs, ...rest }) {
   return (
     <FormBuilder
       {...rest}
@@ -110,25 +150,6 @@ function FormDefinition({ creating, ...rest }) {
           },
         },
         {
-          type: "custom",
-          name: "artists",
-          JSX: Table,
-          rules: {
-            required: {
-              value: creating,
-              message: "Authors are required",
-            },
-          },
-          customProps: {
-            textInputProps: {
-              mode: "flat",
-              label: "Author",
-              style: styles.textInput,
-            },
-            addIndex: true,
-          },
-        },
-        {
           type: "text",
           name: "description",
           rules: {
@@ -144,7 +165,7 @@ function FormDefinition({ creating, ...rest }) {
           },
         },
         {
-          type: "text",
+          type: "select",
           name: "genre",
           rules: {
             required: {
@@ -154,19 +175,28 @@ function FormDefinition({ creating, ...rest }) {
           },
           textInputProps: {
             mode: "flat",
-            label: "Song genre",
+            label: "Album genre",
             style: styles.textInput,
           },
+          options: VALID_GENRES.map((genre) => ({
+            value: genre,
+            label: genre,
+          })),
         },
         {
-          name: "file",
+          name: "songs",
           type: "custom",
-          JSX: SongPicker,
+          JSX: Checklist,
           rules: {
             required: {
               value: creating,
-              message: "File is required",
+              message: "At least one song is required",
             },
+          },
+          customProps: {
+            formProp: "id",
+            allOptions: validSongs,
+            title: <Title>Songs</Title>,
           },
         },
       ]}
@@ -176,7 +206,7 @@ function FormDefinition({ creating, ...rest }) {
 
 AlbumDialog.propTypes = {
   hideDialog: PropTypes.func,
-  album: PropTypes.shape({
+  data: PropTypes.shape({
     id: PropTypes.any,
     name: PropTypes.string,
     description: PropTypes.string,
@@ -199,4 +229,11 @@ AlbumDialog.propTypes = {
 
 FormDefinition.propTypes = {
   creating: PropTypes.bool,
+  validSongs: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+    }).isRequired
+  ).isRequired,
 };

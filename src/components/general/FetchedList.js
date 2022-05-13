@@ -10,9 +10,10 @@ export default function FetchedList({
   response,
   onPress,
   propGen,
+  forceLoading,
   ...viewProps
 }) {
-  if (!response.data && response.isValidating)
+  if ((!response.data && response.isValidating) || forceLoading)
     return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (response.error) return <ErrorMessage error={response.error} />;
@@ -53,6 +54,7 @@ FetchedList.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   propGen: PropTypes.func.isRequired,
+  forceLoading: PropTypes.bool,
 };
 
 ErrorMessage.propTypes = {

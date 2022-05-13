@@ -1,4 +1,5 @@
-export { default as useSWR } from "swr";
+export { default as useSWR, useSWRConfig } from "swr";
+export { default as useSWRImmutable } from "swr/immutable";
 import { getAuth } from "firebase/auth";
 
 export const webApi = "https://rostov-gateway.herokuapp.com";

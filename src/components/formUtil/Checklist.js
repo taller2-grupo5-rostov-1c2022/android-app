@@ -31,7 +31,7 @@ export default function Checklist(props) {
 
   const onPress = (props) =>
     setValues((prev) => {
-      const newValues = [...prev];
+      const newValues = prev ? [...prev] : [];
       if (newValues.includes(props[formProp]))
         newValues.splice(newValues.indexOf(props[formProp]), 1);
       else newValues.push(props[formProp]);

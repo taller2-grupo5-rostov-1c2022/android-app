@@ -42,19 +42,23 @@ export default function UserCreationScreen({ navigation }) {
     if (image) body.append("img", image, "pfp");
     if (preferences) body.append("interests", JSON.stringify(preferences));
 
-    fetch(webApi + "/songs/users/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-      body,
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.id) onUser();
-        else setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    try {
+      let data = await fetch(webApi + "/songs/users/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body,
+      });
+      data = await data.json();
+      if (data.id) onUser();
+      else setLoading(false);
+    } catch (e) {
+      toast.show("Error logging in, please try again later", {
+        duration: 3000,
+      });
+      navigation.replace("Login");
+    }
   };
 
   return (
@@ -76,6 +80,7 @@ export default function UserCreationScreen({ navigation }) {
 UserCreationScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
   }).isRequired,
 };
 
