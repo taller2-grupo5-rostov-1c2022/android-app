@@ -9,11 +9,14 @@ var audio = {
   sound: null,
 };
 
-const play = async (uri) => {
+
+
+const play = async (uri, _onPlaybackStatusUpdate) => {
   if (uri && audio.uri !== uri) {
     await audio.sound?.stopAsync();
     await audio.sound?.unloadAsync();
     const { sound } = await Audio.Sound.createAsync({ uri });
+    sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
     audio.uri = uri;
     audio.sound = sound;
   }
@@ -23,6 +26,8 @@ const play = async (uri) => {
 const pause = () => {
   audio?.sound?.pauseAsync();
 };
+
+
 
 const stop = async () => {
   if (audio.sound != null) {
@@ -45,11 +50,23 @@ const Player = () => {
 
   const context = React.useContext(appContext);
   const playIcon = paused ? "play" : "pause";
+
+  const _onPlaybackStatusUpdate = (playbackStatus) => {
+    if (playbackStatus.isLoaded)  {
+      if (playbackStatus.didJustFinish) {
+        console.log(context.queue);
+        if (context.queue.length == 0) return;
+        const nextSong = context.queue[0];
+        context.setQueue(queue => queue.slice(1));
+        context.setSong(nextSong);
+      }
+    }
+  };
  
   const onPress = () => {
     console.log(prevSongs);
     if (paused) {
-      play(context.song.url);
+      play(context.song.url, _onPlaybackStatusUpdate);
       setPaused(false);
     } else {
       pause();
@@ -88,7 +105,7 @@ const Player = () => {
       url: context.song.url,
    })
     if (!paused) {
-      play(context.song.url);
+      play(context.song.url, _onPlaybackStatusUpdate);
     }
   }, [context.song]);
 
