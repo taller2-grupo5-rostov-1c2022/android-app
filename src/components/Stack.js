@@ -14,6 +14,7 @@ import { StackActions } from "@react-navigation/native";
 import MyProfileScreen from "./account/MyProfileScreen";
 import UserCreationScreen from "./account/userCreation/UserCreationScreen";
 import appContext from "./appContext";
+import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 
 const StackNavigator = createNativeStackNavigator();
 const navigation = createNavigationContainerRef();
@@ -29,13 +30,6 @@ function onAuthStateChanged(user) {
     navigate("Login");
     return;
   }
-
-  let greet = "";
-  if (user.displayName) greet = `Welcome back, ${user.displayName}!`;
-  else greet = "Welcome to Spotifiuby!";
-  toast.show(greet, {
-    duration: 3000,
-  });
   navigate("UserCreation");
 }
 
@@ -81,6 +75,11 @@ export default function Stack() {
             name="MyProfileScreen"
             component={MyProfileScreen}
             options={{ title: "My Profile", headerShown: true }}
+          />
+          <StackNavigator.Screen
+            name="ManageMyAlbums"
+            component={ManageMyAlbums}
+            options={{ title: "Manage my albums", headerShown: true }}
           />
         </StackNavigator.Navigator>
       </NavigationContainer>

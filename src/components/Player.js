@@ -9,8 +9,6 @@ var audio = {
   sound: null,
 };
 
-
-
 const play = async (uri, _onPlaybackStatusUpdate) => {
   if (uri && audio.uri !== uri) {
     await audio.sound?.stopAsync();
@@ -26,8 +24,6 @@ const play = async (uri, _onPlaybackStatusUpdate) => {
 const pause = () => {
   audio?.sound?.pauseAsync();
 };
-
-
 
 const stop = async () => {
   if (audio.sound != null) {
@@ -45,24 +41,24 @@ const Player = () => {
     name: "",
     artists: [],
     url: "",
- });
+  });
   const [prevSongs, setprevSongs] = React.useState([]);
 
   const context = React.useContext(appContext);
   const playIcon = paused ? "play" : "pause";
 
   const _onPlaybackStatusUpdate = (playbackStatus) => {
-    if (playbackStatus.isLoaded)  {
+    if (playbackStatus.isLoaded) {
       if (playbackStatus.didJustFinish) {
         console.log(context.queue);
         if (context.queue.length == 0) return;
         const nextSong = context.queue[0];
-        context.setQueue(queue => queue.slice(1));
+        context.setQueue((queue) => queue.slice(1));
         context.setSong(nextSong);
       }
     }
   };
- 
+
   const onPress = () => {
     console.log(prevSongs);
     if (paused) {
@@ -80,22 +76,22 @@ const Player = () => {
     const prevSong = prevSongs[prevSongs.length - 1];
     setprevSongs(prevSongs.slice(0, -1));
     setIsPrevious(true);
-    context.setQueue(queue => [currentSong, ...queue]);
+    context.setQueue((queue) => [currentSong, ...queue]);
     context.setSong(prevSong);
-  }
+  };
 
   const next = () => {
     console.log(context.queue);
     if (context.queue.length == 0) return;
     const nextSong = context.queue[0];
-    context.setQueue(queue => queue.slice(1));
+    context.setQueue((queue) => queue.slice(1));
     context.setSong(nextSong);
   };
 
   React.useEffect(() => {
     console.log(context.song.name);
     if (currentSong.name && !isPrevious) {
-      setprevSongs(prevSongs => [...prevSongs, currentSong]);
+      setprevSongs((prevSongs) => [...prevSongs, currentSong]);
       console.log(prevSongs);
     }
     setIsPrevious(false);
@@ -103,7 +99,7 @@ const Player = () => {
       name: context.song.name,
       artists: context.song.artists,
       url: context.song.url,
-   })
+    });
     if (!paused) {
       play(context.song.url, _onPlaybackStatusUpdate);
     }
@@ -118,18 +114,13 @@ const Player = () => {
 
   return (
     <Appbar style={styles.bottom}>
-      <Appbar.Content 
-      title={context.song.name} 
-      subtitle={context.song.artists?.map((artist) => artist.name).join(", ")} />
-      <Appbar.Action
-        icon="skip-previous"
-        onPress={previous}
+      <Appbar.Content
+        title={context.song.name}
+        subtitle={context.song.artists?.map((artist) => artist.name).join(", ")}
       />
+      <Appbar.Action icon="skip-previous" onPress={previous} />
       <Appbar.Action icon={playIcon} onPress={onPress} />
-      <Appbar.Action
-        icon="skip-next"
-        onPress={next}
-      />
+      <Appbar.Action icon="skip-next" onPress={next} />
     </Appbar>
   );
 };

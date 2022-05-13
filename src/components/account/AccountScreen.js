@@ -5,7 +5,7 @@ import styles from "../styles.js";
 import { getAuth, signOut } from "firebase/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { UserImage } from "./UserImage.js";
+import { ShapedImage } from "../general/ShapedImage.js";
 import PropTypes from "prop-types";
 import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError.js";
@@ -25,8 +25,15 @@ export default function AccountScreen() {
   const loading = isValidating && !user && !error;
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      updateRole(setRole);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
     updateRole(setRole);
-  }, []);
+  });
 
   const onLogOut = () => {
     signOut(getAuth())
@@ -42,10 +49,12 @@ export default function AccountScreen() {
     <SafeAreaView style={styles.container}>
       <Headline>My Account</Headline>
       <View style={[styles.row, { margin: "4%" }]}>
-        <UserImage
+        <ShapedImage
           imageUri={user?.pfp}
           onPress={() => navigation.push("MyProfileScreen")}
           size={100}
+          icon="account"
+          shape="circle"
         />
         <View style={{ marginLeft: "5%", justifyContent: "center", flex: 1 }}>
           <Subheading style={{ fontSize: 20, flexWrap: "wrap", maxHeight: 45 }}>
@@ -91,6 +100,13 @@ function ArtistMenu({ role, navigation }) {
         )}
         onPress={() => {
           navigation.push("ManageMySongs");
+        }}
+      />
+      <List.Item
+        title="Manage my albums..."
+        left={(props) => <List.Icon {...props} icon="archive"></List.Icon>}
+        onPress={() => {
+          navigation.push("ManageMyAlbums");
         }}
       />
     </List.Section>
