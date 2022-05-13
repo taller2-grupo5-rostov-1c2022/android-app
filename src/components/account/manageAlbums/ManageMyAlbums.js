@@ -9,7 +9,15 @@ export default function ManageMyAlbums() {
     return {
       title: album.name,
       description: album.genre,
-      left: () => <ShapedImage icon="album" size={60} shape="square" />,
+      left: () => (
+        <ShapedImage
+          icon="album"
+          size={50}
+          shape="square"
+          imageUri={album.cover}
+          style={{ marginRight: 10 }}
+        />
+      ),
     };
   };
 

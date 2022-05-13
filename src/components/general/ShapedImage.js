@@ -5,21 +5,19 @@ import { TouchableOpacity, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 // sha
-export function ShapedImage({ onPress, imageUri, size, icon, shape }) {
+export function ShapedImage({ onPress, imageUri, size, icon, shape, style }) {
   let avatar = null;
   let theme = useTheme();
-  //console.log(imageUri);
   if (imageUri)
     avatar = (
       <Image style={{ width: size, height: size }} source={{ uri: imageUri }} />
     );
   else avatar = <Icon size={size / 2} name={icon} />;
 
-  const style = {
+  const imageStyle = {
     overflow: "hidden",
     width: size,
     height: size,
-    borderRadius: shape == "circle" ? size / 2 : size,
     backgroundColor: theme.colors.primary,
     borderColor: theme.colors.primary,
     borderWidth: 1,
@@ -28,8 +26,10 @@ export function ShapedImage({ onPress, imageUri, size, icon, shape }) {
     zIndex: 1,
   };
 
+  if (shape == "circle") imageStyle.borderRadius = size / 2;
+
   return (
-    <TouchableOpacity style={style} onPress={onPress}>
+    <TouchableOpacity style={[imageStyle, style]} onPress={onPress}>
       {avatar}
     </TouchableOpacity>
   );
@@ -41,4 +41,5 @@ ShapedImage.propTypes = {
   size: PropTypes.number.isRequired,
   icon: PropTypes.string.isRequired,
   shape: PropTypes.oneOf(["circle", "square"]).isRequired,
+  style: PropTypes.any,
 };

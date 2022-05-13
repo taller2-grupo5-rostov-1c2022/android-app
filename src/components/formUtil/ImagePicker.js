@@ -6,8 +6,8 @@ import { View } from "react-native";
 import FilePicker from "./FilePicker";
 import { ShapedImage } from "../general/ShapedImage";
 
-export default function UserImagePicker({ customProps, ...rest }) {
-  const { initialImageUri } = customProps;
+export default function ImagePicker({ customProps, ...rest }) {
+  const { initialImageUri, ...customRest } = customProps;
   const [status, setStatus] = useState(null);
 
   return (
@@ -19,10 +19,8 @@ export default function UserImagePicker({ customProps, ...rest }) {
           setStatus,
           button: (
             <ShapedImage
-              size={200}
               imageUri={status?.uri ?? initialImageUri}
-              icon="account"
-              shape="circle"
+              {...customRest}
             />
           ),
         }}
@@ -34,8 +32,12 @@ export default function UserImagePicker({ customProps, ...rest }) {
   );
 }
 
-UserImagePicker.propTypes = {
+ImagePicker.propTypes = {
   customProps: PropTypes.shape({
     initialImageUri: PropTypes.string.isRequired,
+    shape: PropTypes.oneOf(["circle", "square"]).isRequired,
+    icon: PropTypes.string.isRequired,
+    size: PropTypes.number.isRequired,
+    styles: PropTypes.any,
   }).isRequired,
 };

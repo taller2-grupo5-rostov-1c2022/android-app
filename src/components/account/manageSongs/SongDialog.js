@@ -17,7 +17,10 @@ export default function SongDialog({ hideDialog, data }) {
       name: data?.name ?? "",
       artists: data?.artists?.map((artist) => artist.name) ?? null,
       description: data?.description ?? "",
-      genre: data?.genre ?? "",
+      genre:
+        data?.genre && VALID_GENRES.includes(data.genre)
+          ? data.genre
+          : VALID_GENRES[0],
       file: null,
     },
     mode: "onChange",

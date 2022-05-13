@@ -6,18 +6,26 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import styles from "../../styles";
 import { saveAlbum, deleteAlbum } from "../../../util/requests";
-import { VALID_GENRES } from "../../../util/constants";
+import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/constants";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Checklist from "../../formUtil/Checklist";
 import { fetch, webApi } from "../../../util/services";
+import ImagePicker from "../../formUtil/ImagePicker";
 
 export default function AlbumDialog({ hideDialog, data }) {
-  console.log(data);
   const { handleSubmit, ...rest } = useForm({
     defaultValues: {
       name: data?.name ?? "",
       description: data?.description ?? "",
-      genre: data?.genre ?? "",
+      genre:
+        data?.genre && VALID_GENRES.includes(data.genre)
+          ? data.genre
+          : VALID_GENRES[0],
+      sub_level:
+        data?.sub_level &&
+        VALID_SUB_LEVELS.map((lvl) => lvl.value).includes(data.sub_level)
+          ? data.sub_level
+          : VALID_SUB_LEVELS[0].value,
       songs: data?.songs?.map((song) => song.id) ?? null,
     },
     mode: "onChange",
@@ -68,6 +76,7 @@ export default function AlbumDialog({ hideDialog, data }) {
             {...rest}
             creating={!data?.id}
             validSongs={validSongs}
+            initialImageUri={data?.cover}
           ></FormDefinition>
         </ScrollView>
       </Dialog.ScrollArea>
@@ -85,9 +94,9 @@ export default function AlbumDialog({ hideDialog, data }) {
             Delete
           </Button>
           <Button
-            onPress={handleSubmit((data) =>
+            onPress={handleSubmit((formData) =>
               sendRequest(
-                async () => await saveAlbum(data?.id, data),
+                async () => await saveAlbum(data?.id, formData),
                 "Song saved"
               )
             )}
@@ -129,11 +138,23 @@ async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
   }
 }
 
-function FormDefinition({ creating, validSongs, ...rest }) {
+function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
   return (
     <FormBuilder
       {...rest}
       formConfigArray={[
+        {
+          type: "custom",
+          name: "cover",
+          JSX: ImagePicker,
+          customProps: {
+            shape: "square",
+            icon: "album",
+            size: 200,
+            initialImageUri,
+            style: { alignSelf: "center" },
+          },
+        },
         {
           type: "text",
           name: "name",
@@ -184,6 +205,22 @@ function FormDefinition({ creating, validSongs, ...rest }) {
           })),
         },
         {
+          type: "select",
+          name: "sub_level",
+          rules: {
+            required: {
+              value: creating,
+              message: "Subscription level is required",
+            },
+          },
+          textInputProps: {
+            mode: "flat",
+            label: "Subscription level",
+            style: styles.textInput,
+          },
+          options: VALID_SUB_LEVELS,
+        },
+        {
           name: "songs",
           type: "custom",
           JSX: Checklist,
@@ -211,6 +248,8 @@ AlbumDialog.propTypes = {
     name: PropTypes.string,
     description: PropTypes.string,
     genre: PropTypes.string,
+    cover: PropTypes.string,
+    sub_level: PropTypes.number,
     songs: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
@@ -236,4 +275,5 @@ FormDefinition.propTypes = {
       description: PropTypes.string.isRequired,
     }).isRequired
   ).isRequired,
+  initialImageUri: PropTypes.string,
 };

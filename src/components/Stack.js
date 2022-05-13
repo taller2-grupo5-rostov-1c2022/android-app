@@ -30,13 +30,6 @@ function onAuthStateChanged(user) {
     navigate("Login");
     return;
   }
-
-  let greet = "";
-  if (user.displayName) greet = `Welcome back, ${user.displayName}!`;
-  else greet = "Welcome to Spotifiuby!";
-  toast.show(greet, {
-    duration: 3000,
-  });
   navigate("UserCreation");
 }
 
