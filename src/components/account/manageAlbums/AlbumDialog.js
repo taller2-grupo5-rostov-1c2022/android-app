@@ -116,7 +116,7 @@ async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
     });
     songs = await songs.json();
     songs = songs.filter(
-      (song) => !song.album_info || (album && song.album_info?.id == album.id)
+      (song) => !song.album || (album && song.album?.id == album.id)
     );
     songs = songs.map(({ name, artists, id }) => ({
       title: name,
