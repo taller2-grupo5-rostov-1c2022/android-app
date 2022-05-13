@@ -9,11 +9,12 @@ var audio = {
   sound: null,
 };
 
-const play = async (uri) => {
+const play = async (uri, _onPlaybackStatusUpdate) => {
   if (uri && audio.uri !== uri) {
     await audio.sound?.stopAsync();
-    audio.sound?.unloadAsync();
+    await audio.sound?.unloadAsync();
     const { sound } = await Audio.Sound.createAsync({ uri });
+    sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
     audio.uri = uri;
     audio.sound = sound;
   }
@@ -24,15 +25,44 @@ const pause = () => {
   audio?.sound?.pauseAsync();
 };
 
+const stop = async () => {
+  if (audio.sound != null) {
+    await audio.sound?.stopAsync();
+    await audio.sound?.unloadAsync();
+    audio.uri = null;
+    audio.sound = null;
+  }
+};
+
 const Player = () => {
   const [paused, setPaused] = React.useState(false);
+  const [isPrevious, setIsPrevious] = React.useState(false);
+  const [currentSong, setCurrentSong] = React.useState({
+    name: "",
+    artists: [],
+    url: "",
+  });
+  const [prevSongs, setprevSongs] = React.useState([]);
 
   const context = React.useContext(appContext);
   const playIcon = paused ? "play" : "pause";
 
+  const _onPlaybackStatusUpdate = (playbackStatus) => {
+    if (playbackStatus.isLoaded) {
+      if (playbackStatus.didJustFinish) {
+        console.log(context.queue);
+        if (context.queue.length == 0) return;
+        const nextSong = context.queue[0];
+        context.setQueue((queue) => queue.slice(1));
+        context.setSong(nextSong);
+      }
+    }
+  };
+
   const onPress = () => {
+    console.log(prevSongs);
     if (paused) {
-      play(context.songUrl);
+      play(context.song.url, _onPlaybackStatusUpdate);
       setPaused(false);
     } else {
       pause();
@@ -40,24 +70,57 @@ const Player = () => {
     }
   };
 
+  const previous = () => {
+    console.log(prevSongs.length);
+    if (prevSongs.length == 0) return;
+    const prevSong = prevSongs[prevSongs.length - 1];
+    setprevSongs(prevSongs.slice(0, -1));
+    setIsPrevious(true);
+    context.setQueue((queue) => [currentSong, ...queue]);
+    context.setSong(prevSong);
+  };
+
+  const next = () => {
+    console.log(context.queue);
+    if (context.queue.length == 0) return;
+    const nextSong = context.queue[0];
+    context.setQueue((queue) => queue.slice(1));
+    context.setSong(nextSong);
+  };
+
   React.useEffect(() => {
-    if (!paused) {
-        play(context.songUrl);
+    console.log(context.song.name);
+    if (currentSong.name && !isPrevious) {
+      setprevSongs((prevSongs) => [...prevSongs, currentSong]);
+      console.log(prevSongs);
     }
-  }, [context.songUrl]);
+    setIsPrevious(false);
+    setCurrentSong({
+      name: context.song.name,
+      artists: context.song.artists,
+      url: context.song.url,
+    });
+    if (!paused) {
+      play(context.song.url, _onPlaybackStatusUpdate);
+    }
+  }, [context.song]);
+
+  React.useEffect(() => {
+    if (context.stop) {
+      stop();
+      context.setStop(false);
+    }
+  }, [context.stop]);
 
   return (
     <Appbar style={styles.bottom}>
-      <Appbar.Content title={context.name} subtitle={context.artist} />
-      <Appbar.Action
-        icon="heart-outline"
-        onPress={() => console.log("Pressed heart")}
+      <Appbar.Content
+        title={context.song.name}
+        subtitle={context.song.artists?.map((artist) => artist.name).join(", ")}
       />
+      <Appbar.Action icon="skip-previous" onPress={previous} />
       <Appbar.Action icon={playIcon} onPress={onPress} />
-      <Appbar.Action
-        icon="skip-next"
-        onPress={() => console.log("Pressed skip")}
-      />
+      <Appbar.Action icon="skip-next" onPress={next} />
     </Appbar>
   );
 };

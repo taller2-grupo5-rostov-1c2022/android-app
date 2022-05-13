@@ -3,15 +3,18 @@
     "name": "Spotifiuby",
     "slug": "Spotifiuby",
     "version": "0.1.3",
-    "icon": "./src/img/icon.png",
+    "icon": "src/img/icon.png",
     "android": {
+      "icon": "src/img/icon.png",
       "adaptiveIcon": {
-        "foregroundImage": "./src/img/icon.png",
+        "foregroundImage": "src/img/icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "ar.uba.fi.rostov.spotifiuby"
     },
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "scheme": "spotifiuby"
   }
 }
