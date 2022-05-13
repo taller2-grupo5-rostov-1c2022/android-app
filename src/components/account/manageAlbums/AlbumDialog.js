@@ -87,7 +87,7 @@ export default function AlbumDialog({ hideDialog, data }) {
             onPress={() =>
               sendRequest(
                 async () => await deleteAlbum(data?.id),
-                "Song deleted"
+                "Album deleted"
               )
             }
           >
@@ -97,7 +97,7 @@ export default function AlbumDialog({ hideDialog, data }) {
             onPress={handleSubmit((formData) =>
               sendRequest(
                 async () => await saveAlbum(data?.id, formData),
-                "Song saved"
+                "Album saved"
               )
             )}
           >
