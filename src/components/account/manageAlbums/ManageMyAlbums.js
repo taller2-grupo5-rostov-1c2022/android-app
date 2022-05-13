@@ -1,56 +1,32 @@
 import React from "react";
-import { Portal, FAB } from "react-native-paper";
-import styles from "../styles.js";
-import { SafeAreaView } from "react-native-safe-area-context";
-import AlbumDialog from "./SongDialog";
+import AlbumDialog from "./AlbumDialog";
 import PropTypes from "prop-types";
-import FetchedList from "../general/FetchedList";
-import { webApi, json_fetcher, useSWR } from "../../util/services";
+import CrudList from "../../general/CrudList.js";
+import { ShapedImage } from "../../general/ShapedImage";
 
 export default function ManageMyAlbums() {
-  const [dialog, setDialog] = React.useState(null);
-  const response = useSWR(webApi + "/my_albums/", json_fetcher);
-
-  const hideDialog = () => {
-    setDialog(null);
-    response.mutate();
-  };
-
-  const addDialog = (album) => {
-    setDialog(
-      <Portal>
-        <AlbumDialog hideDialog={hideDialog} album={album} />
-      </Portal>
-    );
-  };
-
-  const propGen = (song) => {
+  const propGen = (album) => {
     return {
-      title: song.name,
-      description: "by " + song.artists?.map((artist) => artist.artist_name),
+      title: album.name,
+      description: album.genre,
+      left: () => (
+        <ShapedImage
+          icon="album"
+          size={50}
+          shape="square"
+          imageUri={album.cover}
+          style={{ marginRight: 10 }}
+        />
+      ),
     };
   };
 
   return (
-    <SafeAreaView
-      style={[styles.container].concat(dialog ? styles.disabled : [])}
-      pointerEvents={dialog ? "none" : "auto"}
-    >
-      <Portal>
-        <FAB
-          icon="plus"
-          style={styles.fab}
-          disabled={dialog != null}
-          onPress={addDialog}
-        />
-      </Portal>
-      <Portal>{dialog}</Portal>
-      <FetchedList
-        response={response}
-        onPress={(album) => addDialog(album)}
-        propGen={propGen}
-      />
-    </SafeAreaView>
+    <CrudList
+      url="/songs/my_albums/"
+      editDialog={AlbumDialog}
+      propGen={propGen}
+    />
   );
 }
 

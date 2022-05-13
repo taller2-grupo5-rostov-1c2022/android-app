@@ -3,11 +3,11 @@ import { Text } from "react-native-paper";
 import PropTypes from "prop-types";
 import styles from "../styles";
 import { View } from "react-native";
-import FilePicker from "../formUtil/FilePicker";
-import { UserImage } from "./UserImage";
+import FilePicker from "./FilePicker";
+import { ShapedImage } from "../general/ShapedImage";
 
-export default function UserImagePicker({ customProps, ...rest }) {
-  const { initialImageUri } = customProps;
+export default function ImagePicker({ customProps, ...rest }) {
+  const { initialImageUri, ...customRest } = customProps;
   const [status, setStatus] = useState(null);
 
   return (
@@ -18,7 +18,10 @@ export default function UserImagePicker({ customProps, ...rest }) {
           fileType: "image/*",
           setStatus,
           button: (
-            <UserImage size={200} imageUri={status?.uri ?? initialImageUri} />
+            <ShapedImage
+              imageUri={status?.uri ?? initialImageUri}
+              {...customRest}
+            />
           ),
         }}
       />
@@ -29,8 +32,12 @@ export default function UserImagePicker({ customProps, ...rest }) {
   );
 }
 
-UserImagePicker.propTypes = {
+ImagePicker.propTypes = {
   customProps: PropTypes.shape({
     initialImageUri: PropTypes.string.isRequired,
+    shape: PropTypes.oneOf(["circle", "square"]).isRequired,
+    icon: PropTypes.string.isRequired,
+    size: PropTypes.number.isRequired,
+    styles: PropTypes.any,
   }).isRequired,
 };

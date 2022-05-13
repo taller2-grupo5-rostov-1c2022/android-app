@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     width: "80%",
     flexDirection: "row",
     alignItems: "center",
-    flexWrap:'wrap',
+    flexWrap: "wrap",
   },
   bold: {
     fontWeight: "bold",

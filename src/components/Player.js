@@ -22,18 +22,13 @@ const Player = () => {
 
   return (
     <Appbar style={styles.bottom}>
-      <Appbar.Content 
-      title={context.song.name} 
-      subtitle={context.song.artists?.map((artist) => artist.name).join(", ")} />
-      <Appbar.Action
-        icon="skip-previous"
-        onPress={previous}
+      <Appbar.Content
+        title={context.song.name}
+        subtitle={context.song.artists?.map((artist) => artist.name).join(", ")}
       />
+      <Appbar.Action icon="skip-previous" onPress={previous} />
       <Appbar.Action icon={playIcon} onPress={togglePlay} />
-      <Appbar.Action
-        icon="skip-next"
-        onPress={next}
-      />
+      <Appbar.Action icon="skip-next" onPress={next} />
     </Appbar>
   );
 };

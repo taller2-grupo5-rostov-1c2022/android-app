@@ -10,18 +10,21 @@ import { webApi, json_fetcher, useSWR } from "../../util/services";
 // editDialog es el componente a mostrar al editar. recibe la data del elemento a editar
 export default function CrudList({ url, editDialog, propGen }) {
   const [dialog, setDialog] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
   const response = useSWR(`${webApi}${url}`, json_fetcher);
   const Dialog = editDialog;
 
-  const hideDialog = () => {
+  const hideDialog = async () => {
+    setLoading(true);
     setDialog(null);
-    response.mutate();
+    await response.mutate();
+    setLoading(false);
   };
 
   const addDialog = (data) => {
     setDialog(
       <Portal>
-        <Dialog hideDialog={hideDialog} song={data} />
+        <Dialog hideDialog={hideDialog} data={data} />
       </Portal>
     );
   };
@@ -36,7 +39,7 @@ export default function CrudList({ url, editDialog, propGen }) {
           icon="plus"
           style={styles.fab}
           disabled={dialog != null}
-          onPress={addDialog}
+          onPress={() => addDialog()}
         />
       </Portal>
       <Portal>{dialog}</Portal>
@@ -44,6 +47,7 @@ export default function CrudList({ url, editDialog, propGen }) {
         response={response}
         onPress={(data) => addDialog(data)}
         propGen={propGen}
+        forceLoading={loading}
       />
     </SafeAreaView>
   );

@@ -5,35 +5,38 @@ import { webApi, fetch } from "../../../util/services.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
-import UserImagePicker from "../UserImagePicker";
-import { Button, ActivityIndicator } from "react-native-paper";
-import { View, Text } from "react-native";
+import ImagePicker from "../../formUtil/ImagePicker";
+import { Button } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import LoadingScreen from "../login/LoadingScreen.js";
 import PropTypes from "prop-types";
+import { VALID_GENRES } from "../../../util/constants.js";
+import Checklist from "../../formUtil/Checklist";
 const FormData = global.FormData;
 
 export default function UserCreationScreen({ navigation }) {
-  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState({ loading: false, fetched: false });
 
   const uid = getAuth()?.currentUser?.uid;
 
   const onUser = () => {
+    let user = getAuth()?.currentUser;
+    let greet = "";
+    if (user?.displayName) greet = `Welcome back, ${user?.displayName}!`;
+    else greet = "Welcome to Spotifiuby!";
+    toast.show(greet, {
+      duration: 3000,
+    });
     navigation.navigate("Home");
   };
 
   useEffect(async () => {
-    if (uid) {
-      fetch(webApi + "/songs/users/" + uid)
-        .then((res) => res.json())
-        .then((res) => {
-          if (!res?.id) setLoading(false);
-          else onUser();
-        })
-        .catch(() => setLoading(false));
-    } else setLoading(false);
+    if (uid) await fetchUser(onUser, setStatus, navigation);
+    else setStatus((prev) => ({ ...prev, fetched: true }));
   }, []);
 
   const onSubmit = async (data) => {
-    setLoading(true);
+    setStatus((prev) => ({ ...prev, loading: true }));
 
     let { image, preferences, ...rest } = data;
     let body = new FormData();
@@ -41,37 +44,58 @@ export default function UserCreationScreen({ navigation }) {
     if (image) body.append("img", image, "pfp");
     if (preferences) body.append("interests", JSON.stringify(preferences));
 
-    fetch(webApi + "/songs/users/", {
+    let options = {
       method: "POST",
       headers: {
         Accept: "application/json",
       },
       body,
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.id) onUser();
-        else setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    };
+
+    await fetchUser(onUser, setStatus, navigation, options);
   };
+
+  if (!status.fetched) return <LoadingScreen />;
 
   return (
     <SafeAreaView
       style={[styles.container, styles.containerCenter].concat(
-        loading ? styles.disabled : []
+        status.loading ? styles.disabled : []
       )}
-      pointerEvents={loading ? "none" : "auto"}
+      pointerEvents={status.loading ? "none" : "auto"}
     >
-      {loading ? <ActivityIndicator size="large" style={styles.activityIndicator} />
-      : <UserForm onSubmit={onSubmit} />}
+      <UserForm onSubmit={onSubmit} />
     </SafeAreaView>
   );
+}
+
+async function fetchUser(onUser, setStatus, navigation, options) {
+  try {
+    let data = await fetch(
+      webApi + (options ? "/songs/users/" : "/songs/my_users/"),
+      options
+    );
+    data = await data.json();
+    if (data.id) onUser();
+    else setStatus((prev) => ({ ...prev, loading: false }));
+  } catch (e) {
+    console.error(e);
+    toast.show(
+      `Error ${
+        options ? "creating your account" : "logging you in"
+      }, please try again later`,
+      {
+        duration: 3000,
+      }
+    );
+    navigation.replace("Login");
+  }
 }
 
 UserCreationScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
   }).isRequired,
 };
 
@@ -81,17 +105,10 @@ export function UserForm({ onSubmit, defaultValues }) {
       image: null,
       name: defaultValues?.name ?? "",
       location: defaultValues?.location ?? "",
+      preferences: defaultValues?.preferences,
     },
     mode: "onChange",
   });
-
-  const [preferences, setPreferences] = useState(
-    defaultValues?.preferences ?? []
-  );
-
-  const _onSubmit = (data) => {
-    onSubmit({ ...data, preferences });
-  };
 
   return (
     <>
@@ -102,9 +119,12 @@ export function UserForm({ onSubmit, defaultValues }) {
           {
             name: "image",
             type: "custom",
-            JSX: UserImagePicker,
+            JSX: ImagePicker,
             customProps: {
               initialImageUri: defaultValues?.image ?? undefined,
+              shape: "circle",
+              icon: "account",
+              size: 200,
             },
           },
           {
@@ -125,16 +145,25 @@ export function UserForm({ onSubmit, defaultValues }) {
               style: styles.formWidth,
             },
           },
+          {
+            name: "preferences",
+            type: "custom",
+            JSX: Checklist,
+            customProps: {
+              allOptions: VALID_GENRES.map((name) => ({
+                listProps: { title: name },
+                out: name,
+              })),
+              title: "Interests",
+              width: StyleSheet.flatten(styles.formWidth).width,
+            },
+          },
         ]}
-      />
-      <SelectPreferences
-        preferences={preferences}
-        setPreferences={setPreferences}
       />
       <Button
         style={{ marginTop: 20 }}
         mode="contained"
-        onPress={handleSubmit(_onSubmit)}
+        onPress={handleSubmit(onSubmit)}
       >
         Submit
       </Button>
@@ -150,43 +179,4 @@ UserForm.propTypes = {
     location: PropTypes.string,
     preferences: PropTypes.arrayOf(PropTypes.string),
   }),
-};
-
-function SelectPreferences({ preferences, setPreferences }) {
-  const allPreferences = ["Rock", "Pop", "Classic", "Indie"];
-
-  return (
-    <View style={styles.formWidthFlex}>
-      <Text
-        style={{
-          fontSize: 20,
-          color: "#777",
-        }}
-      >
-        Preferences:
-        {"\n "}
-      </Text>
-      {allPreferences.map((preference, i) => (
-        <Button
-          key={i}
-          style={{margin: 6}}
-          mode={preferences.includes(preference) ? "contained" : "outlined"}
-          onPress={() => {
-            if (preferences.includes(preference)) {
-              setPreferences(preferences.filter((p) => p !== preference));
-            } else {
-              setPreferences([...preferences, preference]);
-            }
-          }}
-        >
-          {preference}
-        </Button>
-      ))}
-    </View>
-  );
-}
-
-SelectPreferences.propTypes = {
-  preferences: PropTypes.arrayOf(PropTypes.string).isRequired,
-  setPreferences: PropTypes.func.isRequired,
 };
