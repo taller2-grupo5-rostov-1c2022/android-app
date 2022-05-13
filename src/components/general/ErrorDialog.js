@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 export function ErrorDialog({ error, hideDialog }) {
   return (
     <Dialog visible="true" onDismiss={hideDialog}>
-      <Dialog.Title>Error completing request</Dialog.Title>
+      <Dialog.Title>Error</Dialog.Title>
       <Dialog.Content>
         <Subheading>{error?.message}</Subheading>
       </Dialog.Content>

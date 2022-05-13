@@ -126,7 +126,7 @@ async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
       out: id,
     }));
     if (songs.length == 0) {
-      setStatus({ error: "You have no songs to add to an album" });
+      setStatus({ error: { message: "You have no songs to add to an album" } });
     } else {
       setValidSongs(songs);
       setStatus({ loading: false });
