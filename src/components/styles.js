@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
   containerCenter: {
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
   },
   button: {
     height: 40,
@@ -21,6 +20,9 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+  },
+  vPadding: {
+    paddingBottom: 10,
   },
   activityIndicator: {
     ...StyleSheet.absoluteFillObject,
@@ -48,10 +50,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   formWidth: {
-    width: "80%",
+    width: "90%",
   },
   formWidthFlex: {
-    width: "80%",
+    width: "90%",
     flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",

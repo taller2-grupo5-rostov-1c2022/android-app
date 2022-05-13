@@ -36,13 +36,8 @@ export default function AccountScreen() {
   });
 
   const onLogOut = () => {
-    signOut(getAuth())
-      .then(() => {
-        navigation.replace("Login");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    navigation.replace("SessionManager");
+    signOut(getAuth()).catch();
   };
 
   return (
