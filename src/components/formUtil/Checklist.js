@@ -27,9 +27,7 @@ export default function Checklist(props) {
   });
   const err = control.getFieldState(name).error?.message;
 
-  const [values, setValues] = useState(
-    field.value?.length > 0 ? field.value : null
-  );
+  const [values, setValues] = useState(field?.value ?? []);
 
   const onPress = (value) =>
     setValues((prev) => {
@@ -38,8 +36,7 @@ export default function Checklist(props) {
         newValues.splice(newValues.indexOf(value), 1);
       else newValues.push(value);
 
-      if (newValues.length > 0) field.onChange(newValues);
-      else field.onChange(null);
+      field.onChange(newValues);
       return newValues;
     });
 
@@ -76,7 +73,7 @@ export default function Checklist(props) {
           />
         </TouchableOpacity>
       ))}
-      {err && <HelperText type={"error"}>{err}</HelperText>}
+      {err ? <HelperText type={"error"}>{err}</HelperText> : null}
     </View>
   );
 }

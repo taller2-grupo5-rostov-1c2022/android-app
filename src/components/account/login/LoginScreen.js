@@ -16,7 +16,7 @@ import image from "../../../img/logo.png";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
-import { emailRegex } from "../../../util/constants";
+import { emailRegex } from "../../../util/general";
 import { GoogleSignIn } from "./GoogleSignIn.js";
 
 export default function LoginScreen({ navigation }) {

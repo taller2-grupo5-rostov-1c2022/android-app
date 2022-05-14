@@ -6,11 +6,12 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import styles from "../../styles";
 import { saveAlbum, deleteAlbum } from "../../../util/requests";
-import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/constants";
+import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/general";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Checklist from "../../formUtil/Checklist";
 import { fetch, webApi } from "../../../util/services";
 import ImagePicker from "../../formUtil/ImagePicker";
+import { inputValidator } from "../../../util/general";
 
 export default function AlbumDialog({ hideDialog, data }) {
   const { handleSubmit, ...rest } = useForm({
@@ -26,7 +27,7 @@ export default function AlbumDialog({ hideDialog, data }) {
         VALID_SUB_LEVELS.map((lvl) => lvl.value).includes(data.sub_level)
           ? data.sub_level
           : VALID_SUB_LEVELS[0].value,
-      songs_ids: data?.songs?.map((song) => song.id) ?? null,
+      songs_ids: data?.songs?.map((song) => song.id) ?? [],
     },
     mode: "onChange",
   });
@@ -156,15 +157,18 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
             initialImageUri,
             style: { alignSelf: "center" },
           },
+          rules: {
+            required: {
+              value: creating,
+              message: "Cover is required",
+            },
+          },
         },
         {
           type: "text",
           name: "name",
           rules: {
-            required: {
-              value: creating,
-              message: "Name is required",
-            },
+            validate: inputValidator("Name is required"),
           },
           textInputProps: {
             mode: "flat",
@@ -176,10 +180,7 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           type: "text",
           name: "description",
           rules: {
-            required: {
-              value: creating,
-              message: "Description is required",
-            },
+            validate: inputValidator("Description is required"),
           },
           textInputProps: {
             mode: "flat",
@@ -191,10 +192,7 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           type: "select",
           name: "genre",
           rules: {
-            required: {
-              value: creating,
-              message: "Genre is required",
-            },
+            validate: inputValidator("Genre is required"),
           },
           textInputProps: {
             mode: "flat",
@@ -211,7 +209,7 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           name: "sub_level",
           rules: {
             required: {
-              value: creating,
+              value: true,
               message: "Subscription level is required",
             },
           },
@@ -228,7 +226,7 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           JSX: Checklist,
           rules: {
             required: {
-              value: creating,
+              value: true,
               message: "At least one song is required",
             },
           },
@@ -269,7 +267,6 @@ AlbumDialog.propTypes = {
 };
 
 FormDefinition.propTypes = {
-  creating: PropTypes.bool,
   validSongs: PropTypes.arrayOf(
     PropTypes.shape({
       out: PropTypes.number.isRequired,
@@ -280,4 +277,5 @@ FormDefinition.propTypes = {
     }).isRequired
   ).isRequired,
   initialImageUri: PropTypes.string,
+  creating: PropTypes.bool.isRequired,
 };

@@ -9,7 +9,8 @@ import styles from "../../styles";
 import { saveSong, deleteSong } from "../../../util/requests";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Table from "../../formUtil/Table";
-import { VALID_GENRES } from "../../../util/constants";
+import { VALID_GENRES } from "../../../util/general";
+import { inputValidator } from "../../../util/general";
 
 export default function SongDialog({ hideDialog, data }) {
   const { handleSubmit, ...rest } = useForm({
@@ -94,19 +95,16 @@ export default function SongDialog({ hideDialog, data }) {
   );
 }
 
-function FormDefinition({ creating, ...rest }) {
+function FormDefinition(props) {
   return (
     <FormBuilder
-      {...rest}
+      {...props}
       formConfigArray={[
         {
           type: "text",
           name: "name",
           rules: {
-            required: {
-              value: creating,
-              message: "Name is required",
-            },
+            validate: inputValidator("Name is required"),
           },
           textInputProps: {
             mode: "flat",
@@ -120,8 +118,8 @@ function FormDefinition({ creating, ...rest }) {
           JSX: Table,
           rules: {
             required: {
-              value: creating,
-              message: "Authors are required",
+              value: true,
+              message: "At least one author is required",
             },
           },
           customProps: {
@@ -137,10 +135,7 @@ function FormDefinition({ creating, ...rest }) {
           type: "text",
           name: "description",
           rules: {
-            required: {
-              value: creating,
-              message: "Description is required",
-            },
+            validate: inputValidator("Description is required"),
           },
           textInputProps: {
             mode: "flat",
@@ -153,7 +148,7 @@ function FormDefinition({ creating, ...rest }) {
           name: "genre",
           rules: {
             required: {
-              value: creating,
+              value: true,
               message: "Genre is required",
             },
           },
@@ -173,7 +168,7 @@ function FormDefinition({ creating, ...rest }) {
           JSX: SongPicker,
           rules: {
             required: {
-              value: creating,
+              value: true,
               message: "File is required",
             },
           },
@@ -196,8 +191,4 @@ SongDialog.propTypes = {
     ),
     genre: PropTypes.string,
   }),
-};
-
-FormDefinition.propTypes = {
-  creating: PropTypes.bool,
 };

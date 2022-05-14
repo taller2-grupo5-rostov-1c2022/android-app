@@ -1,20 +1,9 @@
 import { useState } from "react";
-import { BottomNavigation, Text } from "react-native-paper";
+import { BottomNavigation } from "react-native-paper";
 import SongsScreen from "./SongsScreen";
 import AccountScreen from "./account/AccountScreen.js";
 import PropTypes from "prop-types";
-import styles from "./styles.js";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Player from "./Player";
-
-const AlbumsScreen = () => {
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text> TODO </Text>
-      <Player />
-    </SafeAreaView>
-  );
-};
+import AlbumsScreen from "./AlbumsScreen";
 
 export default function HomeScreen() {
   const [index, setIndex] = useState(0);

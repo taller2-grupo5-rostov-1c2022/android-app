@@ -1,7 +1,7 @@
 import React from "react";
 import { useTheme } from "react-native-paper";
 import PropTypes from "prop-types";
-import { TouchableOpacity, Image } from "react-native";
+import { TouchableOpacity, Image, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 // sha
@@ -23,16 +23,17 @@ export function ShapedImage({ onPress, imageUri, size, icon, shape, style }) {
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 1,
   };
 
   if (shape == "circle") imageStyle.borderRadius = size / 2;
 
-  return (
-    <TouchableOpacity style={[imageStyle, style]} onPress={onPress}>
-      {avatar}
-    </TouchableOpacity>
-  );
+  if (onPress)
+    return (
+      <TouchableOpacity style={[imageStyle, style]} onPress={onPress}>
+        {avatar}
+      </TouchableOpacity>
+    );
+  else return <View style={[imageStyle, style]}>{avatar}</View>;
 }
 
 ShapedImage.propTypes = {

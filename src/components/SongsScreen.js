@@ -8,6 +8,7 @@ import appContext from "./appContext";
 import FetchedList from "./general/FetchedList";
 import { Portal } from "react-native-paper";
 import { PlaylistMenuAdd } from "./general/PlaylistMenuAdd";
+import { getArtistsAsString } from "../util/general";
 
 export default function SongsScreen() {
   const songs = useSWR(webApi + "/songs/songs/", json_fetcher);
@@ -26,8 +27,7 @@ export default function SongsScreen() {
   const propGen = (song) => {
     return {
       title: song.name,
-      description:
-        "by " + song.artists?.map((artist) => artist.name).join(", "),
+      description: getArtistsAsString(song.artists),
       right: () => (
         <IconButton
           onPress={() => setVisible(true)}

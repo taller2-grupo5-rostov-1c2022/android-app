@@ -1,4 +1,4 @@
-import { VALID_GENRES } from "../../../util/constants.js";
+import { VALID_GENRES } from "../../../util/general.js";
 import Checklist from "../../formUtil/Checklist";
 import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
@@ -7,6 +7,7 @@ import { Button } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
 import styles from "../../styles.js";
 import PropTypes from "prop-types";
+import { inputValidator } from "../../../util/general.js";
 
 export function UserForm({ onSubmit, defaultValues, cancelButton }) {
   const { control, setFocus, handleSubmit } = useForm({
@@ -14,7 +15,7 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
       image: null,
       name: defaultValues?.name ?? "",
       location: defaultValues?.location ?? "",
-      preferences: defaultValues?.preferences,
+      preferences: defaultValues?.preferences ?? [],
     },
     mode: "onChange",
   });
@@ -30,7 +31,7 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
             type: "custom",
             JSX: ImagePicker,
             customProps: {
-              initialImageUri: defaultValues?.image ?? undefined,
+              initialImageUri: defaultValues?.image,
               shape: "circle",
               icon: "account",
               size: 200,
@@ -44,6 +45,9 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
               label: "User Name",
               style: styles.formWidth,
             },
+            rules: {
+              validate: inputValidator("Name is required"),
+            },
           },
           {
             type: "text",
@@ -52,6 +56,9 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
               mode: "flat",
               label: "Location",
               style: styles.formWidth,
+            },
+            rules: {
+              validate: inputValidator("Location is required"),
             },
           },
           {
