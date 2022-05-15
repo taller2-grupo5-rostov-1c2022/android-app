@@ -3,7 +3,7 @@ import { BottomNavigation } from "react-native-paper";
 import SongsScreen from "./SongsScreen";
 import AccountScreen from "./account/AccountScreen.js";
 import PropTypes from "prop-types";
-import AlbumsScreen from "./AlbumsScreen";
+import AlbumsScreen from "./albums/AlbumsScreen";
 
 export default function HomeScreen() {
   const [index, setIndex] = useState(0);

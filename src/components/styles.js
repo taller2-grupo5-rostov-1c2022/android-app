@@ -11,6 +11,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  modalMargin: {
     marginHorizontal: "2%",
   },
   containerWithPlayer: {
@@ -85,6 +87,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     margin: "2%",
+  },
+  listPlayerPadding: {
+    paddingBottom: "15%",
   },
 });
 

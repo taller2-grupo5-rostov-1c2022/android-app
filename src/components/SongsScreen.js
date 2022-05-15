@@ -40,7 +40,7 @@ export default function SongsScreen() {
 
   return (
     <Portal.Host>
-      <View style={styles.container}>
+      <View style={[styles.container, styles.listPlayerPadding]}>
         <Headline>Songs</Headline>
         <FetchedList response={songs} onPress={onPress} propGen={propGen} />
         <Portal>
