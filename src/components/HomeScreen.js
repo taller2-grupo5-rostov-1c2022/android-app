@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BottomNavigation } from "react-native-paper";
-import SongsScreen from "./SongsScreen";
+import SongsScreen from "./songs/SongsScreen";
 import AccountScreen from "./account/AccountScreen.js";
 import PropTypes from "prop-types";
 import AlbumsScreen from "./albums/AlbumsScreen";

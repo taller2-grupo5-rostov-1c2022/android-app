@@ -1,12 +1,12 @@
 import React from "react";
-import { webApi, useSWR, json_fetcher } from "../util/services";
+import { webApi, useSWR, json_fetcher } from "../../util/services";
 import { Headline, IconButton, Portal } from "react-native-paper";
-import styles from "./styles.js";
+import styles from "../styles.js";
 import { View } from "react-native";
-import Player from "./Player";
-import FetchedList from "./general/FetchedList";
-import { PlaylistMenuAdd } from "./general/PlaylistMenuAdd";
-import SongItem from "./songs/SongItem";
+import Player from "../Player";
+import FetchedList from "../general/FetchedList";
+import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
+import SongItem from "./SongItem";
 
 export default function SongsScreen() {
   const songs = useSWR(webApi + "/songs/songs/", json_fetcher);
