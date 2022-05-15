@@ -47,12 +47,7 @@ export default function AlbumDialog({ hideDialog, data }) {
   const sendRequest = async (requestSender, message) => {
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
-      const resp = await requestSender();
-      const json = await resp.json();
-      if (!resp.ok)
-        throw new Error(
-          `${resp.statusText} (${resp.status}):\n${JSON.stringify(json.detail)}`
-        );
+      await requestSender();
 
       if (message)
         globalThis.toast.show(message, {
@@ -115,7 +110,6 @@ async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
     let songs = await fetch(webApi + "/songs/my_songs/", {
       method: "GET",
     });
-    songs = await songs.json();
     songs = songs.filter(
       (song) => !song.album || (album && song.album?.id == album.id)
     );

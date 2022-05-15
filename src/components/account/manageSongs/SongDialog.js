@@ -37,12 +37,7 @@ export default function SongDialog({ hideDialog, data }) {
   const sendRequest = async (requestSender, message) => {
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
-      const resp = await requestSender();
-      const json = await resp.json();
-      if (!resp.ok)
-        throw new Error(
-          `${resp.statusText} (${resp.status}):\n${JSON.stringify(json.detail)}`
-        );
+      await requestSender();
 
       if (message)
         globalThis.toast.show(message, {

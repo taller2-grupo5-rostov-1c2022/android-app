@@ -1,5 +1,5 @@
 import React from "react";
-import { Headline, IconButton, Modal as _Modal } from "react-native-paper";
+import { Headline, IconButton, Modal as PaperModal } from "react-native-paper";
 import styles from "../styles";
 import { View } from "react-native";
 import PropTypes from "prop-types";
@@ -7,20 +7,21 @@ import { ScrollView } from "react-native";
 
 export default function Modal({ title, onDismiss, children, ...rest }) {
   return (
-    <_Modal
+    <PaperModal
       {...{ onDismiss, ...rest }}
-      contentContainerStyle={[styles.container, styles.modal]}
+      contentContainerStyle={styles.modal}
+      style={styles.modalContainer}
     >
       <View style={[styles.header, styles.modalMargin]}>
-        <Headline style={{ fontSize: "larger" }}>{title}</Headline>
+        <Headline style={{ fontSize: 20 }}>{title}</Headline>
         <IconButton icon="close" onPress={onDismiss} />
       </View>
       <ScrollView style={styles.modalMargin}>{children}</ScrollView>
-    </_Modal>
+    </PaperModal>
   );
 }
 
 Modal.propTypes = {
   title: PropTypes.string.isRequired,
-  ..._Modal.propTypes,
+  ...PaperModal.propTypes,
 };

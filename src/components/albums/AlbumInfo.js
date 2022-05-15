@@ -2,18 +2,18 @@ import React from "react";
 import Modal from "../general/Modal";
 import PropTypes from "prop-types";
 import { ShapedImage } from "../general/ShapedImage";
-import { View } from "react-native-web";
+import { View } from "react-native";
 import styles from "../styles";
 import {
   Caption,
   Subheading,
   Title,
   Text,
-  List,
   IconButton,
 } from "react-native-paper";
 import { getArtistsAsString } from "../../util/general";
 import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
+import SongItem from "../songs/SongItem";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
@@ -45,10 +45,9 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
           <Caption>{album?.description}</Caption>
           <View style={{ width: "100%" }}>
             {album?.songs?.map((song) => (
-              <List.Item
+              <SongItem
+                data={song}
                 key={i++}
-                title={song.name}
-                description={getArtistsAsString(song.artists)}
                 right={() => (
                   <IconButton
                     onPress={() => setPlaylistVisible(true)}

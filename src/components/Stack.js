@@ -9,6 +9,7 @@ import SessionManager from "./account/profile/SessionManager";
 import AppContext from "./AppContext";
 import AudioController from "./general/AudioController";
 import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
+import { Portal } from "react-native-paper";
 
 const StackNavigator = createNativeStackNavigator();
 
@@ -37,39 +38,41 @@ export default function Stack() {
         setNext,
       }}
     >
-      <NavigationContainer>
-        <StackNavigator.Navigator
-          initialRouteName="SessionManager"
-          screenOptions={{ headerShown: false }}
-        >
-          <StackNavigator.Screen name="Home" component={HomeScreen} />
-          <StackNavigator.Screen
-            name="SessionManager"
-            component={SessionManager}
-          />
-          <StackNavigator.Screen
-            name="ManageMySongs"
-            component={ManageMySongs}
-            options={{ title: "Manage my songs", headerShown: true }}
-          />
-          <StackNavigator.Screen
-            name="RegisterScreen"
-            component={RegisterScreen}
-            options={{ title: "Create your account", headerShown: true }}
-          />
-          <StackNavigator.Screen
-            name="MyProfileScreen"
-            component={MyProfileScreen}
-            options={{ title: "My Profile", headerShown: true }}
-          />
-          <StackNavigator.Screen
-            name="ManageMyAlbums"
-            component={ManageMyAlbums}
-            options={{ title: "Manage my albums", headerShown: true }}
-          />
-        </StackNavigator.Navigator>
-      </NavigationContainer>
-      <AudioController />
+      <Portal.Host>
+        <NavigationContainer>
+          <StackNavigator.Navigator
+            initialRouteName="SessionManager"
+            screenOptions={{ headerShown: false }}
+          >
+            <StackNavigator.Screen name="Home" component={HomeScreen} />
+            <StackNavigator.Screen
+              name="SessionManager"
+              component={SessionManager}
+            />
+            <StackNavigator.Screen
+              name="ManageMySongs"
+              component={ManageMySongs}
+              options={{ title: "Manage my songs", headerShown: true }}
+            />
+            <StackNavigator.Screen
+              name="RegisterScreen"
+              component={RegisterScreen}
+              options={{ title: "Create your account", headerShown: true }}
+            />
+            <StackNavigator.Screen
+              name="MyProfileScreen"
+              component={MyProfileScreen}
+              options={{ title: "My Profile", headerShown: true }}
+            />
+            <StackNavigator.Screen
+              name="ManageMyAlbums"
+              component={ManageMyAlbums}
+              options={{ title: "Manage my albums", headerShown: true }}
+            />
+          </StackNavigator.Navigator>
+        </NavigationContainer>
+        <AudioController />
+      </Portal.Host>
     </AppContext.Provider>
   );
 }

@@ -71,25 +71,20 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: "bold",
   },
-  // Asegurarse de ajustar la height del modal
-  // y player juntos para que quede bien
   modal: {
     backgroundColor: "white",
-    maxHeight: "88%",
-    position: "absolute",
-    left: 0,
-    right: 0,
+    marginHorizontal: "5%",
+    maxHeight: "90%",
   },
   player: {
-    height: "7.5%",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    margin: "2%",
+    position: "relative",
+    marginHorizontal: "2%",
+    marginBottom: "2%",
   },
-  listPlayerPadding: {
-    paddingBottom: "15%",
+  modalContainer: {
+    // Con esto se puede ajustar para
+    // que aparezca un poco más arriba
+    paddingBottom: "25%",
   },
 });
 

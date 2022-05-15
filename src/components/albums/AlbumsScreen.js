@@ -5,7 +5,7 @@ import styles from "../styles.js";
 import { View } from "react-native";
 import Player from "../Player";
 import FetchedList from "../general/FetchedList";
-import { ShapedImage } from "../general/ShapedImage";
+import AlbumItem from "./AlbumItem";
 import AlbumInfo from "./AlbumInfo";
 
 export default function AlbumsScreen() {
@@ -15,37 +15,23 @@ export default function AlbumsScreen() {
     album: null,
   });
 
-  const propGen = (album) => {
-    return {
-      title: album.name,
-      description: album.genre,
-      left: () => (
-        <ShapedImage
-          icon="album"
-          size={50}
-          shape="square"
-          imageUri={album.cover}
-          style={{ marginRight: 10 }}
-        />
-      ),
-    };
-  };
-
   const onPress = (album) => setModalStatus({ album: album, visible: true });
 
+  const album = ({ data }) => <AlbumItem onPress={onPress} data={data} />;
+
   return (
-    <Portal.Host>
-      <View style={[styles.container, styles.listPlayerPadding]}>
+    <View style={{ flex: 1 }}>
+      <View style={[styles.container]}>
         <Headline>Albums</Headline>
-        <FetchedList response={songs} propGen={propGen} onPress={onPress} />
+        <FetchedList response={songs} itemComponent={album} />
         <Portal>
           <AlbumInfo
             modalStatus={modalStatus}
             setModalStatus={setModalStatus}
           />
-          <Player />
         </Portal>
       </View>
-    </Portal.Host>
+      <Player />
+    </View>
   );
 }
