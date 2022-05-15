@@ -1,18 +1,17 @@
 import React from "react";
 import { webApi, useSWR, json_fetcher, fetch } from "../util/services";
-import { Headline, IconButton } from "react-native-paper";
+import { Headline, IconButton, Portal } from "react-native-paper";
 import styles from "./styles.js";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 import Player from "./Player";
-import appContext from "./appContext";
+import AppContext from "./AppContext";
 import FetchedList from "./general/FetchedList";
-import { Portal } from "react-native-paper";
 import { PlaylistMenuAdd } from "./general/PlaylistMenuAdd";
 import { getArtistsAsString } from "../util/general";
 
 export default function SongsScreen() {
   const songs = useSWR(webApi + "/songs/songs/", json_fetcher);
-  const context = React.useContext(appContext);
+  const context = React.useContext(AppContext);
   const [visible, setVisible] = React.useState(false);
 
   const onPress = (song) => {
@@ -33,19 +32,25 @@ export default function SongsScreen() {
           onPress={() => setVisible(true)}
           icon="playlist-plus"
           color="black"
+          style={{ float: "right" }}
         />
       ),
     };
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Portal.Host>
+    <Portal.Host>
+      <View style={styles.container}>
         <Headline>Songs</Headline>
         <FetchedList response={songs} onPress={onPress} propGen={propGen} />
-        <PlaylistMenuAdd props={{ visible, setVisible }}></PlaylistMenuAdd>
-        <Player />
-      </Portal.Host>
-    </SafeAreaView>
+        <Portal>
+          <PlaylistMenuAdd
+            visible={visible}
+            setVisible={setVisible}
+          ></PlaylistMenuAdd>
+          <Player />
+        </Portal>
+      </View>
+    </Portal.Host>
   );
 }

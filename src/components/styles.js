@@ -6,6 +6,20 @@ const styles = StyleSheet.create({
     margin: "3%",
     padding: "1%",
   },
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginHorizontal: "2%",
+  },
+  containerWithPlayer: {
+    flex: 1,
+    margin: "3%",
+    padding: "1%",
+    marginBottom: "0",
+    paddingBottom: "0",
+  },
   containerCenter: {
     alignItems: "center",
     justifyContent: "center",
@@ -32,12 +46,6 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-  bottom: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
   bigLogo: {
     width: 200,
     height: 200,
@@ -60,6 +68,23 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: "bold",
+  },
+  // Asegurarse de ajustar la height del modal
+  // y player juntos para que quede bien
+  modal: {
+    backgroundColor: "white",
+    maxHeight: "88%",
+    position: "absolute",
+    left: 0,
+    right: 0,
+  },
+  player: {
+    height: "7.5%",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: "2%",
   },
 });
 

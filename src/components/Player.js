@@ -1,27 +1,26 @@
 import * as React from "react";
 import { Appbar } from "react-native-paper";
 import styles from "./styles.js";
-import appContext from "./appContext.js";
+import AppContext from "./AppContext.js";
 
 const Player = () => {
+  const context = React.useContext(AppContext);
+  const playIcon = context?.paused ? "play" : "pause";
 
-  const context = React.useContext(appContext);
-  const playIcon = context.paused ? "play" : "pause";
- 
   const togglePlay = () => {
-    context.setPaused(paused => !paused);
+    context.setPaused((paused) => !paused);
   };
 
   const previous = () => {
     context.setPrevious(true);
-  }
+  };
 
   const next = () => {
     context.setNext(true);
   };
 
   return (
-    <Appbar style={styles.bottom}>
+    <Appbar style={styles.player}>
       <Appbar.Content
         title={context.song.name}
         subtitle={context.song.artists?.map((artist) => artist.name).join(", ")}

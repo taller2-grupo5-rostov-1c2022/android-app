@@ -10,14 +10,14 @@ import PropTypes from "prop-types";
 import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError.js";
 import { useSWR, json_fetcher, webApi } from "../../util/services.js";
-import appContext from "../appContext.js";
+import AppContext from "../AppContext.js";
 
 const ARTIST_ROLES = ["artist", "admin"];
 
 export default function AccountScreen() {
   const navigation = useNavigation();
   const [role, setRole] = useState(null);
-  const context = React.useContext(appContext);
+  const context = React.useContext(AppContext);
 
   let {
     data: user,

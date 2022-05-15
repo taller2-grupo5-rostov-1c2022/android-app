@@ -6,7 +6,7 @@ import HomeScreen from "./HomeScreen";
 import ManageMySongs from "./account/manageSongs/ManageMySongs";
 import MyProfileScreen from "./account/profile/MyProfileScreen";
 import SessionManager from "./account/profile/SessionManager";
-import appContext from "./appContext";
+import AppContext from "./AppContext";
 import AudioController from "./general/AudioController";
 import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 
@@ -21,9 +21,21 @@ export default function Stack() {
   const [queue, setQueue] = useState([]);
 
   return (
-    <appContext.Provider
-      value={{ song, paused, stop, queue, previous, next,
-      setSong, setPaused, setStop, setQueue, setPrevious, setNext }}
+    <AppContext.Provider
+      value={{
+        song,
+        paused,
+        stop,
+        queue,
+        previous,
+        next,
+        setSong,
+        setPaused,
+        setStop,
+        setQueue,
+        setPrevious,
+        setNext,
+      }}
     >
       <NavigationContainer>
         <StackNavigator.Navigator
@@ -57,7 +69,7 @@ export default function Stack() {
           />
         </StackNavigator.Navigator>
       </NavigationContainer>
-      <AudioController/>
-    </appContext.Provider>
+      <AudioController />
+    </AppContext.Provider>
   );
 }

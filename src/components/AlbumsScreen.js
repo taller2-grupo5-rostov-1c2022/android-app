@@ -1,11 +1,10 @@
 import React from "react";
 import { webApi, useSWR, json_fetcher } from "../util/services";
-import { Headline } from "react-native-paper";
+import { Headline, Portal } from "react-native-paper";
 import styles from "./styles.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Player from "./Player";
 import FetchedList from "./general/FetchedList";
-import { Portal } from "react-native-paper";
 import { ShapedImage } from "./general/ShapedImage";
 
 export default function AlbumsScreen() {
@@ -29,11 +28,11 @@ export default function AlbumsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Portal.Host>
-        <Headline>Albums</Headline>
-        <FetchedList response={songs} propGen={propGen} onPress={() => null} />
+      <Headline>Albums</Headline>
+      <FetchedList response={songs} propGen={propGen} onPress={() => null} />
+      <Portal>
         <Player />
-      </Portal.Host>
+      </Portal>
     </SafeAreaView>
   );
 }
