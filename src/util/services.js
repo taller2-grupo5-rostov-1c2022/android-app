@@ -26,8 +26,8 @@ export async function fetch(url, request) {
     ...rest,
   });
 
-  if (!res.status.toString().startsWith("2"))
-    throw new Error(`Failed to fetch: ${request.status} ${request.statusText}`);
+  if (!res?.status?.toString().startsWith("2"))
+    throw new Error(`Failed to fetch: ${res.status} ${res?.statusText}`);
 
   const json = await res.json();
 

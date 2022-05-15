@@ -86,6 +86,19 @@ const styles = StyleSheet.create({
     // que aparezca un poco más arriba
     paddingBottom: "25%",
   },
+  searchButtons: {
+    borderRadius: 15,
+    margin: "1%",
+    justifyContent: "center",
+  },
+  searchBar: {
+    /*minHeight: "50px",
+    height: "50px",*/
+  },
+  searchButtonText: {
+    fontSize: 12,
+    marginVertical: "10%",
+  },
 });
 
 export default styles;

@@ -7,10 +7,12 @@ import Player from "../Player";
 import FetchedList from "../general/FetchedList";
 import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
 import SongItem from "./SongItem";
+import SearchBar from "../general/SearchBar";
 
 export default function SongsScreen() {
-  const songs = useSWR(webApi + "/songs/songs/", json_fetcher);
   const [visible, setVisible] = React.useState(false);
+  const [query, setQuery] = React.useState("");
+  const songs = useSWR(`${webApi}/songs/songs/${query}`, json_fetcher);
 
   const song = ({ data }) => (
     <SongItem
@@ -30,6 +32,7 @@ export default function SongsScreen() {
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <Headline>Songs</Headline>
+        <SearchBar setQuery={setQuery} />
         <FetchedList response={songs} itemComponent={song} />
         <Portal>
           <PlaylistMenuAdd

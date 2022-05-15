@@ -7,9 +7,11 @@ import Player from "../Player";
 import FetchedList from "../general/FetchedList";
 import AlbumItem from "./AlbumItem";
 import AlbumInfo from "./AlbumInfo";
+import SearchBar from "../general/SearchBar";
 
 export default function AlbumsScreen() {
-  const songs = useSWR(webApi + "/songs/albums/", json_fetcher);
+  const [query, setQuery] = React.useState("");
+  const songs = useSWR(`${webApi}/songs/albums/${query}`, json_fetcher);
   const [modalStatus, setModalStatus] = useState({
     visible: false,
     album: null,
@@ -23,6 +25,7 @@ export default function AlbumsScreen() {
     <View style={{ flex: 1 }}>
       <View style={[styles.container]}>
         <Headline>Albums</Headline>
+        <SearchBar setQuery={setQuery} />
         <FetchedList response={songs} itemComponent={album} />
         <Portal>
           <AlbumInfo
