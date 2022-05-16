@@ -11,6 +11,7 @@ import SearchBar from "../general/SearchBar";
 
 export default function SongsScreen() {
   const [visible, setVisible] = React.useState(false);
+  const [songId, setSongId] = React.useState("");
   const [query, setQuery] = React.useState("");
   const songs = useSWR(`${webApi}/songs/songs/${query}`, json_fetcher);
 
@@ -19,7 +20,7 @@ export default function SongsScreen() {
       data={data}
       right={() => (
         <IconButton
-          onPress={() => setVisible(true)}
+          onPress={() => {setVisible(true), setSongId(data.id)}}
           icon="playlist-plus"
           color="black"
           style={{ float: "right" }}
@@ -38,6 +39,7 @@ export default function SongsScreen() {
           <PlaylistMenuAdd
             visible={visible}
             setVisible={setVisible}
+            songId={songId}
           ></PlaylistMenuAdd>
         </Portal>
       </View>
