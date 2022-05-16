@@ -23,7 +23,7 @@ export default function AccountScreen() {
     data: user,
     error,
     isValidating,
-  } = useSWR(webApi + "/songs/my_users/", json_fetcher);
+  } = useSWR(webApi + "/songs/my_user/", json_fetcher);
   const loading = isValidating && !user && !error;
 
   useEffect(() => {

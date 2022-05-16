@@ -28,7 +28,7 @@ export default function SessionManager({ navigation }) {
   };
 
   const onAuthStateChanged = (user) => {
-    if (user?.uid) fetchUser(onUser, setStatus, `${webApi}/songs/my_users/`);
+    if (user?.uid) fetchUser(onUser, setStatus, `${webApi}/songs/my_user/`);
     else setStatus({ loading: false, fetched: false, loggedIn: false });
   };
 
@@ -82,7 +82,6 @@ async function fetchUser(onUser, setStatus, url, options) {
   setStatus((prev) => ({ ...prev, loading: true }));
   try {
     let data = await fetch(url, options);
-    data = await data.json();
     if (data.id) onUser(data?.name);
     else setStatus({ fetched: true, loading: false, loggedIn: true });
   } catch (e) {

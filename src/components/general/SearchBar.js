@@ -61,7 +61,7 @@ export default function SearchBar({ setQuery, ...rest }) {
   const [focused, setFocused] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  const onSearch = ({ name, value }) => {
+  const onSearch = ({ name, value } = {}) => {
     name = name ?? selected.name;
     value = value ?? selected.value ?? text;
 
@@ -88,7 +88,7 @@ export default function SearchBar({ setQuery, ...rest }) {
         icon="close"
         onPress={() => {
           setText("");
-          onSearch();
+          onSearch({ value: "" });
         }}
         forceTextInputFocus={false}
         color={(focused) => (focused ? "black" : "grey")}

@@ -8,7 +8,7 @@ export default function AlbumItem({ data, onPress }) {
     <List.Item
       title={data.name}
       description={data.genre}
-      onPress={() => onPress && onPress(data)}
+      onPress={onPress ? () => onPress(data) : undefined}
       left={() => (
         <ShapedImage
           icon="album"

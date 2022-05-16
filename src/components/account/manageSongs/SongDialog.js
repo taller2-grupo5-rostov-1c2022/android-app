@@ -9,7 +9,7 @@ import styles from "../../styles";
 import { saveSong, deleteSong } from "../../../util/requests";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Table from "../../formUtil/Table";
-import { VALID_GENRES } from "../../../util/general";
+import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/general";
 import { inputValidator } from "../../../util/general";
 
 export default function SongDialog({ hideDialog, data }) {
@@ -22,6 +22,11 @@ export default function SongDialog({ hideDialog, data }) {
         data?.genre && VALID_GENRES.includes(data.genre)
           ? data.genre
           : VALID_GENRES[0],
+      sub_level:
+        data?.sub_level &&
+        VALID_SUB_LEVELS.map((lvl) => lvl.value).includes(data.sub_level)
+          ? data.sub_level
+          : VALID_SUB_LEVELS[0].value,
       file: null,
     },
     mode: "onChange",
@@ -90,10 +95,10 @@ export default function SongDialog({ hideDialog, data }) {
   );
 }
 
-function FormDefinition(props) {
+function FormDefinition({ creating, ...rest }) {
   return (
     <FormBuilder
-      {...props}
+      {...rest}
       formConfigArray={[
         {
           type: "text",
@@ -158,12 +163,28 @@ function FormDefinition(props) {
           })),
         },
         {
+          type: "select",
+          name: "sub_level",
+          rules: {
+            required: {
+              value: true,
+              message: "Subscription level is required",
+            },
+          },
+          textInputProps: {
+            mode: "flat",
+            label: "Subscription level",
+            style: styles.textInput,
+          },
+          options: VALID_SUB_LEVELS,
+        },
+        {
           name: "file",
           type: "custom",
           JSX: SongPicker,
           rules: {
             required: {
-              value: true,
+              value: creating,
               message: "File is required",
             },
           },
@@ -185,5 +206,10 @@ SongDialog.propTypes = {
       })
     ),
     genre: PropTypes.string,
+    sub_level: PropTypes.number,
   }),
+};
+
+FormDefinition.propTypes = {
+  creating: PropTypes.bool,
 };

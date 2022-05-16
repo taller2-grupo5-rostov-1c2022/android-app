@@ -21,7 +21,7 @@ export default function MyProfileScreen() {
     error,
     isValidating,
     mutate,
-  } = useSWRImmutable(webApi + "/songs/my_users/", json_fetcher);
+  } = useSWRImmutable(webApi + "/songs/my_user/", json_fetcher);
   // uso el immutable ya que esto se usa solo para popular el formulario al inico
   const loading = _loading || (isValidating && !user && !error);
 

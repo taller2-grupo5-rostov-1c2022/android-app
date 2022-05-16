@@ -6,9 +6,9 @@ import PropTypes from "prop-types";
 import FetchedList from "./FetchedList";
 import { webApi, json_fetcher, useSWR } from "../../util/services";
 
-// propGen es una funcion que recibe la data de un elemento del response y devuelva las props del item de la lista
+// itemComponent es el componente para cada item que recibe la prop data de cada item
 // editDialog es el componente a mostrar al editar. recibe la data del elemento a editar
-export default function CrudList({ url, editDialog, propGen }) {
+export default function CrudList({ url, editDialog, itemComponent }) {
   const [dialog, setDialog] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const response = useSWR(`${webApi}${url}`, json_fetcher);
@@ -29,6 +29,11 @@ export default function CrudList({ url, editDialog, propGen }) {
     );
   };
 
+  const Item = itemComponent;
+  const item = ({ data }) => (
+    <Item onPress={(data) => addDialog(data)} data={data} />
+  );
+
   return (
     <SafeAreaView
       style={[styles.container].concat(dialog ? styles.disabled : [])}
@@ -45,8 +50,7 @@ export default function CrudList({ url, editDialog, propGen }) {
       <Portal>{dialog}</Portal>
       <FetchedList
         response={response}
-        onPress={(data) => addDialog(data)}
-        propGen={propGen}
+        itemComponent={item}
         forceLoading={loading}
       />
     </SafeAreaView>
@@ -56,5 +60,5 @@ export default function CrudList({ url, editDialog, propGen }) {
 CrudList.propTypes = {
   url: PropTypes.string.isRequired,
   editDialog: PropTypes.any.isRequired,
-  propGen: PropTypes.func.isRequired,
+  itemComponent: PropTypes.func.isRequired,
 };

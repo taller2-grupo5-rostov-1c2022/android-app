@@ -13,7 +13,7 @@ import {
 } from "react-native-paper";
 import { getArtistsAsString } from "../../util/general";
 import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
-import SongItem from "../songs/SongItem";
+import PlayableSongItem from "../songs/SongItem";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
@@ -45,7 +45,7 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
           <Caption>{album?.description}</Caption>
           <View style={{ width: "100%" }}>
             {album?.songs?.map((song) => (
-              <SongItem
+              <PlayableSongItem
                 data={song}
                 key={i++}
                 right={() => (
