@@ -6,8 +6,8 @@ import { View } from "react-native";
 import Player from "../Player";
 import FetchedList from "../general/FetchedList";
 import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
-import SongItem from "./SongItem";
 import SearchBar from "../general/SearchBar";
+import PlayableSongItem from "./PlayableSongItem";
 
 export default function SongsScreen() {
   const [visible, setVisible] = React.useState(false);
@@ -16,7 +16,7 @@ export default function SongsScreen() {
   const songs = useSWR(`${webApi}/songs/songs/${query}`, json_fetcher);
 
   const song = ({ data }) => (
-    <SongItem
+    <PlayableSongItem
       data={data}
       right={() => (
         <IconButton

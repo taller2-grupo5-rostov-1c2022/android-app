@@ -20,7 +20,7 @@ export default function PlayableSongItem({ data, right }) {
     }
   };
 
-  return <SongItem right={right} onPress={() => onPress(data)} />;
+  return <SongItem data={data} right={right} onPress={() => onPress(data)} />;
 }
 
 PlayableSongItem.propTypes = {

@@ -2,7 +2,7 @@ import React from "react";
 import { List } from "react-native-paper";
 import Modal from "./Modal";
 import PropTypes from "prop-types";
-import { useSWR, json_fetcher, fetch, webApi } from "../../util/services";
+import { useSWR, json_fetcher, webApi } from "../../util/services";
 import FetchedList from "./FetchedList";
 
 export const PlaylistMenuAdd = ({ visible, setVisible, songId }) => {
@@ -36,4 +36,5 @@ export default PlaylistMenuAdd;
 PlaylistMenuAdd.propTypes = {
   visible: PropTypes.bool.isRequired,
   setVisible: PropTypes.func.isRequired,
+  songId: PropTypes.any
 };
