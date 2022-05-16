@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { TextInput, Button } from "react-native-paper";
-import { View } from "react-native";
+import { TextInput, Button, IconButton } from "react-native-paper";
+import { View, ScrollView } from "react-native";
 import styles from "../styles.js";
 import { VALID_SUB_LEVELS } from "../../util/general";
 
@@ -38,12 +38,12 @@ function getButtons(selected, setSelected, setDisabled, onSearch) {
   };
 
   return (
-    <View style={styles.row}>
+    <ScrollView horizontal={true}>
       {options.map((option) => (
         <Button
           key={i++}
           onPress={() => onPress(option)}
-          mode={selected == option ? "contained" : "outlined"}
+          mode={selected.label == option.label ? "contained" : "outlined"}
           style={styles.searchButtons}
           compact={true}
           labelStyle={styles.searchButtonText}
@@ -51,17 +51,18 @@ function getButtons(selected, setSelected, setDisabled, onSearch) {
           {option.label}
         </Button>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 
 export default function SearchBar({ setQuery, ...rest }) {
   const [text, setText] = useState("");
   const [selected, setSelected] = useState(options[0]);
-  const [focused, setFocused] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  const onSearch = ({ name, value } = {}) => {
+  const onSearch = (
+    { name, value } = { name: undefined, value: undefined }
+  ) => {
     name = name ?? selected.name;
     value = value ?? selected.value ?? text;
 
@@ -69,20 +70,8 @@ export default function SearchBar({ setQuery, ...rest }) {
     else setQuery("");
   };
 
-  const onKeyPress = (event) => {
-    if (event.key === "Enter") onSearch();
-  };
-
   const rightButton = () => {
     if (!text) return null;
-    if (focused)
-      return (
-        <TextInput.Icon
-          icon="magnify"
-          onPress={() => onSearch()}
-          forceTextInputFocus={false}
-        />
-      );
     return (
       <TextInput.Icon
         icon="close"
@@ -98,18 +87,25 @@ export default function SearchBar({ setQuery, ...rest }) {
 
   return (
     <View {...rest}>
-      <TextInput
-        placeholder="Search"
-        onChangeText={(text) => setText(text)}
-        value={text}
-        onKeyPress={onKeyPress}
-        style={styles.searchBar}
-        right={rightButton()}
-        dense={true}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        disabled={disabled}
-      />
+      <View style={styles.row}>
+        <TextInput
+          onChangeText={(text) => setText(text)}
+          value={text}
+          style={styles.searchBar}
+          right={rightButton()}
+          dense={true}
+          disabled={disabled}
+          label="Search"
+          returnKeyType="search"
+          onSubmitEditing={() => onSearch()}
+        />
+        <IconButton
+          icon="magnify"
+          onPress={onSearch}
+          style={{ alignSelf: "center" }}
+          disabled={disabled}
+        />
+      </View>
       {getButtons(selected, setSelected, setDisabled, onSearch)}
     </View>
   );

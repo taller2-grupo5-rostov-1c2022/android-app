@@ -88,12 +88,13 @@ const styles = StyleSheet.create({
   },
   searchButtons: {
     borderRadius: 15,
-    margin: "1%",
+    marginTop: "2%",
+    marginHorizontal: 3,
     justifyContent: "center",
   },
   searchBar: {
-    /*minHeight: "50px",
-    height: "50px",*/
+    flex: 1,
+    maxHeight: 50,
   },
   searchButtonText: {
     fontSize: 12,
