@@ -1,13 +1,11 @@
 import React from "react";
 import { webApi, useSWR, json_fetcher } from "../../util/services";
-import { Headline, IconButton, Portal, List } from "react-native-paper";
+import { Headline, Portal, List } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
 import Player from "../Player";
 import FetchedList from "../general/FetchedList";
-import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
 import SearchBar from "../general/SearchBar";
-import PlayableSongItem from "../songs/PlayableSongItem";
 import PlaylistMenuPlay from "./PlaylistMenuPlay";
 
 export default function PlayListScreen() {
@@ -19,6 +17,7 @@ export default function PlayListScreen() {
     console.log(id);
     setPlaylistId(id);
     setVisible(true);
+    console.log(query);
   }
 
   const playlist = ({ data }) => (

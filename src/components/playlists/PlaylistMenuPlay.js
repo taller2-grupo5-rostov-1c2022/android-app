@@ -14,7 +14,6 @@ export const PlaylistMenuPlay = ({ visible, setVisible, playlistId }) => {
   const name = playlist?.data?.name ?? "";
 
   const playPlaylist = () => {
-    let first = false;
     const songs = [];
     playlist?.data?.songs?.map((song) => {
       songs.push(song);
