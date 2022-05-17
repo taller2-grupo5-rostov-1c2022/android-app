@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "../general/Modal";
 import PropTypes from "prop-types";
-import { useSWR, json_fetcher, webApi } from "../../util/services";
+import { useSWR, json_fetcher, webApi, fetch } from "../../util/services";
 import { View } from "react-native";
 import PlayableSongItem from "../songs/PlayableSongItem";
 import { Button } from "react-native-paper";
@@ -13,14 +13,13 @@ export const PlaylistMenuPlay = ({ visible, setVisible, playlistId }) => {
   const playlist = useSWR(`${webApi}/songs/playlists/${playlistId}`, json_fetcher);
   const name = playlist?.data?.name ?? "";
 
-  const playPlaylist = () => {
-    const songs = [];
+  const playPlaylist = async () => {
+    let songs = [];
     playlist?.data?.songs?.map((song) => {
       songs.push(song);
     })
     try {
-      console.log("fetch :"  + webApi + "/songs/songs/" + songs[0].id);
-      let res = fetch(webApi + "/songs/songs/" + songs[0].id);
+      let res = await fetch(webApi + "/songs/songs/" + songs[0].id);
       songs[0].url = res.file;
       context.setSong(songs[0]);
     } catch (e) {
