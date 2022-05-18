@@ -9,11 +9,11 @@ import {
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../../styles.js";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
 import { emailRegex } from "../../../util/general";
+import { View } from "react-native";
 
 export default function RegisterScreen({ navigation }) {
   const auth = getAuth();
@@ -41,7 +41,7 @@ export default function RegisterScreen({ navigation }) {
   });
 
   return (
-    <SafeAreaView
+    <View
       style={[styles.container, styles.containerCenter].concat(
         authing ? styles.disabled : []
       )}
@@ -63,7 +63,7 @@ export default function RegisterScreen({ navigation }) {
           <ActivityIndicator size="large" style={styles.activityIndicator} />
         ) : null}
       </Portal>
-    </SafeAreaView>
+    </View>
   );
 }
 

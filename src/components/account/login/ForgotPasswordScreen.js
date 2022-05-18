@@ -9,7 +9,7 @@ import {
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../../styles.js";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
@@ -43,7 +43,7 @@ export default function ForgotPasswordScreen() {
   });
 
   return (
-    <SafeAreaView
+    <View
       style={[styles.container, styles.containerCenter].concat(
         authing ? styles.disabled : []
       )}
@@ -71,7 +71,7 @@ export default function ForgotPasswordScreen() {
           <ActivityIndicator size="large" style={styles.activityIndicator} />
         ) : null}
       </Portal>
-    </SafeAreaView>
+    </View>
   );
 }
 

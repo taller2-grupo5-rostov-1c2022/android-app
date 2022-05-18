@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styles from "../../styles.js";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "../login/FirebaseError";
 import PropTypes from "prop-types";
@@ -11,7 +10,7 @@ import {
   fetch,
 } from "../../../util/services.js";
 import { UserForm } from "./UserForm";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 const FormData = global.FormData;
 
 export default function MyProfileScreen() {
@@ -57,7 +56,7 @@ export default function MyProfileScreen() {
   };
 
   return (
-    <SafeAreaView
+    <View
       style={[styles.container].concat(loading ? styles.disabled : [])}
       pointerEvents={loading ? "none" : "auto"}
     >
@@ -78,7 +77,7 @@ export default function MyProfileScreen() {
         ) : null}
       </Portal>
       <FirebaseError error={error} style={{ textAlign: "center" }} />
-    </SafeAreaView>
+    </View>
   );
 }
 

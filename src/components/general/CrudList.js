@@ -1,7 +1,7 @@
 import React from "react";
 import { Portal, FAB } from "react-native-paper";
 import styles from "../styles.js";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 import PropTypes from "prop-types";
 import FetchedList from "./FetchedList";
 import { webApi, json_fetcher, useSWR } from "../../util/services";
@@ -35,7 +35,7 @@ export default function CrudList({ url, editDialog, itemComponent, ...rest }) {
   );
 
   return (
-    <SafeAreaView
+    <View
       style={[styles.container].concat(dialog ? styles.disabled : [])}
       pointerEvents={dialog ? "none" : "auto"}
     >
@@ -55,7 +55,7 @@ export default function CrudList({ url, editDialog, itemComponent, ...rest }) {
         style={styles.listScreen}
         {...rest}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

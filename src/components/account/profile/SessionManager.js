@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles.js";
 import { getAuth, signOut } from "firebase/auth";
 import { webApi, fetch } from "../../../util/services.js";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ActivityIndicator, Portal } from "react-native-paper";
 import LoadingScreen from "../login/LoadingScreen";
 import LoginScreen from "../login/LoginScreen";
 import PropTypes from "prop-types";
 import UserCreationMenu from "./UserCreationMenu";
+import { View } from "react-native";
 const FormData = global.FormData;
 
 export default function SessionManager({ navigation }) {
@@ -64,7 +64,7 @@ export default function SessionManager({ navigation }) {
   if (!status.loggedIn) return <LoginScreen navigation={navigation} />;
 
   return (
-    <SafeAreaView
+    <View
       style={[styles.container].concat(status.loading ? styles.disabled : [])}
       pointerEvents={status.loading ? "none" : "auto"}
     >
@@ -74,7 +74,7 @@ export default function SessionManager({ navigation }) {
           <ActivityIndicator size="large" style={styles.activityIndicator} />
         )}
       </Portal>
-    </SafeAreaView>
+    </View>
   );
 }
 

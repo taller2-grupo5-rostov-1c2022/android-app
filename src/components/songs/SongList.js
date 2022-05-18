@@ -39,10 +39,7 @@ export default function SongList({
     playAllButton = (
       <Button
         mode="contained"
-        style={
-          ([styles.button],
-          { marginTop: "3%", width: "fit-content", alignSelf: "center" })
-        }
+        style={([styles.button], { marginTop: "3%", alignSelf: "center" })}
         onPress={() => playSongList(songs, context, setLoading)}
         disabled={loading ? "true" : undefined}
         icon={loading ? undefined : "play"}
@@ -54,7 +51,7 @@ export default function SongList({
 
   return (
     <View style={{ width: "100%" }}>
-      {playAllButton}
+      <View>{playAllButton}</View>
       <Title>{title}</Title>
       <FetchedList
         response={{ data: songs, isValidating: isValidating }}

@@ -9,7 +9,8 @@ import AppContext from "./AppContext";
 import AudioController from "./general/AudioController";
 import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 import ForgotPasswordScreen from "./account/login/ForgotPasswordScreen";
-import { Portal } from "react-native-paper";
+import { Portal, useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const StackNavigator = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ export default function Stack() {
   const [previous, setPrevious] = useState(false);
   const [next, setNext] = useState(false);
   const [queue, setQueue] = useState([]);
+  const theme = useTheme();
 
   return (
     <AppContext.Provider
@@ -38,44 +40,48 @@ export default function Stack() {
         setNext,
       }}
     >
-      <Portal.Host>
-        <StackNavigator.Navigator
-          initialRouteName="SessionManager"
-          screenOptions={{ headerShown: false }}
-        >
-          <StackNavigator.Screen name="Home" component={HomeScreen} />
-          <StackNavigator.Screen
-            name="SessionManager"
-            component={SessionManager}
-          />
-          <StackNavigator.Screen
-            name="ManageMySongs"
-            component={ManageMySongs}
-            options={{ title: "Manage my songs", headerShown: true }}
-          />
-          <StackNavigator.Screen
-            name="RegisterScreen"
-            component={RegisterScreen}
-            options={{ title: "Create your account", headerShown: true }}
-          />
-          <StackNavigator.Screen
-            name="ForgotPasswordScreen"
-            component={ForgotPasswordScreen}
-            options={{ title: "Reset you password", headerShown: true }}
-          />
-          <StackNavigator.Screen
-            name="MyProfileScreen"
-            component={MyProfileScreen}
-            options={{ title: "My Profile", headerShown: true }}
-          />
-          <StackNavigator.Screen
-            name="ManageMyAlbums"
-            component={ManageMyAlbums}
-            options={{ title: "Manage my albums", headerShown: true }}
-          />
-        </StackNavigator.Navigator>
-        <AudioController />
-      </Portal.Host>
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: theme.colors.background }}
+      >
+        <Portal.Host>
+          <StackNavigator.Navigator
+            initialRouteName="SessionManager"
+            screenOptions={{ headerShown: false }}
+          >
+            <StackNavigator.Screen name="Home" component={HomeScreen} />
+            <StackNavigator.Screen
+              name="SessionManager"
+              component={SessionManager}
+            />
+            <StackNavigator.Screen
+              name="ManageMySongs"
+              component={ManageMySongs}
+              options={{ title: "Manage my songs", headerShown: true }}
+            />
+            <StackNavigator.Screen
+              name="RegisterScreen"
+              component={RegisterScreen}
+              options={{ title: "Create your account", headerShown: true }}
+            />
+            <StackNavigator.Screen
+              name="ForgotPasswordScreen"
+              component={ForgotPasswordScreen}
+              options={{ title: "Reset you password", headerShown: true }}
+            />
+            <StackNavigator.Screen
+              name="MyProfileScreen"
+              component={MyProfileScreen}
+              options={{ title: "My Profile", headerShown: true }}
+            />
+            <StackNavigator.Screen
+              name="ManageMyAlbums"
+              component={ManageMyAlbums}
+              options={{ title: "Manage my albums", headerShown: true }}
+            />
+          </StackNavigator.Navigator>
+          <AudioController />
+        </Portal.Host>
+      </SafeAreaView>
     </AppContext.Provider>
   );
 }

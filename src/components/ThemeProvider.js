@@ -31,7 +31,7 @@ async function getStoredTheme() {
     });
   }
 
-  if (stored) return stored == "true";
+  if (stored) return JSON.parse(stored);
 
   const phoneThemeDark = Appearance.getColorScheme() == "dark";
   setStoragedTheme(phoneThemeDark);
@@ -40,7 +40,7 @@ async function getStoredTheme() {
 
 async function setStoragedTheme(value) {
   try {
-    await AsyncStorage.setItem(THEME_KEY, value);
+    await AsyncStorage.setItem(THEME_KEY, JSON.stringify(value));
   } catch (e) {
     toast.show("Failed to store theme setting", {
       duration: 3000,
