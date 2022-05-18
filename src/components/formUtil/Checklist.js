@@ -17,7 +17,7 @@ export default function Checklist(props) {
     rules,
     control,
     defaultValue,
-    customProps: { allOptions, width, title, emptyMessage },
+    customProps: { allOptions, viewStyle, title, emptyMessage },
   } = props;
 
   const { field } = useController({
@@ -49,7 +49,7 @@ export default function Checklist(props) {
   //if (options.length === 0) return <Text>{emptyMessage}</Text>;
 
   return (
-    <View style={{ alignSelf: "center", width }}>
+    <View style={[{ alignSelf: "center", width: "100%" }, viewStyle]}>
       <Title>{title}</Title>
       {options.length > 0 ? options : <Text>{emptyMessage}</Text>}
       {err ? <HelperText type={"error"}>{err}</HelperText> : null}
@@ -97,7 +97,7 @@ Checklist.propTypes = {
         listProps: PropTypes.any,
       }).isRequired
     ).isRequired,
-    width: PropTypes.string.isRequired,
+    viewStyle: View.propTypes,
     title: PropTypes.string,
     emptyMessage: PropTypes.string,
   }).isRequired,

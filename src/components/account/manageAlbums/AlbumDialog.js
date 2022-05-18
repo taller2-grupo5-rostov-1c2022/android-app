@@ -217,7 +217,6 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           customProps: {
             allOptions: validSongs,
             title: "Songs",
-            width: "100%",
             emptyMessage: "No songs to add",
           },
         },

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
 import ImagePicker from "../../formUtil/ImagePicker";
 import { Button } from "react-native-paper";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import styles from "../../styles.js";
 import PropTypes from "prop-types";
 import { inputValidator } from "../../../util/general.js";
@@ -71,7 +71,7 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
                 out: name,
               })),
               title: "Interests",
-              width: StyleSheet.flatten(styles.formWidth).width,
+              viewStyle: styles.formWidth,
             },
           },
         ]}
