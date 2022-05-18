@@ -13,21 +13,32 @@ export const PlaylistMenuPlay = ({ visible, setVisible, playlistId }) => {
   const playlist = useSWR(`${webApi}/songs/playlists/${playlistId}`, json_fetcher);
   const name = playlist?.data?.name ?? "";
 
-  const playPlaylist = async () => {
-    let songs = [];
-    playlist?.data?.songs?.map((song) => {
-      songs.push(song);
+  const playPlaylist = () => {
+    let first = true;
+    context.setQueue([]); //play playlist resets queue
+    playlist?.data?.songs?.map(async (song) => {
+      if (first) {
+        try {
+          let res = await fetch(webApi + "/songs/songs/" + song.id);
+          song.url = res.file;
+          context.setSong(song);
+        } catch (e) {
+          console.error(e);
+          toast.show("Could not play song :(", {
+            duration: 3000,
+          });
+        }
+        first = false;
+      } else {
+        try {
+          let res = await fetch(webApi + "/songs/songs/" + song.id);
+          song.url = res.file;
+          context.setQueue((queue) => [...queue, song]);
+        } catch (e) {
+          console.error(e);
+        }
+      }
     })
-    try {
-      let res = await fetch(webApi + "/songs/songs/" + songs[0].id);
-      songs[0].url = res.file;
-      context.setSong(songs[0]);
-    } catch (e) {
-      console.error(e);
-      toast.show("Could not play song :(", {
-        duration: 3000,
-      });
-    }
   }
   let i = 0;
   return (
@@ -36,8 +47,13 @@ export const PlaylistMenuPlay = ({ visible, setVisible, playlistId }) => {
       visible={visible}
       onDismiss={() => setVisible(false)}
     >
-      <Button icon="playlist-play" onPress={playPlaylist} mode='outlined'>
-        Play
+      <Button 
+        icon="playlist-play" 
+        onPress={playPlaylist} 
+        mode='contained' 
+        style={{width: "40%", position: 'relative', justifyContent: 'center', alignSelf: 'center'}}
+      >
+          Play
       </Button>
       <View style={{ width: "100%" }}>
         {playlist?.data?.songs?.map((song) => (
