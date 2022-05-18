@@ -52,6 +52,7 @@ export default function CrudList({ url, editDialog, itemComponent, ...rest }) {
         response={response}
         itemComponent={item}
         forceLoading={loading}
+        style={styles.listScreen}
         {...rest}
       />
     </SafeAreaView>

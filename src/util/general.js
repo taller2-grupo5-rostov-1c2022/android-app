@@ -1,3 +1,5 @@
+import { webApi, fetch } from "./services";
+
 export const VALID_GENRES = [
   "Rock",
   "Pop",
@@ -24,4 +26,27 @@ export function inputValidator(msg) {
 
 export function getArtistsAsString(artists) {
   return `by ${artists?.map((artist) => artist.name).join(", ")}`;
+}
+
+export async function playSongList(songs, context, setLoading) {
+  setLoading && setLoading(true);
+  try {
+    let songsWithUrl = await Promise.all(
+      songs.map((song) => fetch(webApi + "/songs/songs/" + song.id))
+    );
+    let queue = songsWithUrl.map((song) => {
+      song.url = song.file;
+      return song;
+    });
+    context.setQueue(queue);
+    context.setNext(true);
+    context.setPaused(false);
+  } catch (e) {
+    console.error(e);
+    toast.show("Could not play album :(", {
+      duration: 3000,
+    });
+  } finally {
+    setLoading && setLoading(false);
+  }
 }

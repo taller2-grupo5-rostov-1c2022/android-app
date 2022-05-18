@@ -12,10 +12,9 @@ import {
   IconButton,
   Button,
 } from "react-native-paper";
-import { getArtistsAsString } from "../../util/general";
+import { getArtistsAsString, playSongList } from "../../util/general";
 import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
 import PlayableSongItem from "../songs/PlayableSongItem";
-import { webApi, fetch } from "../../util/services";
 import AppContext from "../AppContext";
 import FetchedList from "../general/FetchedList";
 
@@ -37,7 +36,7 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
       <Button
         mode="contained"
         style={([styles.button], { marginTop: "3%" })}
-        onPress={() => playAll(album?.songs, context, setLoading)}
+        onPress={() => playSongList(album?.songs, context, setLoading)}
         disabled={loading ? "true" : undefined}
         icon={loading ? undefined : "play"}
         loading={loading}
@@ -102,29 +101,6 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
       ></PlaylistMenuAdd>
     </>
   );
-}
-
-async function playAll(songs, context, setLoading) {
-  setLoading(true);
-  try {
-    let songsWithUrl = await Promise.all(
-      songs.map((song) => fetch(webApi + "/songs/songs/" + song.id))
-    );
-    let queue = songsWithUrl.map((song) => {
-      song.url = song.file;
-      return song;
-    });
-    context.setQueue(queue);
-    context.setNext(true);
-    context.setPaused(false);
-  } catch (e) {
-    console.error(e);
-    toast.show("Could not play album :(", {
-      duration: 3000,
-    });
-  } finally {
-    setLoading(false);
-  }
 }
 
 AlbumInfo.propTypes = {

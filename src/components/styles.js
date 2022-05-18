@@ -41,9 +41,10 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   activityIndicator: {
-    ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
+    padding: "4%",
+    flex: 1,
   },
   disabled: {
     opacity: 0.5,
@@ -100,6 +101,10 @@ const styles = StyleSheet.create({
   searchButtonText: {
     fontSize: 12,
     marginVertical: "10%",
+  },
+  listScreen: {
+    flex: 1,
+    width: "100%",
   },
 });
 

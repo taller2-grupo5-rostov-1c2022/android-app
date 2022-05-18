@@ -32,6 +32,7 @@ export default function AlbumsScreen() {
           response={songs}
           itemComponent={album}
           emptyMessage={query ? "No results" : "There is nothing here..."}
+          style={styles.listScreen}
         />
         <Portal>
           <AlbumInfo

@@ -35,6 +35,7 @@ export default function PlayListScreen() {
           response={playlists}
           itemComponent={playlist}
           emptyMessage={"There is nothing here..."}
+          style={styles.listScreen}
         />
         <Portal>
           <PlaylistMenuPlay

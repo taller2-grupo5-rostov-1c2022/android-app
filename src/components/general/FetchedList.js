@@ -20,7 +20,11 @@ export default function FetchedList({
   let theme = useTheme();
 
   if ((!response.data && response.isValidating) || forceLoading)
-    return <ActivityIndicator style={styles.activityIndicator} />;
+    return (
+      <View {...viewProps}>
+        <ActivityIndicator style={styles.activityIndicator} />
+      </View>
+    );
 
   if (response.error) return <ErrorMessage error={response.error} />;
 
@@ -71,7 +75,7 @@ FetchedList.propTypes = {
   forceLoading: PropTypes.bool,
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
-  viewProps: PropTypes.shape(View.propTypes),
+  ...View.propTypes,
 };
 
 ErrorMessage.propTypes = {

@@ -41,6 +41,7 @@ export default function SongsScreen() {
           response={songs}
           itemComponent={song}
           emptyMessage={query ? "No results" : "There is nothing here..."}
+          style={styles.listScreen}
         />
         <Portal>
           <PlaylistMenuAdd
