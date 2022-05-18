@@ -17,13 +17,17 @@ import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
 import PlayableSongItem from "../songs/PlayableSongItem";
 import { webApi, fetch } from "../../util/services";
 import AppContext from "../AppContext";
+import FetchedList from "../general/FetchedList";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
   const artists = getArtistsAsString(
     album?.songs?.map((song) => song?.artists).flat()
   );
-  const [playlistVisible, setPlaylistVisible] = React.useState(false);
+  const [playlistAdd, setPlaylistAdd] = React.useState({
+    visible: false,
+    id: null,
+  });
   const context = React.useContext(AppContext);
   const [loading, setLoading] = React.useState(false);
 
@@ -41,15 +45,30 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
         Play Album
       </Button>
     );
-  let i = 0;
+
+  let songs = album?.songs;
+
+  let song = ({ data }) => (
+    <PlayableSongItem
+      data={data}
+      right={(props) => (
+        <IconButton
+          {...props}
+          onPress={() => setPlaylistAdd({ value: true, id: data.id })}
+          icon="playlist-plus"
+        />
+      )}
+    />
+  );
+
   return (
     <>
       <Modal
         title="Album Information"
-        visible={modalStatus.visible && !playlistVisible}
+        visible={modalStatus.visible && !playlistAdd.visible}
         onDismiss={() => setModalStatus({ album, visible: false })}
       >
-        <View style={styles.containerCenter}>
+        <View style={[styles.containerCenter, styles.container]}>
           <Title style={{ margin: 0 }}>{album?.name}</Title>
           <Subheading>{album?.genre}</Subheading>
           <ShapedImage
@@ -63,26 +82,23 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
           <Text>{artists}</Text>
           <Caption>{album?.description}</Caption>
           {playAllButton}
-          <View style={{ width: "100%" }}>
-            {album?.songs?.map((song) => (
-              <PlayableSongItem
-                data={song}
-                key={i++}
-                right={(props) => (
-                  <IconButton
-                    {...props}
-                    onPress={() => setPlaylistVisible(true)}
-                    icon="playlist-plus"
-                  />
-                )}
-              />
-            ))}
+          <View style={{ width: "100%", alignSelf: "flex-start" }}>
+            <Title>Songs</Title>
+            <FetchedList
+              response={{ data: songs }}
+              itemComponent={song}
+              viewProps={{ style: { width: "100%" } }}
+              emptyMessage="This album has no songs"
+            />
           </View>
         </View>
       </Modal>
       <PlaylistMenuAdd
-        visible={playlistVisible && modalStatus.visible}
-        setVisible={setPlaylistVisible}
+        visible={playlistAdd.visible && modalStatus.visible}
+        setVisible={(value) =>
+          setPlaylistAdd((prev) => ({ ...prev, visible: value }))
+        }
+        songId={playlistAdd.visible}
       ></PlaylistMenuAdd>
     </>
   );

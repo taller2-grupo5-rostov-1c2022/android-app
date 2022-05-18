@@ -62,5 +62,4 @@ CrudList.propTypes = {
   url: PropTypes.string.isRequired,
   editDialog: PropTypes.any.isRequired,
   itemComponent: PropTypes.func.isRequired,
-  ...FetchedList.propTypes,
 };

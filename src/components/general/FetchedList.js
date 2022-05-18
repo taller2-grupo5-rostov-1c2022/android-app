@@ -40,6 +40,7 @@ export default function FetchedList({
 function mapData(data, itemComponent) {
   let i = 0;
   const Item = itemComponent;
+
   return data?.map((element) => {
     return <Item key={i++} data={element} />;
   });
@@ -64,7 +65,7 @@ function ErrorMessage({ error }) {
 FetchedList.propTypes = {
   response: PropTypes.shape({
     data: PropTypes.array,
-    isValidating: PropTypes.bool.isRequired,
+    isValidating: PropTypes.bool,
     error: PropTypes.any,
   }).isRequired,
   forceLoading: PropTypes.bool,
