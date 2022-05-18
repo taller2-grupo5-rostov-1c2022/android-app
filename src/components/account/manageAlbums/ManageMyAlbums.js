@@ -10,6 +10,7 @@ export default function ManageMyAlbums() {
       url="/songs/my_albums/"
       editDialog={AlbumDialog}
       itemComponent={AlbumItem}
+      emptyMessage="You don't have any albums yet"
     />
   );
 }

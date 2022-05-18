@@ -59,6 +59,7 @@ const LightTheme = {
     ...NavigationDefaultTheme.colors,
     primary: "#3498db",
     accent: "#f1c40f",
+    info: "#555555",
   },
 };
 const DarkTheme = {
@@ -68,6 +69,7 @@ const DarkTheme = {
   colors: {
     ...PaperDarkTheme.colors,
     ...NavigationDarkTheme.colors,
+    info: "#888888",
   },
 };
 

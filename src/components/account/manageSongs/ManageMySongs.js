@@ -10,6 +10,7 @@ export default function ManageMySongs() {
       url="/songs/my_songs/"
       editDialog={SongDialog}
       itemComponent={SongItem}
+      emptyMessage="You don't have any songs yet"
     />
   );
 }

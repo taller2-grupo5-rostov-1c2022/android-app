@@ -8,7 +8,7 @@ import { webApi, json_fetcher, useSWR } from "../../util/services";
 
 // itemComponent es el componente para cada item que recibe la prop data de cada item
 // editDialog es el componente a mostrar al editar. recibe la data del elemento a editar
-export default function CrudList({ url, editDialog, itemComponent }) {
+export default function CrudList({ url, editDialog, itemComponent, ...rest }) {
   const [dialog, setDialog] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const response = useSWR(`${webApi}${url}`, json_fetcher);
@@ -52,6 +52,7 @@ export default function CrudList({ url, editDialog, itemComponent }) {
         response={response}
         itemComponent={item}
         forceLoading={loading}
+        {...rest}
       />
     </SafeAreaView>
   );
@@ -61,4 +62,5 @@ CrudList.propTypes = {
   url: PropTypes.string.isRequired,
   editDialog: PropTypes.any.isRequired,
   itemComponent: PropTypes.func.isRequired,
+  ...FetchedList.propTypes,
 };

@@ -8,6 +8,7 @@ import SessionManager from "./account/profile/SessionManager";
 import AppContext from "./AppContext";
 import AudioController from "./general/AudioController";
 import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
+import ForgotPasswordScreen from "./account/login/ForgotPasswordScreen";
 import { Portal } from "react-native-paper";
 
 const StackNavigator = createNativeStackNavigator();
@@ -56,6 +57,11 @@ export default function Stack() {
             name="RegisterScreen"
             component={RegisterScreen}
             options={{ title: "Create your account", headerShown: true }}
+          />
+          <StackNavigator.Screen
+            name="ForgotPasswordScreen"
+            component={ForgotPasswordScreen}
+            options={{ title: "Reset you password", headerShown: true }}
           />
           <StackNavigator.Screen
             name="MyProfileScreen"

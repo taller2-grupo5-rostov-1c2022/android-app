@@ -53,6 +53,11 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: "stretch",
   },
+  infoText: {
+    textAlign: "center",
+    padding: 20,
+    fontSize: 16,
+  },
   row: {
     flexDirection: "row",
   },
