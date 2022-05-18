@@ -56,6 +56,13 @@ const styles = StyleSheet.create({
   errorText: {
     color: "#b00020",
   },
+
+  infoText: {
+    color: "#555",
+    textAlign: "center",
+    padding: 20,
+    fontSize: 22,
+  },
   row: {
     flexDirection: "row",
   },

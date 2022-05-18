@@ -21,7 +21,11 @@ export default function FetchedList({
 
   return (
     <ScrollView {...viewProps}>
-      {mapData(response.data, itemComponent)}
+      {response?.data?.length > 0 ? (
+        mapData(response.data, itemComponent)
+      ) : (
+        <Subheading style={styles.infoText}>No results</Subheading>
+      )}
     </ScrollView>
   );
 }
