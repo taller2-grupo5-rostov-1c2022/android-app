@@ -11,24 +11,58 @@ import {
 } from "react-native-paper";
 import PropTypes from "prop-types";
 import { Appearance } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const THEME_KEY = "@theme";
 
 export const ThemeContext = React.createContext({
   toggleTheme: () => {},
   isThemeDark: false,
 });
 
-function getDefaultIsThemeDark() {
-  const colorScheme = Appearance.getColorScheme();
-  return colorScheme == "dark";
+async function getStoredTheme() {
+  let stored = null;
+  try {
+    stored = await AsyncStorage.getItem(THEME_KEY);
+  } catch (e) {
+    console.error(e);
+    toast.show("Failed to fetch theme setting", {
+      duration: 3000,
+    });
+  }
+
+  if (stored) return stored == "true";
+
+  const phoneThemeDark = Appearance.getColorScheme() == "dark";
+  setStoragedTheme(phoneThemeDark);
+  return phoneThemeDark;
+}
+
+async function setStoragedTheme(value) {
+  try {
+    await AsyncStorage.setItem(THEME_KEY, value);
+  } catch (e) {
+    toast.show("Failed to store theme setting", {
+      duration: 3000,
+    });
+  }
 }
 
 export default function ThemeProvider({ children }) {
-  const [isThemeDark, setIsThemeDark] = React.useState(getDefaultIsThemeDark());
+  const [isThemeDark, setIsThemeDark] = React.useState(true);
+
+  React.useEffect(() => {
+    async function initialTheme() {
+      const value = await getStoredTheme();
+      setIsThemeDark(value);
+    }
+    initialTheme();
+  }, []);
 
   let theme = isThemeDark ? DarkTheme : LightTheme;
-
   const toggleTheme = React.useCallback(() => {
-    return setIsThemeDark(!isThemeDark);
+    setStoragedTheme(!isThemeDark);
+    setIsThemeDark(!isThemeDark);
   }, [isThemeDark]);
 
   const preferences = React.useMemo(

@@ -97,7 +97,7 @@ Checklist.propTypes = {
         listProps: PropTypes.any,
       }).isRequired
     ).isRequired,
-    viewStyle: View.propTypes,
+    viewStyle: PropTypes.shape(View.propTypes),
     title: PropTypes.string,
     emptyMessage: PropTypes.string,
   }).isRequired,

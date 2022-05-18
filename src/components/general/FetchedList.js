@@ -70,7 +70,7 @@ FetchedList.propTypes = {
   forceLoading: PropTypes.bool,
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
-  viewProps: View.propTypes,
+  viewProps: PropTypes.shape(View.propTypes),
 };
 
 ErrorMessage.propTypes = {
