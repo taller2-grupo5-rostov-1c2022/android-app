@@ -11,6 +11,7 @@ import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError.js";
 import { useSWR, json_fetcher, webApi } from "../../util/services.js";
 import AppContext from "../AppContext.js";
+import ThemeSwitch from "./ThemeSwitch.js";
 
 const ARTIST_ROLES = ["artist", "admin"];
 
@@ -75,6 +76,7 @@ export default function AccountScreen() {
         </View>
       </View>
       <ArtistMenu role={role} navigation={navigation} />
+      <ThemeSwitch />
       <Portal>
         {loading ? (
           <ActivityIndicator size="large" style={styles.activityIndicator} />
