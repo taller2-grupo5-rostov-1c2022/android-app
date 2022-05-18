@@ -54,7 +54,7 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
       right={(props) => (
         <IconButton
           {...props}
-          onPress={() => setPlaylistAdd({ value: true, id: data.id })}
+          onPress={() => setPlaylistAdd({ visible: true, id: data.id })}
           icon="playlist-plus"
         />
       )}
@@ -98,7 +98,7 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
         setVisible={(value) =>
           setPlaylistAdd((prev) => ({ ...prev, visible: value }))
         }
-        songId={playlistAdd.visible}
+        songId={playlistAdd.id}
       ></PlaylistMenuAdd>
     </>
   );
