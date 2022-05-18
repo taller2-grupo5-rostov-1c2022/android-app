@@ -58,7 +58,7 @@ export const AudioController = () => {
 
   React.useEffect(() => {
     console.log("audio");
-    if (currentSong.name && !isPrevious) {
+    if (currentSong.name && !isPrevious && (currentSong.name != context.song.name)) {
       setprevSongs((prevSongs) => [...prevSongs, currentSong]);
       console.log(prevSongs);
     }
@@ -74,7 +74,6 @@ export const AudioController = () => {
   }, [context.song]);
 
   React.useEffect(() => {
-    console.log("audio");
     if (context.paused) {
       audio?.sound?.pauseAsync();
     } else {

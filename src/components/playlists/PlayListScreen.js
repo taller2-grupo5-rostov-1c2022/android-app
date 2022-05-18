@@ -5,19 +5,17 @@ import styles from "../styles.js";
 import { View } from "react-native";
 import Player from "../Player";
 import FetchedList from "../general/FetchedList";
-import SearchBar from "../general/SearchBar";
 import PlaylistMenuPlay from "./PlaylistMenuPlay";
 
 export default function PlayListScreen() {
   const [visible, setVisible] = React.useState(false);
   const [playlistId, setPlaylistId] = React.useState("");
-  const [query, setQuery] = React.useState("");
   const playlists = useSWR(webApi + "/songs/playlists/", json_fetcher);
+
   const onPress = (id) => {
     console.log(id);
     setPlaylistId(id);
     setVisible(true);
-    console.log(query);
   }
 
   const playlist = ({ data }) => (
@@ -26,12 +24,12 @@ export default function PlayListScreen() {
     description={data.description}
     onPress={() => onPress(data.id)}
   />
+
   );
     return (
       <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <Headline>Plalists</Headline>
-        <SearchBar setQuery={setQuery} />
         <FetchedList response={playlists} itemComponent={playlist} />
         <Portal>
           <PlaylistMenuPlay
@@ -41,7 +39,7 @@ export default function PlayListScreen() {
           ></PlaylistMenuPlay>
         </Portal>
       </View>
-      <Player />
+      <Player/>
     </View>
     );
   }
