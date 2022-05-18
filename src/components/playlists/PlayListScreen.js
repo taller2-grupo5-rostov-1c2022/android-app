@@ -25,6 +25,7 @@ export default function PlayListScreen() {
       onPress={() => onPress(data.id)}
     />
   );
+
   return (
     <View style={{ flex: 1 }}>
       <Appbar>

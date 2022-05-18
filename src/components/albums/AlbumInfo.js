@@ -4,19 +4,10 @@ import PropTypes from "prop-types";
 import { ShapedImage } from "../general/ShapedImage";
 import { View } from "react-native";
 import styles from "../styles";
-import {
-  Caption,
-  Subheading,
-  Title,
-  Text,
-  IconButton,
-  Button,
-} from "react-native-paper";
-import { getArtistsAsString, playSongList } from "../../util/general";
+import { Caption, Subheading, Title, Text } from "react-native-paper";
+import { getArtistsAsString } from "../../util/general";
 import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
-import PlayableSongItem from "../songs/PlayableSongItem";
-import AppContext from "../AppContext";
-import FetchedList from "../general/FetchedList";
+import SongList from "../songs/SongList";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
@@ -27,38 +18,8 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
     visible: false,
     id: null,
   });
-  const context = React.useContext(AppContext);
-  const [loading, setLoading] = React.useState(false);
-
-  let playAllButton = null;
-  if (album?.songs.length > 0)
-    playAllButton = (
-      <Button
-        mode="contained"
-        style={([styles.button], { marginTop: "3%" })}
-        onPress={() => playSongList(album?.songs, context, setLoading)}
-        disabled={loading ? "true" : undefined}
-        icon={loading ? undefined : "play"}
-        loading={loading}
-      >
-        Play Album
-      </Button>
-    );
 
   let songs = album?.songs;
-
-  let song = ({ data }) => (
-    <PlayableSongItem
-      data={data}
-      right={(props) => (
-        <IconButton
-          {...props}
-          onPress={() => setPlaylistAdd({ visible: true, id: data.id })}
-          icon="playlist-plus"
-        />
-      )}
-    />
-  );
 
   return (
     <>
@@ -67,7 +28,7 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
         visible={modalStatus.visible && !playlistAdd.visible}
         onDismiss={() => setModalStatus({ album, visible: false })}
       >
-        <View style={[styles.containerCenter, styles.container]}>
+        <View style={[styles.containerCenter]}>
           <Title style={{ margin: 0 }}>{album?.name}</Title>
           <Subheading>{album?.genre}</Subheading>
           <ShapedImage
@@ -80,16 +41,14 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
 
           <Text>{artists}</Text>
           <Caption>{album?.description}</Caption>
-          {playAllButton}
-          <View style={{ width: "100%", alignSelf: "flex-start" }}>
-            <Title>Songs</Title>
-            <FetchedList
-              response={{ data: songs }}
-              itemComponent={song}
-              viewProps={{ style: { width: "100%" } }}
-              emptyMessage="This album has no songs"
-            />
-          </View>
+          <SongList
+            onPlaylistAdd={(data) =>
+              setPlaylistAdd({ visible: true, id: data.id })
+            }
+            songs={songs}
+            title="Songs"
+            emptyMessage="This album has no songs"
+          />
         </View>
       </Modal>
       <PlaylistMenuAdd

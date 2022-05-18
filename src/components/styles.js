@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalMargin: {
-    marginHorizontal: "2%",
+    marginHorizontal: "3%",
   },
   containerWithPlayer: {
     flex: 1,
