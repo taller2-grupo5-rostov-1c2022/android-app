@@ -81,6 +81,12 @@ export default function LoginScreen({ navigation }) {
         </Button>
       </View>
       <GoogleSignIn onSignIn={signIn} />
+      <Button
+        onPress={() => navigation.push("ForgotPasswordScreen")}
+        style={styles.button}
+      >
+        Forgot Password
+      </Button>
       <FirebaseError error={error} style={{ textAlign: "center" }} />
       <StatusBar style="auto" />
       <Portal>
