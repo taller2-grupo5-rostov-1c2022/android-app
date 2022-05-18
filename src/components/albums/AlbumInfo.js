@@ -10,10 +10,13 @@ import {
   Title,
   Text,
   IconButton,
+  Button,
 } from "react-native-paper";
 import { getArtistsAsString } from "../../util/general";
 import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
-import PlayableSongItem from "../songs/SongItem";
+import PlayableSongItem from "../songs/PlayableSongItem";
+import { webApi, fetch } from "../../util/services";
+import AppContext from "../AppContext";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
@@ -21,7 +24,23 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
     album?.songs?.map((song) => song?.artists).flat()
   );
   const [playlistVisible, setPlaylistVisible] = React.useState(false);
+  const context = React.useContext(AppContext);
+  const [loading, setLoading] = React.useState(false);
 
+  let playAllButton = null;
+  if (album?.songs.length > 0)
+    playAllButton = (
+      <Button
+        mode="contained"
+        style={([styles.button], { marginTop: "3%" })}
+        onPress={() => playAll(album?.songs, context, setLoading)}
+        disabled={loading ? "true" : undefined}
+        icon={loading ? undefined : "play"}
+        loading={loading}
+      >
+        Play Album
+      </Button>
+    );
   let i = 0;
   return (
     <>
@@ -43,17 +62,17 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
 
           <Text>{artists}</Text>
           <Caption>{album?.description}</Caption>
+          {playAllButton}
           <View style={{ width: "100%" }}>
             {album?.songs?.map((song) => (
               <PlayableSongItem
                 data={song}
                 key={i++}
-                right={() => (
+                right={(props) => (
                   <IconButton
+                    {...props}
                     onPress={() => setPlaylistVisible(true)}
                     icon="playlist-plus"
-                    color="black"
-                    style={{ float: "right" }}
                   />
                 )}
               />
@@ -67,6 +86,29 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
       ></PlaylistMenuAdd>
     </>
   );
+}
+
+async function playAll(songs, context, setLoading) {
+  setLoading(true);
+  try {
+    let songsWithUrl = await Promise.all(
+      songs.map((song) => fetch(webApi + "/songs/songs/" + song.id))
+    );
+    let queue = songsWithUrl.map((song) => {
+      song.url = song.file;
+      return song;
+    });
+    context.setQueue(queue);
+    context.setNext(true);
+    context.setPaused(false);
+  } catch (e) {
+    console.error(e);
+    toast.show("Could not play album :(", {
+      duration: 3000,
+    });
+  } finally {
+    setLoading(false);
+  }
 }
 
 AlbumInfo.propTypes = {

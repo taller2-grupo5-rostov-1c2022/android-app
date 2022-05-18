@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   modal: {
-    backgroundColor: "white",
     marginHorizontal: "5%",
     maxHeight: "90%",
   },

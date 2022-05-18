@@ -18,12 +18,13 @@ export default function SongsScreen() {
   const song = ({ data }) => (
     <PlayableSongItem
       data={data}
-      right={() => (
+      right={(props) => (
         <IconButton
-          onPress={() => {setVisible(true), setSongId(data.id)}}
+          {...props}
+          onPress={() => {
+            setVisible(true), setSongId(data.id);
+          }}
           icon="playlist-plus"
-          color="black"
-          style={{ float: "right" }}
         />
       )}
     />

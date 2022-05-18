@@ -3,13 +3,14 @@ import PropTypes from "prop-types";
 import { List } from "react-native-paper";
 import { getArtistsAsString } from "../../util/general";
 
-export default function SongItem({ data, right, onPress }) {
+export default function SongItem({ data, right, onPress, ...rest }) {
   return (
     <List.Item
       title={data.name}
       description={getArtistsAsString(data.artists)}
       right={right}
       onPress={onPress ? () => onPress(data) : undefined}
+      {...rest}
     />
   );
 }
