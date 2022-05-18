@@ -28,7 +28,11 @@ export default function AlbumsScreen() {
       </Appbar>
       <View style={[styles.container]}>
         <SearchBar setQuery={setQuery} />
-        <FetchedList response={songs} itemComponent={album} />
+        <FetchedList
+          response={songs}
+          itemComponent={album}
+          emptyMessage={query ? "No results" : "There is nothing here..."}
+        />
         <Portal>
           <AlbumInfo
             modalStatus={modalStatus}

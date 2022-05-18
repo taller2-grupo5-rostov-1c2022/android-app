@@ -9,15 +9,15 @@ export const PlaylistMenuAdd = ({ visible, setVisible, songId }) => {
   const my_playlists = useSWR(webApi + "/songs/my_playlists/", json_fetcher);
 
   const onPress = () => {
-    console.log(songId)
-  }
+    console.log(songId);
+  };
 
   const playlist = ({ data }) => (
     <List.Item
-    title={data.name}
-    description={data.description}
-    onPress={onPress}
-  />
+      title={data.name}
+      description={data.description}
+      onPress={onPress}
+    />
   );
 
   return (
@@ -26,7 +26,11 @@ export const PlaylistMenuAdd = ({ visible, setVisible, songId }) => {
       visible={visible}
       onDismiss={() => setVisible(false)}
     >
-      <FetchedList response={my_playlists} itemComponent={playlist} />
+      <FetchedList
+        response={my_playlists}
+        itemComponent={playlist}
+        emptyMessage={"You don't have any playlists"}
+      />
     </Modal>
   );
 };
@@ -36,5 +40,5 @@ export default PlaylistMenuAdd;
 PlaylistMenuAdd.propTypes = {
   visible: PropTypes.bool.isRequired,
   setVisible: PropTypes.func.isRequired,
-  songId: PropTypes.any
+  songId: PropTypes.any,
 };

@@ -37,7 +37,11 @@ export default function SongsScreen() {
       </Appbar>
       <View style={styles.container}>
         <SearchBar setQuery={setQuery} />
-        <FetchedList response={songs} itemComponent={song} />
+        <FetchedList
+          response={songs}
+          itemComponent={song}
+          emptyMessage={query ? "No results" : "There is nothing here..."}
+        />
         <Portal>
           <PlaylistMenuAdd
             visible={visible}

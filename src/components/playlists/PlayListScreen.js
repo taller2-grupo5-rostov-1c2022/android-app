@@ -31,7 +31,11 @@ export default function PlayListScreen() {
         <Appbar.Content title="Playlists" />
       </Appbar>
       <View style={styles.container}>
-        <FetchedList response={playlists} itemComponent={playlist} />
+        <FetchedList
+          response={playlists}
+          itemComponent={playlist}
+          emptyMessage={"There is nothing here..."}
+        />
         <Portal>
           <PlaylistMenuPlay
             visible={visible}
