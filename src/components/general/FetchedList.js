@@ -3,6 +3,7 @@ import { ActivityIndicator, Subheading, Text } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import styles from "../styles.js";
 import PropTypes from "prop-types";
+import { useTheme } from "react-native-paper";
 
 // itemComponent es el componente para cada item que recibe la prop data de cada item
 // response tiene la respuesta de SWR
@@ -35,13 +36,17 @@ function mapData(data, itemComponent) {
 }
 
 function ErrorMessage({ error }) {
+  let theme = useTheme();
+
   console.log("Error: ", "\n", error, "\n", { error });
   return (
     <View>
-      <Subheading style={styles.errorText}>
+      <Subheading style={{ color: theme.colors.error }}>
         Error populating the list
       </Subheading>
-      <Text style={styles.errorText}>Error description: {error.message}</Text>
+      <Text style={{ color: theme.colors.error }}>
+        Error description: {error.message}
+      </Text>
     </View>
   );
 }

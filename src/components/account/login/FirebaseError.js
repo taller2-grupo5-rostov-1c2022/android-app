@@ -1,5 +1,5 @@
 import { Text } from "react-native-paper";
-import styles from "../../styles.js";
+import { useTheme } from "react-native-paper";
 import PropTypes from "prop-types";
 
 const firebaseErrors = {
@@ -22,11 +22,14 @@ function errorMsg(errorCode) {
 }
 
 export function FirebaseError({ error, style }) {
-  var text = error ? errorMsg(error?.code) : "";
+  let text = error ? errorMsg(error?.code) : "";
+  let theme = useTheme();
   if (error && !error.code) console.error(error);
 
   return (
-    <Text style={[styles.errorText, { margin: "2%" }].concat(style ?? [])}>
+    <Text
+      style={[{ color: theme.colors.error, margin: "2%" }].concat(style ?? [])}
+    >
       {text}
     </Text>
   );

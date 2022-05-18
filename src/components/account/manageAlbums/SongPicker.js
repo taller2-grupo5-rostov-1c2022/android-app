@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Button, Caption, Title, Text } from "react-native-paper";
 import { View } from "react-native";
-import styles from "../../styles";
+import { useTheme } from "react-native-paper";
 import FilePicker from "../../formUtil/FilePicker";
 
 export function SongPicker(props) {
   const [status, setStatus] = useState(null);
+  let theme = useTheme();
 
   return (
     <View>
@@ -27,7 +28,7 @@ export function SongPicker(props) {
         />
         <Caption>{status?.fileName ?? "No file selected"}</Caption>
       </View>
-      <Text style={styles.errorText}>{status?.error}</Text>
+      <Text style={{ color: theme.colors.error }}>{status?.error}</Text>
     </View>
   );
 }

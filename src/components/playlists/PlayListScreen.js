@@ -1,6 +1,6 @@
 import React from "react";
 import { webApi, useSWR, json_fetcher } from "../../util/services";
-import { Headline, Portal, List } from "react-native-paper";
+import { Appbar, Portal, List } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
 import Player from "../Player";
@@ -16,20 +16,21 @@ export default function PlayListScreen() {
     console.log(id);
     setPlaylistId(id);
     setVisible(true);
-  }
+  };
 
   const playlist = ({ data }) => (
     <List.Item
-    title={data.name}
-    description={data.description}
-    onPress={() => onPress(data.id)}
-  />
-
+      title={data.name}
+      description={data.description}
+      onPress={() => onPress(data.id)}
+    />
   );
-    return (
-      <View style={{ flex: 1 }}>
+  return (
+    <View style={{ flex: 1 }}>
+      <Appbar>
+        <Appbar.Content title="Playlists" />
+      </Appbar>
       <View style={styles.container}>
-        <Headline>Plalists</Headline>
         <FetchedList response={playlists} itemComponent={playlist} />
         <Portal>
           <PlaylistMenuPlay
@@ -39,7 +40,7 @@ export default function PlayListScreen() {
           ></PlaylistMenuPlay>
         </Portal>
       </View>
-      <Player/>
+      <Player />
     </View>
-    );
-  }
+  );
+}

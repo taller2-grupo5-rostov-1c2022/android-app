@@ -12,7 +12,7 @@ export default function HomeScreen() {
     { key: "music", title: "Music", icon: "music-note" },
     { key: "albums", title: "Albums", icon: "album" },
     { key: "playlists", title: "Playlists", icon: "playlist-music" },
-    { key: "account", title: "Account", icon: "account" },
+    { key: "account", title: "More", icon: "menu" },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { webApi, useSWR, json_fetcher } from "../../util/services";
-import { Headline, Portal } from "react-native-paper";
+import { Appbar, Portal } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
 import Player from "../Player";
@@ -23,8 +23,10 @@ export default function AlbumsScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      <Appbar>
+        <Appbar.Content title="Albums" />
+      </Appbar>
       <View style={[styles.container]}>
-        <Headline>Albums</Headline>
         <SearchBar setQuery={setQuery} />
         <FetchedList response={songs} itemComponent={album} />
         <Portal>

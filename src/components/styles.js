@@ -53,9 +53,6 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: "stretch",
   },
-  errorText: {
-    color: "#b00020",
-  },
   row: {
     flexDirection: "row",
   },

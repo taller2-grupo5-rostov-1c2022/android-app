@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Text } from "react-native-paper";
 import PropTypes from "prop-types";
-import styles from "../styles";
 import { View } from "react-native";
 import FilePicker from "./FilePicker";
 import { ShapedImage } from "../general/ShapedImage";
+import { useTheme } from "react-native-paper";
 
 export default function ImagePicker({ customProps, ...rest }) {
   const { initialImageUri, ...customRest } = customProps;
   const [status, setStatus] = useState(null);
+  let theme = useTheme();
 
   return (
     <View>
@@ -25,7 +26,7 @@ export default function ImagePicker({ customProps, ...rest }) {
           ),
         }}
       />
-      <Text style={[styles.errorText, { textAlign: "center" }]}>
+      <Text style={{ textAlign: "center", color: theme.colors.error }}>
         {status?.error}
       </Text>
     </View>
