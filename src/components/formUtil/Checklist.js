@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
-import { Checkbox, HelperText, Title, List } from "react-native-paper";
+import { Checkbox, HelperText, Title, List, Text } from "react-native-paper";
 import { View, TouchableOpacity } from "react-native";
 import styles from "../styles";
 
@@ -9,14 +9,15 @@ import styles from "../styles";
 // allOptions es un array con todas las opciones que se pueden seleccionar
 // allOptions.out es la propiedad que devuelve el formulario para ese valor
 // allOptions.listProps son las props del elemento de la lista
-// alignment es "center" o "left"
+// width es el porcentaje de ancho que ocupa el elemento de la lista
+// emptyMessage es el mensaje que se muestra cuando no hay ninguna opción disponible
 export default function Checklist(props) {
   const {
     name,
     rules,
     control,
     defaultValue,
-    customProps: { allOptions, width, title },
+    customProps: { allOptions, width, title, emptyMessage },
   } = props;
 
   const { field } = useController({
@@ -44,45 +45,43 @@ export default function Checklist(props) {
     return values && values.includes(value) ? "checked" : "unchecked";
   };
 
-  let i = 0;
-  const padding = useMemo(() => getPadding(width), [width]);
+  const options = getOptions(allOptions, onPress, getStatus);
+  //if (options.length === 0) return <Text>{emptyMessage}</Text>;
+
   return (
-    <View
-      style={{ paddingHorizontal: padding, alignSelf: "center", width: "100%" }}
-    >
+    <View style={{ alignSelf: "center", width }}>
       <Title>{title}</Title>
-      {allOptions.map((option) => (
-        <TouchableOpacity
-          style={styles.row}
-          key={i++}
-          onPress={() => onPress(option.out)}
-        >
-          <List.Item
-            style={{
-              alignSelf: "center",
-              width: "100%",
-              paddingVertical: 4,
-              paddingHorizontal: 0,
-            }}
-            {...option.listProps}
-            left={() => (
-              <View style={{ alignSelf: "center" }}>
-                <Checkbox status={getStatus(option.out)} />
-              </View>
-            )}
-          />
-        </TouchableOpacity>
-      ))}
+      {options.length > 0 ? options : <Text>{emptyMessage}</Text>}
       {err ? <HelperText type={"error"}>{err}</HelperText> : null}
     </View>
   );
 }
 
-function getPadding(width) {
-  if (!width) return "0%";
-  const widthNumber = parseInt(width.replace("%", ""));
-  const padding = (100 - widthNumber) / 2;
-  return `${padding}%`;
+function getOptions(allOptions, onPress, getStatus) {
+  let i = 0;
+
+  return allOptions.map((option) => (
+    <TouchableOpacity
+      style={styles.row}
+      key={i++}
+      onPress={() => onPress(option.out)}
+    >
+      <List.Item
+        style={{
+          alignSelf: "center",
+          width: "100%",
+          paddingVertical: 4,
+          paddingHorizontal: 0,
+        }}
+        {...option.listProps}
+        left={() => (
+          <View style={{ alignSelf: "center" }}>
+            <Checkbox status={getStatus(option.out)} />
+          </View>
+        )}
+      />
+    </TouchableOpacity>
+  ));
 }
 
 Checklist.propTypes = {
@@ -100,5 +99,6 @@ Checklist.propTypes = {
     ).isRequired,
     width: PropTypes.string.isRequired,
     title: PropTypes.string,
+    emptyMessage: PropTypes.string,
   }).isRequired,
 };

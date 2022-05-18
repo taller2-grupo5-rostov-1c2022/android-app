@@ -120,12 +120,8 @@ async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
       },
       out: id,
     }));
-    if (songs.length == 0) {
-      setStatus({ error: { message: "You have no songs to add to an album" } });
-    } else {
-      setValidSongs(songs);
-      setStatus({ loading: false });
-    }
+    if (songs.length > 0) setValidSongs(songs);
+    setStatus({ loading: false });
   } catch (e) {
     hideDialog();
     console.error(e);
@@ -218,16 +214,11 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           name: "songs_ids",
           type: "custom",
           JSX: Checklist,
-          rules: {
-            required: {
-              value: true,
-              message: "At least one song is required",
-            },
-          },
           customProps: {
             allOptions: validSongs,
             title: "Songs",
             width: "100%",
+            emptyMessage: "No songs to add",
           },
         },
       ]}
