@@ -13,7 +13,6 @@ export default function PlayListScreen() {
   const playlists = useSWR(webApi + "/songs/playlists/", json_fetcher);
 
   const onPress = (id) => {
-    console.log(id);
     setPlaylistId(id);
     setVisible(true);
   };

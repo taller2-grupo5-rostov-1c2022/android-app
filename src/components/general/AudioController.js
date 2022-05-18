@@ -39,7 +39,6 @@ export const AudioController = () => {
   };
 
   const previous = () => {
-    console.log(prevSongs.length);
     if (prevSongs.length == 0) return;
     const prevSong = prevSongs[prevSongs.length - 1];
     setprevSongs(prevSongs.slice(0, -1));
@@ -49,7 +48,6 @@ export const AudioController = () => {
   };
 
   const next = () => {
-    console.log(context.queue);
     if (context.queue.length == 0) return;
     const nextSong = context.queue[0];
     context.setQueue((queue) => queue.slice(1));
@@ -57,10 +55,12 @@ export const AudioController = () => {
   };
 
   React.useEffect(() => {
-    console.log("audio");
-    if (currentSong.name && !isPrevious && (currentSong.name != context.song.name)) {
+    if (
+      currentSong.name &&
+      !isPrevious &&
+      currentSong.name != context.song.name
+    ) {
       setprevSongs((prevSongs) => [...prevSongs, currentSong]);
-      console.log(prevSongs);
     }
     setIsPrevious(false);
     setCurrentSong({
