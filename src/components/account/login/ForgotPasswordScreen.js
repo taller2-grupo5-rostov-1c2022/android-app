@@ -5,6 +5,7 @@ import {
   Portal,
   ActivityIndicator,
   Headline,
+  useTheme,
 } from "react-native-paper";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import PropTypes from "prop-types";
@@ -20,6 +21,7 @@ export default function ForgotPasswordScreen() {
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
   const [done, setDone] = useState(false);
+  const theme = useTheme();
 
   const sendReset = async (data) => {
     setError(null);
@@ -52,7 +54,7 @@ export default function ForgotPasswordScreen() {
       <Headline style={{ margin: "2%" }}>Reset Password</Headline>
       <ResetForm control={control} setFocus={setFocus} />
       {done ? (
-        <Headline style={{ margin: "2%" }}>
+        <Headline style={[styles.infoText, { color: theme.colors.info }]}>
           Check your email for a reset link.
         </Headline>
       ) : (

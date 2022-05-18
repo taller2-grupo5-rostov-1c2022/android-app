@@ -1,4 +1,4 @@
-import { VALID_GENRES } from "../../../util/general.js";
+import { COUNTRIES, VALID_GENRES } from "../../../util/general.js";
 import Checklist from "../../formUtil/Checklist";
 import { useForm } from "react-hook-form";
 import { FormBuilder } from "react-native-paper-form-builder";
@@ -14,14 +14,17 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
     defaultValues: {
       image: null,
       name: defaultValues?.name ?? "",
-      location: defaultValues?.location ?? "",
       preferences: defaultValues?.preferences ?? [],
+      location:
+        defaultValues?.location && COUNTRIES.includes(defaultValues.location)
+          ? defaultValues.location
+          : COUNTRIES[0],
     },
     mode: "onChange",
   });
 
   return (
-    <>
+    <View style={styles.formWidth}>
       <FormBuilder
         control={control}
         setFocus={setFocus}
@@ -35,6 +38,7 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
               shape: "circle",
               icon: "account",
               size: 200,
+              style: { alignSelf: "center" },
             },
           },
           {
@@ -43,23 +47,23 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
             textInputProps: {
               mode: "flat",
               label: "User Name",
-              style: styles.formWidth,
             },
             rules: {
               validate: inputValidator("Name is required"),
             },
           },
           {
-            type: "text",
+            type: "autocomplete",
             name: "location",
             textInputProps: {
               mode: "flat",
               label: "Location",
-              style: styles.formWidth,
             },
             rules: {
-              validate: inputValidator("Location is required"),
+              required: true,
+              message: "Location is required",
             },
+            options: COUNTRIES.map((c) => ({ value: c, label: c })),
           },
           {
             name: "preferences",
@@ -71,7 +75,6 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
                 out: name,
               })),
               title: "Interests",
-              viewStyle: styles.formWidth,
             },
           },
         ]}
@@ -86,7 +89,7 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
           Submit
         </Button>
       </View>
-    </>
+    </View>
   );
 }
 

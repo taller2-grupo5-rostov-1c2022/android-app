@@ -10,7 +10,7 @@ import AudioController from "./general/AudioController";
 import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 import ForgotPasswordScreen from "./account/login/ForgotPasswordScreen";
 import { Portal, useTheme } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 
 const StackNavigator = createNativeStackNavigator();
 
@@ -40,9 +40,7 @@ export default function Stack() {
         setNext,
       }}
     >
-      <SafeAreaView
-        style={{ flex: 1, backgroundColor: theme.colors.background }}
-      >
+      <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
         <Portal.Host>
           <StackNavigator.Navigator
             initialRouteName="SessionManager"
@@ -81,7 +79,7 @@ export default function Stack() {
           </StackNavigator.Navigator>
           <AudioController />
         </Portal.Host>
-      </SafeAreaView>
+      </View>
     </AppContext.Provider>
   );
 }
