@@ -1,6 +1,5 @@
 import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { initializeApp } from "firebase/app";
 import { initializeAuth } from "firebase/auth";
 import { firebaseConfig } from "../config/firebase";
@@ -8,6 +7,7 @@ import Stack from "./components/Stack";
 import { getReactNativePersistence } from "firebase/auth/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-notifications";
+import ThemeProvider from "./components/ThemeProvider";
 
 export default function App() {
   React.useEffect(() => {
@@ -22,22 +22,12 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <PaperProvider theme={theme}>
+      <ThemeProvider>
         <>
           <Stack />
           <Toast ref={(ref) => (global["toast"] = ref)} />
         </>
-      </PaperProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }
-
-const theme = {
-  ...DefaultTheme,
-  roundness: 2,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: "#3498db",
-    accent: "#f1c40f",
-  },
-};

@@ -28,9 +28,7 @@ export default function Table(props) {
     setValues((prev) => {
       const newValues = [...prev];
       newValues[index] = text;
-      const withData = newValues.filter((v) => v !== "");
-      if (withData.length > 0) field.onChange(withData);
-      else field.onChange(null);
+      field.onChange(newValues.filter((v) => v !== ""));
       return newValues;
     });
 
@@ -38,6 +36,7 @@ export default function Table(props) {
     setValues((prev) => {
       const newValues = [...prev];
       newValues.splice(index, 1);
+      field.onChange(newValues.filter((v) => v !== ""));
       return newValues;
     });
 
@@ -73,7 +72,7 @@ export default function Table(props) {
       inputs.push(
         <Fragment key={i}>
           <TextInput
-            {...(values[i] != "" ? {} : { ref: field.ref })}
+            ref={values[i] == "" ? field.ref : undefined}
             error={(field.value || values[i] == "") && err}
             onChangeText={(text) => updateValues(i, text)}
             onBlur={() => onBlur(i)}
@@ -90,7 +89,7 @@ export default function Table(props) {
   return (
     <Fragment>
       {getInputs()}
-      {err && <HelperText type={"error"}>{err}</HelperText>}
+      {err ? <HelperText type={"error"}>{err}</HelperText> : null}
     </Fragment>
   );
 }

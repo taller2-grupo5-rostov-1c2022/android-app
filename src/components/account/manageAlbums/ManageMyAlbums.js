@@ -2,30 +2,15 @@ import React from "react";
 import AlbumDialog from "./AlbumDialog";
 import PropTypes from "prop-types";
 import CrudList from "../../general/CrudList.js";
-import { ShapedImage } from "../../general/ShapedImage";
+import AlbumItem from "../../albums/AlbumItem";
 
 export default function ManageMyAlbums() {
-  const propGen = (album) => {
-    return {
-      title: album.name,
-      description: album.genre,
-      left: () => (
-        <ShapedImage
-          icon="album"
-          size={50}
-          shape="square"
-          imageUri={album.cover}
-          style={{ marginRight: 10 }}
-        />
-      ),
-    };
-  };
-
   return (
     <CrudList
       url="/songs/my_albums/"
       editDialog={AlbumDialog}
-      propGen={propGen}
+      itemComponent={AlbumItem}
+      emptyMessage="You don't have any albums yet"
     />
   );
 }

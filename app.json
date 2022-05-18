@@ -10,11 +10,13 @@
         "foregroundImage": "src/img/icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "ar.uba.fi.rostov.spotifiuby"
+      "package": "ar.uba.fi.rostov.spotifiuby",
+      "userInterfaceStyle": "automatic"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
-    "scheme": "spotifiuby"
+    "scheme": "spotifiuby",
+    "userInterfaceStyle": "automatic"
   }
 }

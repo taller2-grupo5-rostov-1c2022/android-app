@@ -1,32 +1,24 @@
 import { useState } from "react";
-import { BottomNavigation, Text } from "react-native-paper";
-import SongsScreen from "./SongsScreen";
+import { BottomNavigation } from "react-native-paper";
+import SongsScreen from "./songs/SongsScreen";
 import AccountScreen from "./account/AccountScreen.js";
 import PropTypes from "prop-types";
-import styles from "./styles.js";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Player from "./Player";
-
-const AlbumsScreen = () => {
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text> TODO </Text>
-      <Player />
-    </SafeAreaView>
-  );
-};
+import AlbumsScreen from "./albums/AlbumsScreen";
+import PlayListScreen from "./playlists/PlayListScreen";
 
 export default function HomeScreen() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "music", title: "Music", icon: "music-note" },
     { key: "albums", title: "Albums", icon: "album" },
-    { key: "account", title: "Account", icon: "account" },
+    { key: "playlists", title: "Playlists", icon: "playlist-music" },
+    { key: "account", title: "More", icon: "menu" },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     music: SongsScreen,
     albums: AlbumsScreen,
+    playlists: PlayListScreen,
     account: AccountScreen,
   });
 

@@ -6,11 +6,12 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import styles from "../../styles";
 import { saveAlbum, deleteAlbum } from "../../../util/requests";
-import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/constants";
+import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/general";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Checklist from "../../formUtil/Checklist";
 import { fetch, webApi } from "../../../util/services";
 import ImagePicker from "../../formUtil/ImagePicker";
+import { inputValidator } from "../../../util/general";
 
 export default function AlbumDialog({ hideDialog, data }) {
   const { handleSubmit, ...rest } = useForm({
@@ -26,7 +27,7 @@ export default function AlbumDialog({ hideDialog, data }) {
         VALID_SUB_LEVELS.map((lvl) => lvl.value).includes(data.sub_level)
           ? data.sub_level
           : VALID_SUB_LEVELS[0].value,
-      songs_ids: data?.songs?.map((song) => song.id) ?? null,
+      songs_ids: data?.songs?.map((song) => song.id) ?? [],
     },
     mode: "onChange",
   });
@@ -46,12 +47,7 @@ export default function AlbumDialog({ hideDialog, data }) {
   const sendRequest = async (requestSender, message) => {
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
-      const resp = await requestSender();
-      const json = await resp.json();
-      if (!resp.ok)
-        throw new Error(
-          `${resp.statusText} (${resp.status}):\n${JSON.stringify(json.detail)}`
-        );
+      await requestSender();
 
       if (message)
         globalThis.toast.show(message, {
@@ -87,7 +83,7 @@ export default function AlbumDialog({ hideDialog, data }) {
             onPress={() =>
               sendRequest(
                 async () => await deleteAlbum(data?.id),
-                "Song deleted"
+                "Album deleted"
               )
             }
           >
@@ -97,7 +93,7 @@ export default function AlbumDialog({ hideDialog, data }) {
             onPress={handleSubmit((formData) =>
               sendRequest(
                 async () => await saveAlbum(data?.id, formData),
-                "Song saved"
+                "Album saved"
               )
             )}
           >
@@ -114,7 +110,6 @@ async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
     let songs = await fetch(webApi + "/songs/my_songs/", {
       method: "GET",
     });
-    songs = await songs.json();
     songs = songs.filter(
       (song) => !song.album || (album && song.album?.id == album.id)
     );
@@ -125,12 +120,8 @@ async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
       },
       out: id,
     }));
-    if (songs.length == 0) {
-      setStatus({ error: { message: "You have no songs to add to an album" } });
-    } else {
-      setValidSongs(songs);
-      setStatus({ loading: false });
-    }
+    if (songs.length > 0) setValidSongs(songs);
+    setStatus({ loading: false });
   } catch (e) {
     hideDialog();
     console.error(e);
@@ -156,15 +147,18 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
             initialImageUri,
             style: { alignSelf: "center" },
           },
+          rules: {
+            required: {
+              value: creating,
+              message: "Cover is required",
+            },
+          },
         },
         {
           type: "text",
           name: "name",
           rules: {
-            required: {
-              value: creating,
-              message: "Name is required",
-            },
+            validate: inputValidator("Name is required"),
           },
           textInputProps: {
             mode: "flat",
@@ -176,10 +170,7 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           type: "text",
           name: "description",
           rules: {
-            required: {
-              value: creating,
-              message: "Description is required",
-            },
+            validate: inputValidator("Description is required"),
           },
           textInputProps: {
             mode: "flat",
@@ -191,10 +182,7 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           type: "select",
           name: "genre",
           rules: {
-            required: {
-              value: creating,
-              message: "Genre is required",
-            },
+            validate: inputValidator("Genre is required"),
           },
           textInputProps: {
             mode: "flat",
@@ -211,7 +199,7 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           name: "sub_level",
           rules: {
             required: {
-              value: creating,
+              value: true,
               message: "Subscription level is required",
             },
           },
@@ -226,16 +214,10 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           name: "songs_ids",
           type: "custom",
           JSX: Checklist,
-          rules: {
-            required: {
-              value: creating,
-              message: "At least one song is required",
-            },
-          },
           customProps: {
             allOptions: validSongs,
             title: "Songs",
-            width: "100%",
+            emptyMessage: "No songs to add",
           },
         },
       ]}
@@ -269,7 +251,6 @@ AlbumDialog.propTypes = {
 };
 
 FormDefinition.propTypes = {
-  creating: PropTypes.bool,
   validSongs: PropTypes.arrayOf(
     PropTypes.shape({
       out: PropTypes.number.isRequired,
@@ -280,4 +261,5 @@ FormDefinition.propTypes = {
     }).isRequired
   ).isRequired,
   initialImageUri: PropTypes.string,
+  creating: PropTypes.bool.isRequired,
 };

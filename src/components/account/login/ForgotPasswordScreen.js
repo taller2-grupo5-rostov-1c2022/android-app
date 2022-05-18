@@ -5,27 +5,32 @@ import {
   Portal,
   ActivityIndicator,
   Headline,
+  useTheme,
 } from "react-native-paper";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../../styles.js";
+import { View } from "react-native";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
 import { emailRegex } from "../../../util/general";
-import { View } from "react-native";
 
-export default function RegisterScreen({ navigation }) {
+export default function ForgotPasswordScreen() {
   const auth = getAuth();
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
+  const [done, setDone] = useState(false);
+  const theme = useTheme();
 
-  const register = async (data) => {
+  const sendReset = async (data) => {
     setError(null);
     setAuthing(true);
     try {
-      await createUserWithEmailAndPassword(auth, data.email, data.password);
-      navigation.pop();
+      await sendPasswordResetEmail(auth, data.email);
+
+      setAuthing(false);
+      setDone(true);
     } catch (err) {
       setError(err);
       setAuthing(false);
@@ -36,7 +41,6 @@ export default function RegisterScreen({ navigation }) {
     mode: "onSubmit",
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
@@ -47,15 +51,21 @@ export default function RegisterScreen({ navigation }) {
       )}
       pointerEvents={authing ? "none" : "auto"}
     >
-      <Headline style={{ margin: "2%" }}>Join Spotifiuby</Headline>
-      <RegisterForm control={control} setFocus={setFocus} />
-      <Button
-        mode="contained"
-        style={[styles.button, styles.formWidth]}
-        onPress={handleSubmit(register)}
-      >
-        Register
-      </Button>
+      <Headline style={{ margin: "2%" }}>Reset Password</Headline>
+      <ResetForm control={control} setFocus={setFocus} />
+      {done ? (
+        <Headline style={[styles.infoText, { color: theme.colors.info }]}>
+          Check your email for a reset link.
+        </Headline>
+      ) : (
+        <Button
+          mode="contained"
+          style={[styles.button, styles.formWidth]}
+          onPress={handleSubmit(sendReset)}
+        >
+          Send Reset Email
+        </Button>
+      )}
       <FirebaseError error={error} />
       <StatusBar style="auto" />
       <Portal>
@@ -67,7 +77,7 @@ export default function RegisterScreen({ navigation }) {
   );
 }
 
-function RegisterForm({ control, setFocus }) {
+function ResetForm({ control, setFocus }) {
   return (
     <FormBuilder
       control={control}
@@ -89,28 +99,14 @@ function RegisterForm({ control, setFocus }) {
             style: styles.formWidth,
           },
         },
-        {
-          type: "password",
-          name: "password",
-          rules: { required: { value: true, message: "Password required" } },
-          textInputProps: {
-            mode: "flat",
-            label: "Password",
-            style: styles.formWidth,
-          },
-        },
       ]}
     />
   );
 }
 
-RegisterScreen.propTypes = {
-  navigation: PropTypes.shape({
-    pop: PropTypes.func.isRequired,
-  }).isRequired,
-};
+ForgotPasswordScreen.propTypes = {};
 
-RegisterForm.propTypes = {
+ResetForm.propTypes = {
   control: PropTypes.any.isRequired,
   setFocus: PropTypes.any.isRequired,
 };

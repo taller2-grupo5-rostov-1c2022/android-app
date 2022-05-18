@@ -11,12 +11,11 @@ import {
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../../styles.js";
-import { SafeAreaView } from "react-native-safe-area-context";
 import image from "../../../img/logo.png";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
-import { emailRegex } from "../../../util/regex.js";
+import { emailRegex } from "../../../util/general";
 import { GoogleSignIn } from "./GoogleSignIn.js";
 
 export default function LoginScreen({ navigation }) {
@@ -46,7 +45,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   const { handleSubmit, control, setFocus } = useForm({
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: {
       email: "",
       password: "",
@@ -54,7 +53,7 @@ export default function LoginScreen({ navigation }) {
   });
 
   return (
-    <SafeAreaView
+    <View
       style={[styles.container, styles.containerCenter].concat(
         authing ? styles.disabled : []
       )}
@@ -81,6 +80,12 @@ export default function LoginScreen({ navigation }) {
         </Button>
       </View>
       <GoogleSignIn onSignIn={signIn} />
+      <Button
+        onPress={() => navigation.push("ForgotPasswordScreen")}
+        style={styles.button}
+      >
+        Forgot Password
+      </Button>
       <FirebaseError error={error} style={{ textAlign: "center" }} />
       <StatusBar style="auto" />
       <Portal>
@@ -88,7 +93,7 @@ export default function LoginScreen({ navigation }) {
           <ActivityIndicator size="large" style={styles.activityIndicator} />
         ) : null}
       </Portal>
-    </SafeAreaView>
+    </View>
   );
 }
 

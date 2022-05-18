@@ -2,21 +2,15 @@ import React from "react";
 import SongDialog from "./SongDialog";
 import PropTypes from "prop-types";
 import CrudList from "../../general/CrudList.js";
+import SongItem from "../../songs/SongItem";
 
 export default function ManageMySongs() {
-  const propGen = (song) => {
-    return {
-      title: song.name,
-      description:
-        "by " + song.artists?.map((artist) => artist.name).join(", "),
-    };
-  };
-
   return (
     <CrudList
       url="/songs/my_songs/"
       editDialog={SongDialog}
-      propGen={propGen}
+      itemComponent={SongItem}
+      emptyMessage="You don't have any songs yet"
     />
   );
 }
