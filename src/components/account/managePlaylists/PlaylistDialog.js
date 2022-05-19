@@ -1,24 +1,32 @@
 import React from "react";
 import { Dialog, Button, ActivityIndicator } from "react-native-paper";
-import { ScrollView, View, Dimensions, Text } from "react-native";
+import { ScrollView, View, Dimensions } from "react-native";
+import Checklist from "../../formUtil/Checklist";
+
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import styles from "../../styles";
-import {
-  savePlaylist,
-  deletePlaylist,
-  removeSongFromPlaylist,
-} from "../../../util/requests";
+import { savePlaylist, deletePlaylist } from "../../../util/requests";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import { inputValidator } from "../../../util/general";
 
 export default function PlaylistDialog({ hideDialog, data }) {
+  const songIds = data?.songs?.map((song) => song.id) ?? [];
+  const validSongs =
+    data?.songs?.map(({ name, id, artists }) => ({
+      listProps: {
+        title: name,
+        description: artists?.map((artist) => artist.name).join(", "),
+      },
+      out: id,
+    })) ?? [];
+
   const { handleSubmit, ...rest } = useForm({
     defaultValues: {
       name: data?.name ?? "",
       description: data?.description ?? "",
-      file: null,
+      songs_ids: songIds,
     },
     mode: "onChange",
   });
@@ -54,8 +62,11 @@ export default function PlaylistDialog({ hideDialog, data }) {
       <Dialog.Title>Edit Playlists</Dialog.Title>
       <Dialog.ScrollArea>
         <ScrollView style={{ marginVertical: 5 }}>
-          <FormDefinition {...rest} creating={!data?.id}></FormDefinition>
-          <PlaylistSongs playlistId={data?.id} songs={data?.songs} />
+          <FormDefinition
+            {...rest}
+            validSongs={validSongs ?? []}
+            creating={!data?.id}
+          ></FormDefinition>
         </ScrollView>
       </Dialog.ScrollArea>
       <Dialog.Actions>
@@ -87,7 +98,7 @@ export default function PlaylistDialog({ hideDialog, data }) {
   );
 }
 
-function FormDefinition({ creating, ...rest }) {
+function FormDefinition({ creating, validSongs, ...rest }) {
   console.log(creating);
   return (
     <FormBuilder
@@ -117,59 +128,20 @@ function FormDefinition({ creating, ...rest }) {
             style: styles.textInput,
           },
         },
+        {
+          name: "songs_ids",
+          type: "custom",
+          JSX: Checklist,
+          customProps: {
+            allOptions: validSongs ?? [],
+            title: "Songs",
+            emptyMessage: "No songs to add",
+          },
+        },
       ]}
     />
   );
 }
-
-// Fixme - This is only a temp implementation to fullfil the requirement
-function PlaylistSongs({ playlistId, songs }) {
-  if (!playlistId || !songs) return null;
-
-  const deleteSong = async (event, songId) => {
-    console.log(event.target, songId);
-    try {
-      removeSongFromPlaylist(playlistId, songId);
-      event.target.remove();
-    } catch (err) {
-      console.log("Error removing song from playlist", err);
-    }
-  };
-
-  return (
-    <View
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {songs?.map((song) => (
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-          key={song.id}
-        >
-          <Text
-            style={{
-              fontSize: 16,
-              margin: 8,
-            }}
-          >
-            {song.name}
-          </Text>
-          <Button onPress={(e) => deleteSong(e, song.id)}>DELETE</Button>
-        </View>
-      ))}
-    </View>
-  );
-}
-PlaylistSongs.propTypes = {
-  playlistId: PropTypes.number,
-  songs: PropTypes.array,
-};
 
 PlaylistDialog.propTypes = {
   hideDialog: PropTypes.func,
@@ -195,4 +167,13 @@ PlaylistDialog.propTypes = {
 
 FormDefinition.propTypes = {
   creating: PropTypes.bool,
+  validSongs: PropTypes.arrayOf(
+    PropTypes.shape({
+      out: PropTypes.number.isRequired,
+      listProps: PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired
+  ).isRequired,
 };
