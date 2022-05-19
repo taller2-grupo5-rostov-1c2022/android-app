@@ -4,19 +4,21 @@ import Modal from "./Modal";
 import PropTypes from "prop-types";
 import { useSWR, json_fetcher, webApi } from "../../util/services";
 import FetchedList from "./FetchedList";
-
+import { addSongToPlaylist } from "../../util/requests";
 export const PlaylistMenuAdd = ({ visible, setVisible, songId }) => {
   const my_playlists = useSWR(webApi + "/songs/my_playlists/", json_fetcher);
 
-  const onPress = () => {
-    console.log(songId);
+  const onPress = (id) => {
+    console.log("playlist id: " + id);
+    console.log("song id: " + songId);
+    addSongToPlaylist(id, songId);
   };
 
   const playlist = ({ data }) => (
     <List.Item
       title={data.name}
       description={data.description}
-      onPress={onPress}
+      onPress={() => onPress(data.id)}
     />
   );
 
