@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import CrudList from "../general/CrudList.js";
+import CrudList from "../../general/CrudList.js";
 import { List } from "react-native-paper";
 import PlaylistDialog from "./PlaylistDialog";
 

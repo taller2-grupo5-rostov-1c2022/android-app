@@ -4,10 +4,10 @@ import { ScrollView, View, Dimensions } from "react-native";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
-import styles from "../styles";
-import { savePlaylist, deletePlaylist } from "../../util/requests";
-import { ErrorDialog } from "../general/ErrorDialog";
-import { inputValidator } from "../../util/general";
+import styles from "../../styles";
+import { savePlaylist, deletePlaylist } from "../../../util/requests";
+import { ErrorDialog } from "../../general/ErrorDialog";
+import { inputValidator } from "../../../util/general";
 
 export default function PlaylistDialog({ hideDialog, data }) {
   const { handleSubmit, ...rest } = useForm({

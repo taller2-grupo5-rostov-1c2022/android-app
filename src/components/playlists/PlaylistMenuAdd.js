@@ -1,9 +1,9 @@
 import React from "react";
 import { List } from "react-native-paper";
-import Modal from "./Modal";
+import Modal from "../general/Modal";
 import PropTypes from "prop-types";
 import { useSWR, json_fetcher, webApi } from "../../util/services";
-import FetchedList from "./FetchedList";
+import FetchedList from "../general/FetchedList";
 import { addSongToPlaylist } from "../../util/requests";
 
 export const PlaylistMenuAdd = ({ visible, setVisible, songId }) => {
