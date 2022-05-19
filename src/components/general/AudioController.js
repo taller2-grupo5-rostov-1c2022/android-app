@@ -23,13 +23,19 @@ export const AudioController = () => {
       if (playbackStatus.didJustFinish) {
         next();
       }
+    } else {
+      toast.show("Failed to play song :(", { duration: 3000 });
+      audio.sound = null;
+      audio.uri = null;
+      next();
     }
   };
 
   const play = async (uri) => {
     if (uri && audio.uri !== uri) {
-      await audio.sound?.stopAsync();
-      await audio.sound?.unloadAsync();
+      //await audio.sound?.stopAsync();
+      // El catch es para que no muera si no había canción cargada
+      await audio.sound?.unloadAsync().catch();
       const { sound } = await Audio.Sound.createAsync({ uri });
       sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
       audio.uri = uri;
@@ -84,8 +90,8 @@ export const AudioController = () => {
   React.useEffect(() => {
     if (context.stop) {
       if (audio.sound != null) {
-        audio.sound?.stopAsync();
-        audio.sound?.unloadAsync();
+        //audio.sound?.stopAsync();
+        audio.sound?.unloadAsync().catch();
         audio.uri = null;
         audio.sound = null;
       }
