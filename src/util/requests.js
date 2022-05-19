@@ -94,7 +94,7 @@ export async function deletePlaylist(playlistKey) {
 
 export async function addSongToPlaylist(playlistKey, song_id) {
   let body = new FormData();
-  body.append("songs_id", song_id);
+  body.append("song_id", song_id);
 
   return fetch(getPlaylistUrl(playlistKey) + "/songs/", {
     method: "POST",
