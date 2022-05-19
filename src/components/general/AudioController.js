@@ -19,16 +19,7 @@ export const AudioController = () => {
   const context = React.useContext(AppContext);
 
   const _onPlaybackStatusUpdate = (playbackStatus) => {
-    if (playbackStatus.isLoaded) {
-      if (playbackStatus.didJustFinish) {
-        next();
-      }
-    } else {
-      toast.show("Failed to play song :(", { duration: 3000 });
-      audio.sound = null;
-      audio.uri = null;
-      next();
-    }
+    if (playbackStatus.isLoaded && playbackStatus.didJustFinish) next();
   };
 
   const play = async (uri) => {
