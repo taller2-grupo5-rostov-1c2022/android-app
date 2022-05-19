@@ -10,6 +10,8 @@ import UserCreationMenu from "./UserCreationMenu";
 import { View } from "react-native";
 const FormData = global.FormData;
 
+const HTTP_NOT_FOUND = 404;
+
 export default function SessionManager({ navigation }) {
   const [status, setStatus] = useState({
     loading: true,
@@ -81,9 +83,14 @@ export default function SessionManager({ navigation }) {
 async function fetchUser(onUser, setStatus, url, options) {
   setStatus((prev) => ({ ...prev, loading: true }));
   try {
-    let data = await fetch(url, options);
-    if (data.id) onUser(data?.name);
-    else setStatus({ fetched: true, loading: false, loggedIn: true });
+    try {
+      let data = await fetch(url, options);
+      onUser(data?.name);
+    } catch (e) {
+      if (e.status == HTTP_NOT_FOUND)
+        setStatus({ fetched: true, loading: false, loggedIn: true });
+      else throw e;
+    }
   } catch (e) {
     console.error(e);
     const auth = getAuth();
