@@ -26,10 +26,16 @@ export async function fetch(url, request) {
     ...rest,
   });
 
-  if (res?.status?.toString().startsWith("5"))
-    throw new Error(`Failed to fetch: ${res.status} ${res?.statusText}`);
+  if (!res?.ok) throw new FetchError(res);
 
   const json = await res.json();
 
   return json;
+}
+
+function FetchError(response) {
+  this.message = `Failed to fetch: ${response.status} ${response?.statusText}`;
+  this.status = response.status;
+  this.statusText = response.statusText;
+  this.name = "FetchError";
 }

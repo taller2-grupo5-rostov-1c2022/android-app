@@ -1,18 +1,37 @@
-import React from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useTheme } from "react-native-paper";
 import PropTypes from "prop-types";
 import { TouchableOpacity, Image, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-// sha
 export function ShapedImage({ onPress, imageUri, size, icon, shape, style }) {
-  let avatar = null;
   let theme = useTheme();
-  if (imageUri)
+  const [error, setError] = useState(false);
+
+  const imageIcon = useMemo(() => {
+    return <Icon size={size / 2} name={error ? "help-rhombus" : icon} />;
+  }, [icon, size, error]);
+
+  useEffect(() => {
+    setError(false);
+  }, [imageUri]);
+
+  let avatar = null;
+  if (!imageUri || error) avatar = imageIcon;
+  else
     avatar = (
-      <Image style={{ width: size, height: size }} source={{ uri: imageUri }} />
+      <Image
+        style={{ width: size, height: size }}
+        source={{ uri: imageUri }}
+        onError={(e) => {
+          console.error(e.nativeEvent.error);
+          setError(true);
+          toast.show("Failed to load image", {
+            duration: 3000,
+          });
+        }}
+      />
     );
-  else avatar = <Icon size={size / 2} name={icon} />;
 
   const imageStyle = {
     overflow: "hidden",

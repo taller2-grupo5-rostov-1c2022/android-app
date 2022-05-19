@@ -23,7 +23,9 @@ export function inputValidator(msg) {
 }
 
 export function getArtistsAsString(artists) {
-  return `by ${artists?.map((artist) => artist.name).join(", ")}`;
+  if (!artists || artists.length == 0) return "";
+  let set = new Set(artists?.map((artist) => artist.name));
+  return `by ${[...set].join(", ")}`;
 }
 
 export const COUNTRIES = [

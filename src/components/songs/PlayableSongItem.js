@@ -31,7 +31,13 @@ export default function PlayableSongItem({ data, right }) {
       data={data}
       right={right}
       onPress={loading ? undefined : () => onPress(data)}
-      left={loading ? () => <ActivityIndicator color="gray" /> : undefined}
+      left={() => (
+        <ActivityIndicator
+          color="gray"
+          animating={loading}
+          style={loading ? undefined : { display: "none" }}
+        />
+      )}
     />
   );
 }
