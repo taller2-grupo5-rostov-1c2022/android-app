@@ -23,6 +23,7 @@ export function inputValidator(msg) {
 }
 
 export function getArtistsAsString(artists) {
+  if (!artists || artists.length == 0) return "";
   let set = new Set(artists?.map((artist) => artist.name));
   return `by ${[...set].join(", ")}`;
 }
