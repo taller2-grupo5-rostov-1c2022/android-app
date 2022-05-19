@@ -91,3 +91,24 @@ export async function deletePlaylist(playlistKey) {
     method: "DELETE",
   });
 }
+
+export async function addSongToPlaylist(playlistKey, song_id) {
+  let body = new FormData();
+  body.append("songs_id", song_id);
+
+  return fetch(getPlaylistUrl(playlistKey) + "/songs/", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
+      // "Content-Type": "multipart/form-data",
+    },
+    body,
+  });
+}
+
+export async function removeSongFromPlaylist(playlistKey, song_id) {
+  return fetch(getPlaylistUrl(playlistKey) + "/songs/" + song_id, {
+    method: "DELETE",
+  });
+}
