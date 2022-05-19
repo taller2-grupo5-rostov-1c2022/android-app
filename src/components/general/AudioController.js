@@ -27,7 +27,7 @@ export const AudioController = () => {
     }
 
     if (playbackStatus.error) {
-      console.log(error);
+      console.error(playbackStatus.error);
       toast.show("Failed to play song :(", { duration: 3000 });
       audio.sound = null;
       audio.uri = null;
@@ -46,7 +46,7 @@ export const AudioController = () => {
         audio.sound = null;
         audio.uri = null;
         next();
-     });;
+     });
       sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
       audio.uri = uri;
       audio.sound = sound;
