@@ -24,10 +24,10 @@ export const AudioController = () => {
         next();
       }
     } else {
-      toast.show("Failed to play song :(", { duration: 3000 });
-      audio.sound = null;
-      audio.uri = null;
-      next();
+      //toast.show("Failed to play song :(", { duration: 3000 });
+      //audio.sound = null;
+      //audio.uri = null;
+      //next();
     }
   };
 

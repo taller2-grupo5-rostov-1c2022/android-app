@@ -83,6 +83,7 @@ export default function PlaylistDialog({ hideDialog, data }) {
 }
 
 function FormDefinition({ creating, ...rest }) {
+    console.log(creating);
   return (
     <FormBuilder
       {...rest}

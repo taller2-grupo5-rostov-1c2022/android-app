@@ -1,5 +1,4 @@
 import React from "react";
-import AlbumDialog from "../account/manageAlbums/AlbumDialog";
 import PropTypes from "prop-types";
 import CrudList from "../general/CrudList.js";
 import { List } from "react-native-paper";
