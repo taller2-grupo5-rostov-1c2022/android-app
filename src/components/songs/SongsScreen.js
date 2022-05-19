@@ -5,7 +5,7 @@ import styles from "../styles.js";
 import { View } from "react-native";
 import Player from "../Player";
 import FetchedList from "../general/FetchedList";
-import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
+import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import SearchBar from "../general/SearchBar";
 import PlayableSongItem from "./PlayableSongItem";
 

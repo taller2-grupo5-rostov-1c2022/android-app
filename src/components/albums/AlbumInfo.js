@@ -6,7 +6,7 @@ import { View } from "react-native";
 import styles from "../styles";
 import { Caption, Subheading, Title, Text } from "react-native-paper";
 import { getArtistsAsString } from "../../util/general";
-import { PlaylistMenuAdd } from "../general/PlaylistMenuAdd";
+import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import SongList from "../songs/SongList";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {

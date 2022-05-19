@@ -115,6 +115,13 @@ function ArtistMenu({ role, navigation }) {
           navigation.push("ManageMyAlbums");
         }}
       />
+      <List.Item
+        title="Manage my playlists..."
+        left={(props) => <List.Icon {...props} icon="playlist-music"></List.Icon>}
+        onPress={() => {
+          navigation.push("ManageMyPlaylists");
+        }}
+      />
     </List.Section>
   );
 }

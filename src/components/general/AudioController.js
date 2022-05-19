@@ -20,6 +20,14 @@ export const AudioController = () => {
 
   const _onPlaybackStatusUpdate = (playbackStatus) => {
     if (playbackStatus.isLoaded && playbackStatus.didJustFinish) next();
+
+    if (playbackStatus.error) {
+      console.error(playbackStatus.error);
+      toast.show("Failed to play song :(", { duration: 3000 });
+      audio.sound = null;
+      audio.uri = null;
+      next();
+    }
   };
 
   const play = async (uri) => {
@@ -27,12 +35,26 @@ export const AudioController = () => {
       //await audio.sound?.stopAsync();
       // El catch es para que no muera si no había canción cargada
       await audio.sound?.unloadAsync().catch();
-      const { sound } = await Audio.Sound.createAsync({ uri });
+      const { sound } = await Audio.Sound.createAsync({ uri }).catch(
+        (error) => {
+          console.error(error);
+          toast.show("Failed to play song :(", { duration: 3000 });
+          audio.sound = null;
+          audio.uri = null;
+          next();
+        }
+      );
       sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
       audio.uri = uri;
       audio.sound = sound;
     }
-    await audio?.sound?.playAsync();
+    await audio?.sound?.playAsync().catch((error) => {
+      console.error(error);
+      toast.show("Failed to play song :(", { duration: 3000 });
+      audio.sound = null;
+      audio.uri = null;
+      next();
+    });
   };
 
   const previous = () => {
