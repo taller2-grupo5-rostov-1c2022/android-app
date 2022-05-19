@@ -1,24 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import CrudList from "../../general/CrudList.js";
-import { List } from "react-native-paper";
 import PlaylistDialog from "./PlaylistDialog";
+import PlaylistItem from "../../playlists/PlaylistItem.js";
 
 export default function ManageMyPlaylists() {
-
-    const playlist = ({ data }) => (
-        <List.Item
-          title={data.name}
-          description={data.description}
-          onPress={() => console.log("tu playlist")}
-        />
-      );
-
   return (
     <CrudList
       url="/songs/my_playlists/"
       editDialog={PlaylistDialog}
-      itemComponent={playlist}
+      itemComponent={PlaylistItem}
       emptyMessage="You don't have any playlists yet"
     />
   );

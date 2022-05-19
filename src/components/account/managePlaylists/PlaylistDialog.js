@@ -60,7 +60,7 @@ export default function PlaylistDialog({ hideDialog, data }) {
             onPress={() =>
               sendRequest(
                 async () => await deletePlaylist(data?.id),
-                "Song deleted"
+                "Playlist deleted"
               )
             }
           >
@@ -70,7 +70,7 @@ export default function PlaylistDialog({ hideDialog, data }) {
             onPress={handleSubmit((formData) =>
               sendRequest(
                 async () => await savePlaylist(data?.id, formData),
-                "Song saved"
+                "Playlist saved"
               )
             )}
           >
@@ -83,7 +83,7 @@ export default function PlaylistDialog({ hideDialog, data }) {
 }
 
 function FormDefinition({ creating, ...rest }) {
-    console.log(creating);
+  console.log(creating);
   return (
     <FormBuilder
       {...rest}
