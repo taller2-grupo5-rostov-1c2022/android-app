@@ -1,11 +1,15 @@
 import React from "react";
 import { Dialog, Button, ActivityIndicator } from "react-native-paper";
-import { ScrollView, View, Dimensions } from "react-native";
+import { ScrollView, View, Dimensions, Text } from "react-native";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import styles from "../../styles";
-import { savePlaylist, deletePlaylist } from "../../../util/requests";
+import {
+  savePlaylist,
+  deletePlaylist,
+  removeSongFromPlaylist,
+} from "../../../util/requests";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import { inputValidator } from "../../../util/general";
 
@@ -51,6 +55,7 @@ export default function PlaylistDialog({ hideDialog, data }) {
       <Dialog.ScrollArea>
         <ScrollView style={{ marginVertical: 5 }}>
           <FormDefinition {...rest} creating={!data?.id}></FormDefinition>
+          <PlaylistSongs playlistId={data?.id} songs={data?.songs} />
         </ScrollView>
       </Dialog.ScrollArea>
       <Dialog.Actions>
@@ -117,6 +122,55 @@ function FormDefinition({ creating, ...rest }) {
   );
 }
 
+// Fixme - This is only a temp implementation to fullfil the requirement
+function PlaylistSongs({ playlistId, songs }) {
+  if (!playlistId || !songs) return null;
+
+  const deleteSong = async (event, songId) => {
+    console.log(event.target, songId);
+    try {
+      removeSongFromPlaylist(playlistId, songId);
+      event.target.remove();
+    } catch (err) {
+      console.log("Error removing song from playlist", err);
+    }
+  };
+
+  return (
+    <View
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {songs?.map((song) => (
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+          key={song.id}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              margin: 8,
+            }}
+          >
+            {song.name}
+          </Text>
+          <Button onPress={(e) => deleteSong(e, song.id)}>DELETE</Button>
+        </View>
+      ))}
+    </View>
+  );
+}
+PlaylistSongs.propTypes = {
+  playlistId: PropTypes.number,
+  songs: PropTypes.array,
+};
+
 PlaylistDialog.propTypes = {
   hideDialog: PropTypes.func,
   data: PropTypes.shape({
@@ -125,6 +179,12 @@ PlaylistDialog.propTypes = {
     description: PropTypes.string,
     artists: PropTypes.arrayOf(
       PropTypes.shape({
+        name: PropTypes.string.isRequired,
+      })
+    ),
+    songs: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
       })
     ),
