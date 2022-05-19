@@ -60,3 +60,34 @@ export async function deleteAlbum(albumKey) {
     method: "DELETE",
   });
 }
+
+function getPlaylistUrl(playlistKey) {
+  return webApi + "/songs/playlists/" + (playlistKey ?? "");
+}
+
+// formData: { name *, description *, songs_ids, cover }
+export async function savePlaylist(playlistKey, formData) {
+  let { songs_ids, colabs_ids, ...rest } = formData;
+  const method = playlistKey ? "PUT" : "POST";
+
+  let body = new FormData();
+  Object.entries(rest).forEach(([key, value]) => body.append(key, value));
+  if (songs_ids) body.append("songs_ids", JSON.stringify(songs_ids));
+  if (colabs_ids) body.append("colabs_ids", JSON.stringify(colabs_ids));
+
+  return fetch(getPlaylistUrl(playlistKey), {
+    method,
+    headers: {
+      Accept: "application/json",
+      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
+      // "Content-Type": "multipart/form-data",
+    },
+    body,
+  });
+}
+
+export async function deletePlaylist(playlistKey) {
+  return fetch(getPlaylistUrl(playlistKey), {
+    method: "DELETE",
+  });
+}
