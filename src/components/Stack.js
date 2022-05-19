@@ -11,8 +11,7 @@ import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 import ForgotPasswordScreen from "./account/login/ForgotPasswordScreen";
 import { Portal, useTheme } from "react-native-paper";
 import { View } from "react-native";
-import ManageMyPlaylists from "./account/ManagePlaylists/ManageMyPlaylists";
-
+import ManageMyPlaylists from "./account/managePlaylists/ManageMyPlaylists";
 const StackNavigator = createNativeStackNavigator();
 
 export default function Stack() {
