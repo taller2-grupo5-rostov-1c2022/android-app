@@ -18,15 +18,19 @@ export const AudioController = () => {
 
   const context = React.useContext(AppContext);
 
+  const errorOnPlaySong = () => {
+    toast.show("Failed to play song :(", { duration: 3000 });
+    audio.sound = null;
+    audio.uri = null;
+    next();
+  }
+
   const _onPlaybackStatusUpdate = (playbackStatus) => {
     if (playbackStatus.isLoaded && playbackStatus.didJustFinish) next();
 
     if (playbackStatus.error) {
       console.error(playbackStatus.error);
-      toast.show("Failed to play song :(", { duration: 3000 });
-      audio.sound = null;
-      audio.uri = null;
-      next();
+      errorOnPlaySong();
     }
   };
 
@@ -38,10 +42,7 @@ export const AudioController = () => {
       const { sound } = await Audio.Sound.createAsync({ uri }).catch(
         (error) => {
           console.error(error);
-          toast.show("Failed to play song :(", { duration: 3000 });
-          audio.sound = null;
-          audio.uri = null;
-          next();
+          errorOnPlaySong();
         }
       );
       sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
@@ -50,10 +51,7 @@ export const AudioController = () => {
     }
     await audio?.sound?.playAsync().catch((error) => {
       console.error(error);
-      toast.show("Failed to play song :(", { duration: 3000 });
-      audio.sound = null;
-      audio.uri = null;
-      next();
+      errorOnPlaySong();
     });
   };
 
