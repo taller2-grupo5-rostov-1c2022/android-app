@@ -59,6 +59,10 @@ const styles = StyleSheet.create({
     padding: 20,
     fontSize: 16,
   },
+  userInfo: {
+    fontSize: 16,
+    marginBottom: "2%",
+  },
   row: {
     flexDirection: "row",
   },

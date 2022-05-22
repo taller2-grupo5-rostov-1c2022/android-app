@@ -1,5 +1,5 @@
 import React from "react";
-import { ThemeContext } from "../ThemeProvider";
+import { ThemeContext } from "../../ThemeProvider";
 import { List } from "react-native-paper";
 
 export default function ThemeSwitch() {

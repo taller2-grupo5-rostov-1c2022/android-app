@@ -8,6 +8,7 @@ import SessionManager from "./account/profile/SessionManager";
 import AudioProvider from "./general/AudioProvider";
 import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 import ForgotPasswordScreen from "./account/login/ForgotPasswordScreen";
+import UserListScreen from "./account/users/UserListScreen";
 import { Portal, useTheme } from "react-native-paper";
 import { View } from "react-native";
 import ManageMyPlaylists from "./account/managePlaylists/ManageMyPlaylists";
@@ -58,6 +59,11 @@ export default function Stack() {
               name="ManageMyPlaylists"
               component={ManageMyPlaylists}
               options={{ title: "Manage my Playlists", headerShown: true }}
+            />
+            <StackNavigator.Screen
+              name="UserListScreen"
+              component={UserListScreen}
+              options={{ title: "Other users", headerShown: true }}
             />
           </StackNavigator.Navigator>
         </Portal.Host>
