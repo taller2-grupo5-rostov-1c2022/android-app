@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, ScrollView } from "react-native";
 import { Appbar } from "react-native-paper";
 import styles from "../styles.js";
 import { getAuth, signOut } from "firebase/auth";
@@ -47,7 +47,7 @@ export default function AccountScreen() {
         <Appbar.Content title="More" />
       </Appbar>
 
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <UserHeader user={user} navigation={navigation} onLogOut={onLogOut} />
         <ArtistSettings role={role} navigation={navigation} />
         <ThemeSwitch />
@@ -69,7 +69,7 @@ export default function AccountScreen() {
           ) : null}
         </Portal>
         <FirebaseError error={error} style={{ textAlign: "center" }} />
-      </View>
+      </ScrollView>
     </View>
   );
 }
