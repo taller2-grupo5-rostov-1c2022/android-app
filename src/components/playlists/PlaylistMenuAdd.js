@@ -4,22 +4,35 @@ import Modal from "../general/Modal";
 import PropTypes from "prop-types";
 import { useSWR, json_fetcher, webApi } from "../../util/services";
 import FetchedList from "../general/FetchedList";
-import { addSongToPlaylist } from "../../util/requests";
+import { addSongToPlaylist, addColabToPlaylist } from "../../util/requests";
 
-export const PlaylistMenuAdd = ({ visible, setVisible, songId }) => {
+export const PlaylistMenuAdd = ({ visible, setVisible, songId, colabId }) => {
   const my_playlists = useSWR(webApi + "/songs/my_playlists/", json_fetcher);
 
-  const onPress = (id) => {
-    console.log("playlist id: " + id);
-    console.log("song id: " + songId);
-    setVisible(false);
+  const addSong = (playlistId) => {
     try {
-      addSongToPlaylist(id, songId);
+      addSongToPlaylist(playlistId, songId);
     } catch (e) {
       toast.show("Failed to add song :(");
       return;
     }
     toast.show("Added song to playlist :)", { duration: 2000 });
+  };
+
+  const addColab = (playlistId) => {
+    try {
+      addColabToPlaylist(playlistId, colabId);
+    } catch (e) {
+      toast.show("Failed to add colab :(");
+      return;
+    }
+    toast.show("Added colab to playlist :)", { duration: 2000 });
+  };
+
+  const onPress = (playlistId) => {
+    setVisible(false);
+    songId && addSong(playlistId);
+    colabId && addColab(playlistId);
   };
 
   const playlist = ({ data }) => (
@@ -51,4 +64,5 @@ PlaylistMenuAdd.propTypes = {
   visible: PropTypes.bool.isRequired,
   setVisible: PropTypes.func.isRequired,
   songId: PropTypes.any,
+  colabId: PropTypes.any,
 };

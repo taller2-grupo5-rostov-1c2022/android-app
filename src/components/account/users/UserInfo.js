@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import Modal from "../../general/Modal";
 import PropTypes from "prop-types";
 import { ShapedImage } from "../../general/ShapedImage";
@@ -6,14 +6,17 @@ import { View } from "react-native";
 import styles from "../../styles";
 import { Title, Text, Button } from "react-native-paper";
 import Chat from "./Chat";
+import PlaylistMenuAdd from "../../playlists/PlaylistMenuAdd";
 
 export default function UserInfo({ modalStatus, setModalStatus }) {
   const user = modalStatus?.user;
 
-  const [sendMsgStatus, setSendMsgStatus] = React.useState({
+  const [sendMsgStatus, setSendMsgStatus] = useState({
     visible: false,
     user,
   });
+
+  const [sharePlaylist, setSharePlaylist] = useState(false);
 
   return (
     <>
@@ -55,9 +58,25 @@ export default function UserInfo({ modalStatus, setModalStatus }) {
           >
             Chat
           </Button>
+          <Button
+            onPress={() => setSharePlaylist(true)}
+            icon="account-plus"
+            mode="contained"
+            style={[
+              styles.button,
+              { width: "50%", marginBottom: "4%", alignSelf: "center" },
+            ]}
+          >
+            Share Playlist
+          </Button>
         </View>
       </Modal>
       <Chat status={sendMsgStatus} setStatus={setSendMsgStatus} />
+      <PlaylistMenuAdd
+        visible={sharePlaylist}
+        setVisible={setSharePlaylist}
+        colabId={user?.id}
+      />
     </>
   );
 }
