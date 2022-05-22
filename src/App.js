@@ -25,7 +25,7 @@ export default function App() {
       <ThemeProvider>
         <>
           <Stack />
-          <Toast ref={(ref) => (global["toast"] = ref)} />
+          <Toast ref={(ref) => (global["toast"] = ref)} duration={3000} />
         </>
       </ThemeProvider>
     </SafeAreaProvider>

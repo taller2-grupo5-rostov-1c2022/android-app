@@ -26,9 +26,7 @@ export function ShapedImage({ onPress, imageUri, size, icon, shape, style }) {
         onError={(e) => {
           console.error(e.nativeEvent.error);
           setError(true);
-          toast.show("Failed to load image", {
-            duration: 3000,
-          });
+          toast.show("Failed to load image");
         }}
       />
     );

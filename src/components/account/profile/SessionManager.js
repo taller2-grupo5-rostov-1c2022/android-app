@@ -23,9 +23,7 @@ export default function SessionManager({ navigation }) {
     let greet = "";
     if (name) greet = `Welcome back, ${name}!`;
     else greet = "Welcome to Spotifiuby!";
-    toast.show(greet, {
-      duration: 3000,
-    });
+    toast.show(greet);
     navigation.replace("Home");
   };
 
@@ -99,10 +97,7 @@ async function fetchUser(onUser, setStatus, url, options) {
     toast.show(
       `Error ${
         options ? "creating your account" : "logging you in"
-      }, please try again later :(`,
-      {
-        duration: 3000,
-      }
+      }, please try again later :(`
     );
     setStatus((prev) => ({ ...prev, loading: false }));
   }

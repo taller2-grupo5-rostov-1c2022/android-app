@@ -49,10 +49,7 @@ export default function AlbumDialog({ hideDialog, data }) {
     try {
       await requestSender();
 
-      if (message)
-        globalThis.toast.show(message, {
-          duration: 3000,
-        });
+      if (message) globalThis.toast.show(message);
       hideDialog();
     } catch (err) {
       setStatus({ loading: false, error: err });
@@ -125,9 +122,7 @@ async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
   } catch (e) {
     hideDialog();
     console.error(e);
-    toast.show("Could not get songs to edit album", {
-      duration: 3000,
-    });
+    toast.show("Could not get songs to edit album");
   }
 }
 

@@ -18,9 +18,7 @@ export default function PlayableSongItem({ data, right }) {
       context.setPaused(false);
     } catch (e) {
       console.error(e);
-      toast.show("Could not play song :(", {
-        duration: 3000,
-      });
+      toast.show("Could not play song :(");
     } finally {
       setLoading(false);
     }

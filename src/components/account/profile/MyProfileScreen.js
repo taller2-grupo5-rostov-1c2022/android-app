@@ -42,14 +42,10 @@ export default function MyProfileScreen() {
         body,
       });
       await mutate();
-      globalThis.toast.show("Updated Profile", {
-        duration: 3000,
-      });
+      globalThis.toast.show("Updated Profile");
     } catch (e) {
       console.error(e);
-      globalThis.toast.show("An error has occurred", {
-        duration: 3000,
-      });
+      globalThis.toast.show("An error has occurred");
     }
 
     setLoading(false);

@@ -43,10 +43,7 @@ export default function PlaylistDialog({ hideDialog, data }) {
     try {
       await requestSender();
 
-      if (message)
-        globalThis.toast.show(message, {
-          duration: 3000,
-        });
+      if (message) globalThis.toast.show(message);
       hideDialog();
     } catch (err) {
       setStatus({ loading: false, error: err });

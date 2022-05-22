@@ -19,11 +19,11 @@ export const AudioController = () => {
   const context = React.useContext(AppContext);
 
   const errorOnPlaySong = () => {
-    toast.show("Failed to play song :(", { duration: 3000 });
+    toast.show("Failed to play song :(");
     audio.sound = null;
     audio.uri = null;
     next();
-  }
+  };
 
   const _onPlaybackStatusUpdate = (playbackStatus) => {
     if (playbackStatus.isLoaded && playbackStatus.didJustFinish) next();

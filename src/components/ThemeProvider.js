@@ -26,9 +26,7 @@ async function getStoredTheme() {
     stored = await AsyncStorage.getItem(THEME_KEY);
   } catch (e) {
     console.error(e);
-    toast.show("Failed to fetch theme setting", {
-      duration: 3000,
-    });
+    toast.show("Failed to fetch theme setting");
   }
 
   if (stored) return JSON.parse(stored);
@@ -42,9 +40,7 @@ async function setStoragedTheme(value) {
   try {
     await AsyncStorage.setItem(THEME_KEY, JSON.stringify(value));
   } catch (e) {
-    toast.show("Failed to store theme setting", {
-      duration: 3000,
-    });
+    toast.show("Failed to store theme setting");
   }
 }
 

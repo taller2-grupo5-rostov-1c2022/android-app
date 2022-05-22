@@ -78,9 +78,7 @@ export async function playSongList(songs, context, setLoading) {
     context.setPaused(false);
   } catch (e) {
     console.error(e);
-    toast.show("Could not play album :(", {
-      duration: 3000,
-    });
+    toast.show("Could not play album :(");
   } finally {
     setLoading && setLoading(false);
   }

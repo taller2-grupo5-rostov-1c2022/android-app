@@ -14,9 +14,9 @@ export const PlaylistMenuAdd = ({ visible, setVisible, songId }) => {
     console.log("song id: " + songId);
     setVisible(false);
     try {
-    addSongToPlaylist(id, songId);
-    } catch(e) {
-      toast.show("Failed to add song :(", { duration: 3000 });
+      addSongToPlaylist(id, songId);
+    } catch (e) {
+      toast.show("Failed to add song :(");
       return;
     }
     toast.show("Added song to playlist :)", { duration: 2000 });
