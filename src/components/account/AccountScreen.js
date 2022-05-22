@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Portal, ActivityIndicator, List } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError.js";
 import { useSWR, json_fetcher, webApi } from "../../util/services.js";
-import AppContext from "../AppContext.js";
+import { AudioContext } from "../general/AudioProvider.js";
 import ThemeSwitch from "./menu/ThemeSwitch.js";
 import ArtistSettings from "./menu/ArtistSettings";
 import UserHeader from "./menu/UserHeader.js";
@@ -15,7 +15,7 @@ import UserHeader from "./menu/UserHeader.js";
 export default function AccountScreen() {
   const navigation = useNavigation();
   const [role, setRole] = useState(null);
-  const context = React.useContext(AppContext);
+  const context = React.useContext(AudioContext);
 
   let {
     data: user,
@@ -36,7 +36,7 @@ export default function AccountScreen() {
   });
 
   const onLogOut = () => {
-    context.setStop(true);
+    context.stop();
     navigation.replace("SessionManager");
     signOut(getAuth()).catch();
   };

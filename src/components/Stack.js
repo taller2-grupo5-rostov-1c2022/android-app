@@ -1,12 +1,11 @@
-import { useState } from "react";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RegisterScreen from "./account/login/RegisterScreen";
 import HomeScreen from "./HomeScreen";
 import ManageMySongs from "./account/manageSongs/ManageMySongs";
 import MyProfileScreen from "./account/profile/MyProfileScreen";
 import SessionManager from "./account/profile/SessionManager";
-import AppContext from "./AppContext";
-import AudioController from "./general/AudioController";
+import AudioProvider from "./general/AudioProvider";
 import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 import ForgotPasswordScreen from "./account/login/ForgotPasswordScreen";
 import UserListScreen from "./account/users/UserListScreen";
@@ -16,31 +15,10 @@ import ManageMyPlaylists from "./account/managePlaylists/ManageMyPlaylists";
 const StackNavigator = createNativeStackNavigator();
 
 export default function Stack() {
-  const [song, setSong] = useState("");
-  const [paused, setPaused] = useState(false);
-  const [stop, setStop] = useState(false);
-  const [previous, setPrevious] = useState(false);
-  const [next, setNext] = useState(false);
-  const [queue, setQueue] = useState([]);
   const theme = useTheme();
 
   return (
-    <AppContext.Provider
-      value={{
-        song,
-        paused,
-        stop,
-        queue,
-        previous,
-        next,
-        setSong,
-        setPaused,
-        setStop,
-        setQueue,
-        setPrevious,
-        setNext,
-      }}
-    >
+    <AudioProvider>
       <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
         <Portal.Host>
           <StackNavigator.Navigator
@@ -88,9 +66,8 @@ export default function Stack() {
               options={{ title: "Other users", headerShown: true }}
             />
           </StackNavigator.Navigator>
-          <AudioController />
         </Portal.Host>
       </View>
-    </AppContext.Provider>
+    </AudioProvider>
   );
 }
