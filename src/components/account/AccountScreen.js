@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError.js";
 import { useSWR, json_fetcher, webApi } from "../../util/services.js";
-import AppContext from "../AppContext.js";
+import { AudioContext } from "../general/AudioProvider.js";
 import ThemeSwitch from "./ThemeSwitch.js";
 
 const ARTIST_ROLES = ["artist", "admin"];
@@ -17,7 +17,7 @@ const ARTIST_ROLES = ["artist", "admin"];
 export default function AccountScreen() {
   const navigation = useNavigation();
   const [role, setRole] = useState(null);
-  const context = React.useContext(AppContext);
+  const context = React.useContext(AudioContext);
 
   let {
     data: user,
@@ -38,7 +38,7 @@ export default function AccountScreen() {
   });
 
   const onLogOut = () => {
-    context.setStop(true);
+    context.stop();
     navigation.replace("SessionManager");
     signOut(getAuth()).catch();
   };
@@ -117,7 +117,9 @@ function ArtistMenu({ role, navigation }) {
       />
       <List.Item
         title="Manage my playlists..."
-        left={(props) => <List.Icon {...props} icon="playlist-music"></List.Icon>}
+        left={(props) => (
+          <List.Icon {...props} icon="playlist-music"></List.Icon>
+        )}
         onPress={() => {
           navigation.push("ManageMyPlaylists");
         }}

@@ -5,7 +5,7 @@ import FetchedList from "./../general/FetchedList";
 import PlayableSongItem from "./PlayableSongItem";
 import styles from "../styles";
 import { fetch, webApi } from "../../util/services";
-import AppContext from "../AppContext";
+import { AudioContext } from "../general/AudioProvider";
 import PropTypes from "prop-types";
 
 export default function SongList({
@@ -15,7 +15,7 @@ export default function SongList({
   title,
   emptyMessage,
 }) {
-  const context = React.useContext(AppContext);
+  const context = React.useContext(AudioContext);
   const [loading, setLoading] = React.useState(false);
   let song = ({ data }) => (
     <PlayableSongItem
@@ -74,7 +74,7 @@ export async function playSongList(songs, context, setLoading) {
       return song;
     });
     context.setQueue(queue);
-    context.setNext(true);
+    context.next();
     context.setPaused(false);
   } catch (e) {
     console.error(e);

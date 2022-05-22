@@ -1,8 +1,10 @@
-import React from "react";
-import AppContext from "../AppContext.js";
+import React, { createContext, useState, useEffect } from "react";
 import { Audio } from "expo-av";
+import PropTypes from "prop-types";
 
-export const AudioController = () => {
+export const AudioContext = createContext();
+
+export const AudioProvider = ({ children }) => {
   const [audio] = React.useState({
     uri: null,
     sound: null,
@@ -16,7 +18,9 @@ export const AudioController = () => {
 
   const [prevSongs, setprevSongs] = React.useState([]);
 
-  const context = React.useContext(AppContext);
+  const [song, setSong] = useState("");
+  const [paused, setPaused] = useState(false);
+  const [queue, setQueue] = useState([]);
 
   const errorOnPlaySong = () => {
     toast.show("Failed to play song :(");
@@ -60,71 +64,70 @@ export const AudioController = () => {
     const prevSong = prevSongs[prevSongs.length - 1];
     setprevSongs(prevSongs.slice(0, -1));
     setIsPrevious(true);
-    context.setQueue((queue) => [currentSong, ...queue]);
-    context.setSong(prevSong);
+    setQueue((queue) => [currentSong, ...queue]);
+    setSong(prevSong);
   };
 
   const next = () => {
-    if (context.queue.length == 0) return;
-    const nextSong = context.queue[0];
-    context.setQueue((queue) => queue.slice(1));
-    context.setSong(nextSong);
+    if (queue.length == 0) return;
+    const nextSong = queue[0];
+    setQueue((queue) => queue.slice(1));
+    setSong(nextSong);
   };
 
-  React.useEffect(() => {
-    if (
-      currentSong.name &&
-      !isPrevious &&
-      currentSong.name != context.song.name
-    ) {
+  const stop = () => {
+    if (audio.sound != null) {
+      //audio.sound?.stopAsync();
+      audio.sound?.unloadAsync().catch();
+      audio.uri = null;
+      audio.sound = null;
+    }
+  };
+
+  useEffect(() => {
+    if (currentSong.name && !isPrevious && currentSong.name != song.name) {
       setprevSongs((prevSongs) => [...prevSongs, currentSong]);
     }
     setIsPrevious(false);
     setCurrentSong({
-      name: context.song.name,
-      artists: context.song.artists,
-      url: context.song.url,
+      name: song.name,
+      artists: song.artists,
+      url: song.url,
     });
-    if (!context.paused) {
-      play(context.song.url);
+    if (!paused) {
+      play(song.url);
     }
-  }, [context.song]);
+  }, [song]);
 
-  React.useEffect(() => {
-    if (context.paused) {
+  useEffect(() => {
+    if (paused) {
       audio?.sound?.pauseAsync();
     } else {
-      play(context.song.url);
+      play(song.url);
     }
-  }, [context.paused]);
+  }, [paused]);
 
-  React.useEffect(() => {
-    if (context.stop) {
-      if (audio.sound != null) {
-        //audio.sound?.stopAsync();
-        audio.sound?.unloadAsync().catch();
-        audio.uri = null;
-        audio.sound = null;
-      }
-      context.setStop(false);
-    }
-  }, [context.stop]);
-
-  React.useEffect(() => {
-    if (context.previous) {
-      previous();
-      context.setPrevious(false);
-    }
-  }, [context.previous]);
-
-  React.useEffect(() => {
-    if (context.next) {
-      next();
-      context.setNext(false);
-    }
-  }, [context.next]);
-
-  return null;
+  return (
+    <AudioContext.Provider
+      value={{
+        next,
+        previous,
+        stop,
+        paused,
+        setPaused,
+        song,
+        setSong,
+        queue,
+        setQueue,
+      }}
+    >
+      {children}
+    </AudioContext.Provider>
+  );
 };
 
-export default AudioController;
+export default AudioProvider;
+
+AudioProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
