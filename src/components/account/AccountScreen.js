@@ -4,13 +4,14 @@ import { Appbar } from "react-native-paper";
 import styles from "../styles.js";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import { Portal, ActivityIndicator, List } from "react-native-paper";
+import { Portal, ActivityIndicator } from "react-native-paper";
 import { FirebaseError } from "./login/FirebaseError.js";
 import { useSWR, json_fetcher, webApi } from "../../util/services.js";
 import { AudioContext } from "../general/AudioProvider.js";
 import ThemeSwitch from "./menu/ThemeSwitch.js";
 import ArtistSettings from "./menu/ArtistSettings";
 import UserHeader from "./menu/UserHeader.js";
+import UserSettings from "./menu/UserSettings.js";
 
 export default function AccountScreen() {
   const navigation = useNavigation();
@@ -49,20 +50,9 @@ export default function AccountScreen() {
 
       <ScrollView style={styles.container}>
         <UserHeader user={user} navigation={navigation} onLogOut={onLogOut} />
+        <UserSettings navigation={navigation} />
         <ArtistSettings role={role} navigation={navigation} />
         <ThemeSwitch />
-        <List.Section>
-          <List.Subheader>Users</List.Subheader>
-          <List.Item
-            title="Other users..."
-            left={(props) => (
-              <List.Icon {...props} icon="account-search"></List.Icon>
-            )}
-            onPress={() => {
-              navigation.push("UserListScreen");
-            }}
-          />
-        </List.Section>
         <Portal>
           {loading ? (
             <ActivityIndicator size="large" style={styles.activityIndicator} />
