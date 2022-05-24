@@ -1,14 +1,15 @@
 import PropTypes from "prop-types";
 import { View, Text } from "react-native";
-import { Button, Title } from "react-native-paper";
-import { webApi, useSWR, json_fetcher } from "../../util/services";
+import { Button, Title, useTheme } from "react-native-paper";
+import { ALBUMS_URL, useSWR, json_fetcher } from "../../util/services";
 
 const AlbumComments = ({ albumId }) => {
   const {
     data: comments,
     error,
     isValidating,
-  } = useSWR(webApi + "/songs/albums/" + albumId + "/comments/", json_fetcher);
+  } = useSWR(`${ALBUMS_URL}${albumId}/comments/`, json_fetcher);
+  let theme = useTheme();
   /* Comment Schema:
     {
       text: "buenas vibras",
@@ -53,6 +54,7 @@ const AlbumComments = ({ albumId }) => {
         <Text
           style={{
             margin: 10,
+            color: theme.colors.text,
           }}
         >
           No hay Comentarios
