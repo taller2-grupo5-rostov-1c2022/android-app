@@ -1,4 +1,4 @@
-import React from "react";
+import { useContext } from "react";
 import { View, ScrollView } from "react-native";
 import { Appbar } from "react-native-paper";
 import styles from "../styles.js";
@@ -11,8 +11,8 @@ import UserSettings from "./menu/UserSettings.js";
 import { SessionContext } from "../session/SessionProvider";
 
 export default function AccountScreen() {
-  const audio = React.useContext(AudioContext);
-  const session = React.useContext(SessionContext);
+  const audio = useContext(AudioContext);
+  const session = useContext(SessionContext);
   const navigation = useNavigation();
 
   const onLogOut = () => {

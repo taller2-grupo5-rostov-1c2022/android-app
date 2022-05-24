@@ -8,7 +8,7 @@ import { Caption, Subheading, Title, Text } from "react-native-paper";
 import { getArtistsAsString } from "../../util/general";
 import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import SongList from "../songs/SongList";
-import AlbumComments from "./AlbumComments";
+import AlbumComments from "./Comments/AlbumComments";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
