@@ -4,7 +4,6 @@ import { getAuth } from "firebase/auth";
 
 export const SessionContext = React.createContext({
   user: null,
-  uid: null,
   signOut: () => {},
   update: async () => {},
   role: "listener",
