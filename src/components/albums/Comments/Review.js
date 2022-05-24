@@ -1,11 +1,14 @@
-import React from "react";
 import Modal from "../../general/Modal";
 import PropTypes from "prop-types";
 import { View } from "react-native";
 import { Text, Button } from "react-native-paper";
-import { saveComment, deleteComment } from "../../../util/requests";
+import { useComments } from "../../../util/requests";
 
 const Review = ({ visible, setVisible, initialReview, albumId }) => {
+  const currentReview = initialReview;
+
+  const { saveComment, deleteComment } = useComments();
+
   const onDeleteComment = () => {
     try {
       deleteComment(albumId);
@@ -18,12 +21,13 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
 
   const onSaveComment = () => {
     const newReview = {
-      score: initialReview ? 6 : 5,
+      score: currentReview ? 6 : 5,
       text: "Hola. Hace la actividad como te parezca, y agrega las aclaraciones que sean necesarias. Saludos.",
     };
 
     try {
-      saveComment(albumId, newReview, initialReview);
+      saveComment(albumId, newReview, currentReview);
+      // setCurrentReview(newReview);
     } catch (e) {
       toast.show("Failed to save comment :(");
       return;
@@ -33,7 +37,7 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
 
   return (
     <Modal
-      title={initialReview ? "Edit Review" : "Add Review"}
+      title={currentReview ? "Edit Review" : "Add Review"}
       visible={visible}
       onDismiss={() => setVisible(false)}
     >
@@ -42,16 +46,16 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
           margin: 20,
         }}
       >
-        {initialReview ? (
+        {currentReview ? (
           <Text>
-            {initialReview?.score} - {initialReview?.text}
+            {currentReview?.score} - {currentReview?.text}
           </Text>
         ) : (
           <Text>New Review</Text>
         )}
         <View>
           <Button onPress={() => setVisible(false)}>Cancel</Button>
-          {initialReview && <Button onPress={onDeleteComment}>Delete</Button>}
+          {currentReview && <Button onPress={onDeleteComment}>Delete</Button>}
           <Button onPress={onSaveComment}>Submit</Button>
         </View>
       </View>

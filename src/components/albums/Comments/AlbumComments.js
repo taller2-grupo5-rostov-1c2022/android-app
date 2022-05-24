@@ -80,10 +80,10 @@ const AlbumComments = ({ albumId }) => {
       </View>
       <Portal>
         <Review
-          visible={reviewing}
+          visible={!!reviewing}
           setVisible={setReviewing}
           albumId={albumId}
-          review={userReview}
+          initialReview={userReview}
         />
       </Portal>
     </>

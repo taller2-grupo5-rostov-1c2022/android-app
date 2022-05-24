@@ -123,7 +123,10 @@ export async function saveComment(albumId, comment, edit) {
   const body = JSON.stringify(comment);
   return fetch(route, {
     method,
-    headers: commonHeaders,
+    headers: {
+      ...commonHeaders,
+      "Content-Type": "application/json",
+    },
     body,
   });
 }
@@ -139,17 +142,13 @@ export const useComments = () => {
 
   const _saveComment = async (albumId, comment, edit) => {
     saveComment(albumId, comment, edit).then((res) => {
-      if (res.ok) {
-        mutate(ALBUMS_URL + albumId + "/comments/");
-      }
+      mutate(ALBUMS_URL + albumId + "/comments/");
       return res;
     });
   };
   const _deleteComment = async (albumId) => {
     deleteComment(albumId).then((res) => {
-      if (res.ok) {
-        mutate(ALBUMS_URL + albumId + "/comments/");
-      }
+      mutate(ALBUMS_URL + albumId + "/comments/");
       return res;
     });
   };
