@@ -79,7 +79,7 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
           },
         ]}
       />
-      <View style={[styles.row, { marginTop: 10 }, styles.formWidth]}>
+      <View style={[styles.row, { marginTop: 10 }, styles.containerCenter]}>
         {cancelButton}
         <Button
           mode="contained"

@@ -7,7 +7,9 @@ import { UserForm } from "./UserForm";
 
 export default function UserCreationMenu({ onSubmit, onCancel }) {
   return (
-    <ScrollView contentContainerStyle={styles.containerCenter}>
+    <ScrollView
+      contentContainerStyle={[styles.container, styles.containerCenter]}
+    >
       <View style={styles.formWidth}>
         <Title
           style={[
