@@ -1,5 +1,5 @@
 import React from "react";
-import { webApi, useSWR } from "../../../util/services";
+import { USERS_URL, useSWR } from "../../../util/services";
 import { Portal, List } from "react-native-paper";
 import styles from "../../styles.js";
 import { View } from "react-native";
@@ -21,7 +21,7 @@ export default function UserListScreen() {
     visible: false,
     user: null,
   });
-  const users = useSWR(`${webApi}/songs/users/`, customFetcher);
+  const users = useSWR(USERS_URL, customFetcher);
 
   const user = ({ data }) => (
     <List.Item

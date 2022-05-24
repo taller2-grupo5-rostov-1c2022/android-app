@@ -4,12 +4,7 @@ import styles from "../styles.js";
 import { View } from "react-native";
 import PropTypes from "prop-types";
 import FetchedList from "./FetchedList";
-import {
-  webApi,
-  json_fetcher,
-  useSWR,
-  useMatchMutate,
-} from "../../util/services";
+import { json_fetcher, useSWR, useMatchMutate } from "../../util/services";
 
 // itemComponent es el componente para cada item que recibe la prop data de cada item
 // editDialog es el componente a mostrar al editar. recibe la data del elemento a editar
@@ -22,7 +17,7 @@ export default function CrudList({
 }) {
   const [dialog, setDialog] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
-  const response = useSWR(`${webApi}${url}`, json_fetcher);
+  const response = useSWR(url, json_fetcher);
   const Dialog = editDialog;
   const matchMutate = useMatchMutate();
 

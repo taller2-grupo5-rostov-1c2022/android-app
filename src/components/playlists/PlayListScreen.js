@@ -1,5 +1,5 @@
 import React from "react";
-import { webApi, useSWR, json_fetcher } from "../../util/services";
+import { useSWR, json_fetcher, PLAYLISTS_URL } from "../../util/services";
 import { Appbar, Portal, List } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
@@ -10,7 +10,7 @@ import PlaylistMenuPlay from "./PlaylistMenuPlay";
 export default function PlayListScreen() {
   const [visible, setVisible] = React.useState(false);
   const [playlistId, setPlaylistId] = React.useState("");
-  const playlists = useSWR(webApi + "/songs/playlists/", json_fetcher);
+  const playlists = useSWR(PLAYLISTS_URL, json_fetcher);
 
   const onPress = (id) => {
     setPlaylistId(id);

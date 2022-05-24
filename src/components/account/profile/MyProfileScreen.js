@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { SessionContext } from "../../session/SessionProvider";
 import { UserForm } from "./UserForm";
 import { ScrollView, View } from "react-native";
-import { webApi, fetch } from "../../../util/services.js";
+import { fetch, USERS_URL } from "../../../util/services.js";
 const FormData = global.FormData;
 
 export default function MyProfileScreen() {
@@ -22,7 +22,7 @@ export default function MyProfileScreen() {
     if (preferences) body.append("interests", JSON.stringify(preferences));
 
     try {
-      await fetch(webApi + "/songs/users/" + session?.user.id, {
+      await fetch(USERS_URL + session?.user.id, {
         method: "PUT",
         headers: {
           Accept: "application/json",

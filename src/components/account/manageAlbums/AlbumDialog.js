@@ -9,7 +9,7 @@ import { saveAlbum, deleteAlbum } from "../../../util/requests";
 import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/general";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Checklist from "../../formUtil/Checklist";
-import { fetch, webApi } from "../../../util/services";
+import { fetch, MY_SONGS_URL } from "../../../util/services";
 import ImagePicker from "../../formUtil/ImagePicker";
 import { inputValidator } from "../../../util/general";
 
@@ -104,7 +104,7 @@ export default function AlbumDialog({ hideDialog, data }) {
 
 async function getMySongs(hideDialog, setStatus, setValidSongs, album) {
   try {
-    let songs = await fetch(webApi + "/songs/my_songs/", {
+    let songs = await fetch(MY_SONGS_URL, {
       method: "GET",
     });
     songs = songs.filter(

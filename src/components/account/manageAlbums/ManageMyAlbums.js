@@ -3,16 +3,16 @@ import AlbumDialog from "./AlbumDialog";
 import PropTypes from "prop-types";
 import CrudList from "../../general/CrudList.js";
 import AlbumItem from "../../albums/AlbumItem";
-import { webApi } from "../../../util/services";
+import { ALBUMS_URL } from "../../../util/services";
 
 export default function ManageMyAlbums() {
   return (
     <CrudList
-      url="/songs/my_albums/"
+      url={ALBUMS_URL}
       editDialog={AlbumDialog}
       itemComponent={AlbumItem}
       emptyMessage="You don't have any albums yet"
-      revalidateUrl={`${webApi}/songs/albums/`}
+      revalidateUrl={ALBUMS_URL}
     />
   );
 }

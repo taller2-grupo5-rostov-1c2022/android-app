@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { json_fetcher, useSWR, webApi, fetch } from "../../util/services";
+import {
+  json_fetcher,
+  useSWR,
+  fetch,
+  MY_USER_URL,
+  USERS_URL,
+} from "../../util/services";
 import LoadingScreen from "../account/login/LoadingScreen";
 import Stack from "../Stack";
 import UserCreationMenu from "../account/profile/UserCreationMenu";
@@ -14,7 +20,7 @@ export default function SessionFetcher() {
     new: false,
   });
 
-  const response = useSWR(`${webApi}/songs/my_user/`, json_fetcher, {
+  const response = useSWR(MY_USER_URL, json_fetcher, {
     isPaused: () => status.paused,
   });
 
@@ -70,7 +76,7 @@ async function onCreationSubmit(data, signOut, mutate, setStatus) {
   if (image) body.append("img", image, "pfp");
   if (preferences) body.append("interests", JSON.stringify(preferences));
   try {
-    await fetch(`${webApi}/songs/users/`, {
+    await fetch(USERS_URL, {
       method: "POST",
       headers: {
         Accept: "application/json",
