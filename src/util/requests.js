@@ -2,7 +2,7 @@ import { ALBUMS_URL, fetch, PLAYLISTS_URL, SONGS_URL } from "./services";
 const FormData = global.FormData;
 
 function getSongUrl(songKey) {
-  return SONGS_URL + (songKey ?? "");
+  return `${SONGS_URL}${songKey ?? ""}`;
 }
 
 export async function saveSong(songKey, formData) {
@@ -32,7 +32,7 @@ export async function deleteSong(songKey) {
 }
 
 function getAlbumUrl(albumKey) {
-  return ALBUMS_URL + (albumKey ?? "");
+  return `${ALBUMS_URL}${albumKey ?? ""}`;
 }
 
 export async function saveAlbum(albumKey, formData) {
@@ -62,7 +62,7 @@ export async function deleteAlbum(albumKey) {
 }
 
 function getPlaylistUrl(playlistKey) {
-  return PLAYLISTS_URL + (playlistKey ?? "");
+  return `${PLAYLISTS_URL}${playlistKey ?? ""}`;
 }
 
 // formData: { name *, description *, songs_ids, cover }

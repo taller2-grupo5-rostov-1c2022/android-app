@@ -8,14 +8,14 @@ import {
 } from "../../util/services";
 import LoadingScreen from "../account/login/LoadingScreen";
 import Stack from "../Stack";
-import UserCreationMenu from "../account/profile/UserCreationMenu";
+import UserCreationMenu from "../session/UserCreationMenu";
 import { getAuth, signOut as _signOut } from "firebase/auth";
 import SessionProvider from "./SessionProvider";
 const HTTP_NOT_FOUND = 404;
 
 export default function SessionFetcher() {
   const [status, setStatus] = useState({
-    loading: false,
+    loading: true,
     paused: false,
     new: false,
   });
@@ -28,12 +28,14 @@ export default function SessionFetcher() {
     async function onNewLogin() {
       // invalidate previous user data
       let data = await response.mutate(null, { optimisticData: null });
+      setStatus((prev) => ({ ...prev, loading: false }));
       if (!data?.id) return;
+
       if (status.new) toast.show(`Welcome to Spotifiuby, ${data.name}!`);
       else toast.show(`Welcome back, ${data.name}!`);
     }
 
-    if (!status.loading && !status.paused) onNewLogin();
+    if (status.loading && !status.paused) onNewLogin();
   }, [status]);
 
   const signOut = () => {
@@ -41,11 +43,15 @@ export default function SessionFetcher() {
   };
 
   useEffect(() => {
-    if (response?.error?.status == HTTP_NOT_FOUND)
+    if (response?.error?.status == HTTP_NOT_FOUND) {
       setStatus((prev) => ({ ...prev, paused: true }));
+    }
   }, [response?.error]);
 
-  if (!status.loading && response.error?.status == HTTP_NOT_FOUND)
+  if (
+    !status.loading &&
+    (response.error?.status == HTTP_NOT_FOUND || status?.paused)
+  ) {
     return (
       <UserCreationMenu
         onSubmit={(data) =>
@@ -54,7 +60,7 @@ export default function SessionFetcher() {
         onCancel={signOut}
       />
     );
-
+  }
   if (status.loading || !response.data) return <LoadingScreen />;
 
   return (
@@ -83,7 +89,7 @@ async function onCreationSubmit(data, signOut, mutate, setStatus) {
       },
       body,
     });
-    setStatus({ paused: false, loading: false, new: true });
+    setStatus({ paused: false, loading: true, new: true });
   } catch (e) {
     signOut();
     toast.show("Error creating your account, please try again later :(");

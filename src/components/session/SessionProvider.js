@@ -16,15 +16,15 @@ export default function SessionProvider({ user, signOut, update, children }) {
 
   async function updateRole(refresh = true) {
     try {
-      const user = getAuth()?.currentUser;
-      let token = await user?.getIdTokenResult(refresh);
+      const fb_user = getAuth()?.currentUser;
+      let token = await fb_user?.getIdTokenResult(refresh);
       setRole(token.claims.role);
     } catch (e) {
       console.error("Could not get user role: ", e);
     }
   }
 
-  useEffect(() => updateRole(false), []);
+  useEffect(() => updateRole(false), [user?.id]);
 
   return (
     <SessionContext.Provider
@@ -47,7 +47,6 @@ SessionProvider.propTypes = {
     name: PropTypes.string,
     email: PropTypes.string,
     pfp: PropTypes.string,
-    getIdTokenResult: PropTypes.func,
   }),
   signOut: PropTypes.func.isRequired,
   update: PropTypes.func.isRequired,

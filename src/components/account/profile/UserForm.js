@@ -24,7 +24,7 @@ export function UserForm({ onSubmit, defaultValues, cancelButton }) {
   });
 
   return (
-    <View style={styles.formWidth}>
+    <View style={[styles.formWidth, { flex: 1 }]}>
       <FormBuilder
         control={control}
         setFocus={setFocus}
