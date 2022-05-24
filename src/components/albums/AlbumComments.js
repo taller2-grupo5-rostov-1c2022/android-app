@@ -19,10 +19,18 @@ const AlbumComments = ({ albumId }) => {
     }
     */
 
+  const alreadyReviewed = false;
+  // comments.some( (comment) => comment?.commenter?.id === uid ); // no id yet
+
   const addReview = () => {
     console.log("addReview");
     console.log("should handle", error, isValidating);
     // FIXME: handle error and isValidating
+  };
+
+  const editReview = () => {
+    // Maybe this could be merged with the one above
+    // Similar to how put/post of songs share the same form
   };
 
   return (
@@ -35,8 +43,21 @@ const AlbumComments = ({ albumId }) => {
         }}
       >
         <Title>Reviews</Title>
-        <Button onPress={addReview}>Add Review</Button>
+        {alreadyReviewed ? (
+          <Button onPress={addReview}>Add Review</Button>
+        ) : (
+          <Button onPress={editReview}>Edit Review</Button>
+        )}
       </View>
+      {comments?.length == 0 && (
+        <Text
+          style={{
+            margin: 10,
+          }}
+        >
+          No hay Comentarios
+        </Text>
+      )}
       {
         // FIXME: UI de prueba
         comments?.map((comment, index) => (
