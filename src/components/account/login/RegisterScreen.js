@@ -15,7 +15,7 @@ import { FirebaseError } from "./FirebaseError";
 import { emailRegex } from "../../../util/general";
 import { View } from "react-native";
 
-export default function RegisterScreen({ navigation }) {
+export default function RegisterScreen() {
   const auth = getAuth();
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState(null);
@@ -25,7 +25,6 @@ export default function RegisterScreen({ navigation }) {
     setAuthing(true);
     try {
       await createUserWithEmailAndPassword(auth, data.email, data.password);
-      navigation.pop();
     } catch (err) {
       setError(err);
       setAuthing(false);
@@ -103,12 +102,6 @@ function RegisterForm({ control, setFocus }) {
     />
   );
 }
-
-RegisterScreen.propTypes = {
-  navigation: PropTypes.shape({
-    pop: PropTypes.func.isRequired,
-  }).isRequired,
-};
 
 RegisterForm.propTypes = {
   control: PropTypes.any.isRequired,

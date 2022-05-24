@@ -2,12 +2,12 @@ import React from "react";
 import { List } from "react-native-paper";
 import Modal from "../general/Modal";
 import PropTypes from "prop-types";
-import { useSWR, json_fetcher, webApi } from "../../util/services";
+import { useSWR, json_fetcher, MY_PLAYLISTS_URL } from "../../util/services";
 import FetchedList from "../general/FetchedList";
 import { addSongToPlaylist, addColabToPlaylist } from "../../util/requests";
 
 export const PlaylistMenuAdd = ({ visible, setVisible, songId, colabId }) => {
-  const my_playlists = useSWR(webApi + "/songs/my_playlists/", json_fetcher);
+  const my_playlists = useSWR(MY_PLAYLISTS_URL, json_fetcher);
 
   const addSong = (playlistId) => {
     try {

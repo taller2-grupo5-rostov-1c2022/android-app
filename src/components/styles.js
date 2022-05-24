@@ -6,6 +6,10 @@ const styles = StyleSheet.create({
     margin: "3%",
     padding: "1%",
   },
+  containerNoFlex: {
+    margin: "3%",
+    padding: "1%",
+  },
   header: {
     display: "flex",
     flexDirection: "row",

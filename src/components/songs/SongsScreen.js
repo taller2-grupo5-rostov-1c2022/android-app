@@ -1,5 +1,5 @@
 import React from "react";
-import { webApi, useSWR, json_fetcher } from "../../util/services";
+import { useSWR, json_fetcher, SONGS_URL } from "../../util/services";
 import { IconButton, Portal, Appbar } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
@@ -13,7 +13,7 @@ export default function SongsScreen() {
   const [visible, setVisible] = React.useState(false);
   const [songId, setSongId] = React.useState("");
   const [query, setQuery] = React.useState("");
-  const songs = useSWR(`${webApi}/songs/songs/${query}`, json_fetcher);
+  const songs = useSWR(`${SONGS_URL}${query}`, json_fetcher);
 
   const song = ({ data }) => (
     <PlayableSongItem

@@ -1,8 +1,21 @@
-export { default as useSWR, useSWRConfig } from "swr";
+export { default as useSWR } from "swr";
 export { default as useSWRImmutable } from "swr/immutable";
+import { useSWRConfig } from "swr";
 import { getAuth } from "firebase/auth";
 
-export const webApi = "https://rostov-gateway.herokuapp.com";
+export const API_URL = "https://rostov-gateway.herokuapp.com";
+
+export const SONGS_URL = `${API_URL}/songs/songs/`;
+export const MY_SONGS_URL = `${API_URL}/songs/my_songs/`;
+
+export const ALBUMS_URL = `${API_URL}/songs/albums/`;
+export const MY_ALBUMS_URL = `${API_URL}/songs/my_albums/`;
+
+export const PLAYLISTS_URL = `${API_URL}/songs/playlists/`;
+export const MY_PLAYLISTS_URL = `${API_URL}/songs/my_playlists/`;
+
+export const USERS_URL = `${API_URL}/songs/users/`;
+export const MY_USER_URL = `${API_URL}/songs/my_user/`;
 
 export const json_fetcher = async (url) => {
   return await fetch(url);
@@ -38,4 +51,24 @@ function FetchError(response) {
   this.status = response.status;
   this.statusText = response.statusText;
   this.name = "FetchError";
+}
+
+export function useMatchMutate() {
+  const { cache, mutate } = useSWRConfig();
+  return (matcher, ...args) => {
+    if (!(cache instanceof Map)) {
+      throw new Error(
+        "matchMutate requires the cache provider to be a Map instance"
+      );
+    }
+
+    const keys = [];
+
+    for (const key of cache.keys()) {
+      if (matcher(key)) keys.push(key);
+    }
+
+    const mutations = keys.map((key) => mutate(key, ...args));
+    return Promise.all(mutations);
+  };
 }

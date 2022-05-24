@@ -4,7 +4,7 @@ import { View } from "react-native";
 import FetchedList from "./../general/FetchedList";
 import PlayableSongItem from "./PlayableSongItem";
 import styles from "../styles";
-import { fetch, webApi } from "../../util/services";
+import { fetch, SONGS_URL } from "../../util/services";
 import { AudioContext } from "../general/AudioProvider";
 import PropTypes from "prop-types";
 
@@ -67,7 +67,7 @@ export async function playSongList(songs, context, setLoading) {
   setLoading && setLoading(true);
   try {
     let songsWithUrl = await Promise.all(
-      songs.map((song) => fetch(webApi + "/songs/songs/" + song.id))
+      songs.map((song) => fetch(SONGS_URL + song.id))
     );
     let queue = songsWithUrl.map((song) => {
       song.url = song.file;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { webApi, useSWR, json_fetcher } from "../../util/services";
+import { ALBUMS_URL, useSWR, json_fetcher } from "../../util/services";
 import { Appbar, Portal } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
@@ -11,7 +11,7 @@ import SearchBar from "../general/SearchBar";
 
 export default function AlbumsScreen() {
   const [query, setQuery] = React.useState("");
-  const songs = useSWR(`${webApi}/songs/albums/${query}`, json_fetcher);
+  const songs = useSWR(`${ALBUMS_URL}${query}`, json_fetcher);
   const [modalStatus, setModalStatus] = useState({
     visible: false,
     album: null,

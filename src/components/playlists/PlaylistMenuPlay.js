@@ -1,14 +1,11 @@
 import React from "react";
 import Modal from "../general/Modal";
 import PropTypes from "prop-types";
-import { useSWR, json_fetcher, webApi } from "../../util/services";
+import { useSWR, json_fetcher, PLAYLISTS_URL } from "../../util/services";
 import SongList from "../songs/SongList";
 
 export const PlaylistMenuPlay = ({ visible, setVisible, playlistId }) => {
-  const playlist = useSWR(
-    `${webApi}/songs/playlists/${playlistId}`,
-    json_fetcher
-  );
+  const playlist = useSWR(`${PLAYLISTS_URL}${playlistId}`, json_fetcher);
   const name = playlist?.data?.name ?? "";
 
   return (
