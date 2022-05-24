@@ -1,6 +1,12 @@
 import { ALBUMS_URL, fetch, PLAYLISTS_URL, SONGS_URL } from "./services";
 const FormData = global.FormData;
 
+const commonHeaders = {
+  Accept: "application/json",
+  // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
+  // "Content-Type": "multipart/form-data",
+};
+
 function getSongUrl(songKey) {
   return `${SONGS_URL}${songKey ?? ""}`;
 }
@@ -16,11 +22,7 @@ export async function saveSong(songKey, formData) {
 
   return fetch(getSongUrl(songKey), {
     method,
-    headers: {
-      Accept: "application/json",
-      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-      // "Content-Type": "multipart/form-data",
-    },
+    headers: commonHeaders,
     body,
   });
 }
@@ -46,11 +48,7 @@ export async function saveAlbum(albumKey, formData) {
 
   return fetch(getAlbumUrl(albumKey), {
     method,
-    headers: {
-      Accept: "application/json",
-      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-      // "Content-Type": "multipart/form-data",
-    },
+    headers: commonHeaders,
     body,
   });
 }
@@ -77,11 +75,7 @@ export async function savePlaylist(playlistKey, formData) {
 
   return fetch(getPlaylistUrl(playlistKey), {
     method,
-    headers: {
-      Accept: "application/json",
-      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-      // "Content-Type": "multipart/form-data",
-    },
+    headers: commonHeaders,
     body,
   });
 }
@@ -98,11 +92,7 @@ export async function addSongToPlaylist(playlistKey, song_id) {
 
   return fetch(getPlaylistUrl(playlistKey) + "/songs/", {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-      // "Content-Type": "multipart/form-data",
-    },
+    headers: commonHeaders,
     body,
   });
 }
@@ -119,11 +109,25 @@ export async function addColabToPlaylist(playlistKey, colab_id) {
 
   return fetch(getPlaylistUrl(playlistKey) + "/colabs/", {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-      // "Content-Type": "multipart/form-data",
-    },
+    headers: commonHeaders,
     body,
+  });
+}
+
+// coment: {text, score} -> atleast one of them is required
+export async function saveComment(albumId, comment, edit) {
+  const route = ALBUMS_URL + albumId + "/comments/";
+  const method = edit ? "PUT" : "POST";
+  const body = JSON.stringify(comment);
+  return fetch(route, {
+    method,
+    headers: commonHeaders,
+    body,
+  });
+}
+export async function deleteComment(albumId) {
+  const route = ALBUMS_URL + albumId + "/comments/";
+  return fetch(route, {
+    method: "DELETE",
   });
 }
