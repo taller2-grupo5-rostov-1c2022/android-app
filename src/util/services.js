@@ -1,5 +1,6 @@
-export { default as useSWR, useSWRConfig } from "swr";
+export { default as useSWR } from "swr";
 export { default as useSWRImmutable } from "swr/immutable";
+import { useSWRConfig } from "swr";
 import { getAuth } from "firebase/auth";
 
 export const webApi = "https://rostov-gateway.herokuapp.com";
@@ -38,4 +39,24 @@ function FetchError(response) {
   this.status = response.status;
   this.statusText = response.statusText;
   this.name = "FetchError";
+}
+
+export function useMatchMutate() {
+  const { cache, mutate } = useSWRConfig();
+  return (matcher, ...args) => {
+    if (!(cache instanceof Map)) {
+      throw new Error(
+        "matchMutate requires the cache provider to be a Map instance"
+      );
+    }
+
+    const keys = [];
+
+    for (const key of cache.keys()) {
+      if (matcher(key)) keys.push(key);
+    }
+
+    const mutations = keys.map((key) => mutate(key, ...args));
+    return Promise.all(mutations);
+  };
 }

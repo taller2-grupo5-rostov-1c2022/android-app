@@ -3,6 +3,7 @@ import AlbumDialog from "./AlbumDialog";
 import PropTypes from "prop-types";
 import CrudList from "../../general/CrudList.js";
 import AlbumItem from "../../albums/AlbumItem";
+import { webApi } from "../../../util/services";
 
 export default function ManageMyAlbums() {
   return (
@@ -11,6 +12,7 @@ export default function ManageMyAlbums() {
       editDialog={AlbumDialog}
       itemComponent={AlbumItem}
       emptyMessage="You don't have any albums yet"
+      revalidateUrl={`${webApi}/songs/albums/`}
     />
   );
 }
