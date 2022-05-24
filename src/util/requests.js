@@ -1,3 +1,5 @@
+import { useSWRConfig } from "swr";
+
 import { ALBUMS_URL, fetch, PLAYLISTS_URL, SONGS_URL } from "./services";
 const FormData = global.FormData;
 
@@ -131,3 +133,29 @@ export async function deleteComment(albumId) {
     method: "DELETE",
   });
 }
+
+export const useComments = () => {
+  const { mutate } = useSWRConfig();
+
+  const _saveComment = async (albumId, comment, edit) => {
+    saveComment(albumId, comment, edit).then((res) => {
+      if (res.ok) {
+        mutate(ALBUMS_URL + albumId + "/comments/");
+      }
+      return res;
+    });
+  };
+  const _deleteComment = async (albumId) => {
+    deleteComment(albumId).then((res) => {
+      if (res.ok) {
+        mutate(ALBUMS_URL + albumId + "/comments/");
+      }
+      return res;
+    });
+  };
+
+  return {
+    saveComment: _saveComment,
+    deleteComment: _deleteComment,
+  };
+};

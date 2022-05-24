@@ -82,6 +82,7 @@ const AlbumComments = ({ albumId }) => {
         <Review
           visible={reviewing}
           setVisible={setReviewing}
+          albumId={albumId}
           review={userReview}
         />
       </Portal>
