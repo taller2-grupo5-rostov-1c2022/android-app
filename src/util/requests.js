@@ -118,6 +118,7 @@ export async function addColabToPlaylist(playlistKey, colab_id) {
 
 // coment: {text, score} -> atleast one of them is required
 export async function saveComment(albumId, comment, edit) {
+  console.log("ALBUM ID: " + albumId);
   const route = ALBUMS_URL + albumId + "/comments/";
   const method = edit ? "PUT" : "POST";
   const body = JSON.stringify(comment);
