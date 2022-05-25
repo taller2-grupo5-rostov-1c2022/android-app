@@ -27,6 +27,7 @@ export default function HomeScreen() {
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
+      shifting={false}
     />
   );
 }

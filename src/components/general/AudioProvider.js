@@ -17,7 +17,6 @@ export const AudioProvider = ({ children }) => {
   });
 
   const [prevSongs, setprevSongs] = React.useState([]);
-
   const [song, setSong] = useState("");
   const [paused, setPaused] = useState(false);
   const [queue, setQueue] = useState([]);
@@ -69,7 +68,11 @@ export const AudioProvider = ({ children }) => {
   };
 
   const next = () => {
-    if (queue.length == 0) return;
+    if (queue.length == 0) {
+      setSong("");
+      return;
+    }
+
     const nextSong = queue[0];
     setQueue((queue) => queue.slice(1));
     setSong(nextSong);
@@ -85,6 +88,11 @@ export const AudioProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    if (song === "") {
+      stop();
+      return;
+    }
+
     if (currentSong.name && !isPrevious && currentSong.name != song.name) {
       setprevSongs((prevSongs) => [...prevSongs, currentSong]);
     }

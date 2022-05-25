@@ -42,7 +42,6 @@
     "@expo/webpack-config": "~0.16.2",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.6.1",
-    "codecov": "^3.8.3",
     "eslint": "^8.13.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-native": "^4.0.0",

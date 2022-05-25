@@ -12,7 +12,11 @@ const Player = () => {
   };
 
   return (
-    <Appbar style={styles.player}>
+    <Appbar
+      style={[styles.player].concat(
+        context.song === "" ? { display: "none" } : []
+      )}
+    >
       <Appbar.Content
         title={context.song.name}
         subtitle={context.song.artists?.map((artist) => artist.name).join(", ")}

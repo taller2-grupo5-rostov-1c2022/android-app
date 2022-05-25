@@ -64,7 +64,7 @@ const AlbumComments = ({ albumId }) => {
               <Text style={{ fontWeight: "bold" }}>
                 {comment.commenter.name}
               </Text>
-              {comment.score && <Text>Sore: {comment.score}</Text>}
+              {comment.score && <Text>Score: {comment.score}</Text>}
               {comment.text && <Text>Comment: {comment.text}</Text>}
             </View>
           ))
