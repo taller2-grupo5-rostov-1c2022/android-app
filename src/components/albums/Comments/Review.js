@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "../../general/Modal";
 import PropTypes from "prop-types";
 import { View } from "react-native";
-import { Text, Button, TextInput } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import { useComments } from "../../../util/requests";
 import DropDown from "react-native-paper-dropdown";
 
