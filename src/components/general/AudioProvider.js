@@ -8,6 +8,7 @@ export const AudioProvider = ({ children }) => {
   const [audio] = React.useState({
     uri: null,
     sound: null,
+    old_sound: [],
   });
   const [isPrevious, setIsPrevious] = React.useState(false);
   const [currentSong, setCurrentSong] = React.useState({
@@ -23,8 +24,10 @@ export const AudioProvider = ({ children }) => {
 
   const errorOnPlaySong = () => {
     toast.show("Failed to play song :(");
+    audio.old_sound.push(audio.sound);
     audio.sound = null;
     audio.uri = null;
+    unloadSound();
     next();
   };
 
@@ -37,7 +40,23 @@ export const AudioProvider = ({ children }) => {
     }
   };
 
+  const unloadSound = () => {
+    audio.old_sound.map(async (sound) => {
+      const status = await sound?.getStatusAsync();
+      console.log(status);
+      if (!status) return false; //keeps the sound
+      if (!status.isLoaded) {
+        console.log("deleted");
+        return false; //throws away the sound
+      }
+      sound.unloadAsync().catch(); //unload the still loaded
+      return true; //we throw them away next iter in case unload fails
+    });
+    console.log("length: " + audio.old_sound.length);
+  };
+
   const play = async (uri) => {
+    console.log("started play process");
     if (uri && audio.uri !== uri) {
       //await audio.sound?.stopAsync();
       // El catch es para que no muera si no había canción cargada
@@ -50,12 +69,15 @@ export const AudioProvider = ({ children }) => {
       );
       sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
       audio.uri = uri;
+      audio.old_sound.push(audio.sound);
       audio.sound = sound;
     }
     await audio?.sound?.playAsync().catch((error) => {
       console.error(error);
       errorOnPlaySong();
     });
+    unloadSound();
+    console.log("ended play process");
   };
 
   const previous = () => {
@@ -83,7 +105,9 @@ export const AudioProvider = ({ children }) => {
       //audio.sound?.stopAsync();
       audio.sound?.unloadAsync().catch();
       audio.uri = null;
+      audio.old_sound.push(audio.sound);
       audio.sound = null;
+      unloadSound();
     }
   };
 
