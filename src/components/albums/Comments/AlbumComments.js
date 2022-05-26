@@ -64,19 +64,19 @@ const AlbumComments = ({ albumId }) => {
               <Text style={{ fontWeight: "bold" }}>
                 {comment.commenter.name}
               </Text>
-              {comment.score && <Text>Score: {comment.score}</Text>}
-              {comment.text && <Text>Comment: {comment.text}</Text>}
+              {comment.score ? <Text>Score: {comment.score}</Text> : null}
+              {comment.text ? <Text>Comment: {comment.text}</Text> : null}
             </View>
           ))
         }
-        {!comments && isValidating && (
+        {!comments && isValidating ? (
           <Text style={{ margin: 10, color: theme.colors.text }}>
             Loading...
           </Text>
-        )}
-        {!comments && error && (
+        ) : null}
+        {!comments && error ? (
           <Text style={{ margin: 10, color: theme.colors.text }}>error</Text>
-        )}
+        ) : null}
       </View>
       <Portal>
         <Review

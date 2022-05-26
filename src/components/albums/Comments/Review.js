@@ -63,7 +63,7 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
   const onCancel = () => {
     setText(initialReview?.text);
     setVisible(false);
-  }
+  };
 
   const onDeleteComment = () => {
     try {
@@ -81,13 +81,13 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
     console.log("currentReview: " + currentReview?.text);
     console.log("text: " + text);
     console.log("album id: " + albumId);
-  }, [initialReview])
+  }, [initialReview]);
 
   React.useEffect(() => {
     console.log("currentReview: " + currentReview?.text);
     console.log("text: " + text);
     console.log("album id: " + albumId);
-  }, [visible])
+  }, [visible]);
 
   const onSaveComment = () => {
     const newReview = {
@@ -95,7 +95,7 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
       text: text,
     };
 
-    if(!text) {
+    if (!text) {
       toast.show("write a comment first", { duration: 2000 });
       return;
     }
@@ -123,25 +123,27 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
         }}
       >
         <TextInput
-            placeholder="Review"
-            mode={"outlined"}
-            value={text}
-            onChangeText={text => setText(text)}
-            multiline={true}
-          />
-          <DropDown
-              label={"score"}
-              mode={"outlined"}
-              visible={showDropDown}
-              showDropDown={() => setShowDropDown(true)}
-              onDismiss={() => setShowDropDown(false)}
-              value={score}
-              setValue={setScore}
-              list={scoreList}
-            />
+          placeholder="Review"
+          mode={"outlined"}
+          value={text}
+          onChangeText={(text) => setText(text)}
+          multiline={true}
+        />
+        <DropDown
+          label={"score"}
+          mode={"outlined"}
+          visible={showDropDown}
+          showDropDown={() => setShowDropDown(true)}
+          onDismiss={() => setShowDropDown(false)}
+          value={score}
+          setValue={setScore}
+          list={scoreList}
+        />
         <View>
           <Button onPress={onCancel}>Cancel</Button>
-          {currentReview && <Button onPress={onDeleteComment}>Delete</Button>}
+          {currentReview ? (
+            <Button onPress={onDeleteComment}>Delete</Button>
+          ) : null}
           <Button onPress={onSaveComment}>Submit</Button>
         </View>
       </View>
