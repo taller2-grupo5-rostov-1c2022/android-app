@@ -73,8 +73,8 @@ export async function playSongList(songs, context, setLoading) {
       song.url = song.file;
       return song;
     });
-    context.setQueue(queue);
-    context.next();
+    context.setSong(queue[0]);
+    context.setQueue(queue.slice(1));
     context.setPaused(false);
   } catch (e) {
     console.error(e);
