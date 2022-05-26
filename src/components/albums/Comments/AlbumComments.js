@@ -41,7 +41,7 @@ const AlbumComments = ({ albumId }) => {
             {userReview ? "Edit Review" : "Add Review"}
           </Button>
         </View>
-        {comments?.length == 0 && (
+        {comments?.length == 0 ? (
           <Text
             style={{
               margin: 10,
@@ -50,7 +50,7 @@ const AlbumComments = ({ albumId }) => {
           >
             No Comments
           </Text>
-        )}
+        ) : null}
         {
           // FIXME: UI de prueba
           comments?.map((comment, index) => (
