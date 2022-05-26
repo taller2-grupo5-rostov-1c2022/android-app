@@ -2,7 +2,7 @@
   "expo": {
     "name": "Spotifiuby",
     "slug": "Spotifiuby",
-    "version": "0.2.3",
+    "version": "0.3.0",
     "icon": "src/img/icon.png",
     "android": {
       "icon": "src/img/icon.png",
@@ -13,7 +13,9 @@
       "package": "ar.uba.fi.rostov.spotifiuby",
       "userInterfaceStyle": "automatic"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "scheme": "spotifiuby",
     "userInterfaceStyle": "automatic"
   }
