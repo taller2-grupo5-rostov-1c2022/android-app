@@ -3,7 +3,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { initializeApp } from "firebase/app";
 import { initializeAuth } from "firebase/auth";
 import { firebaseConfig } from "../config/firebase";
-import Stack from "./components/Stack";
+import SessionManager from "./components/session/SessionManager";
 import { getReactNativePersistence } from "firebase/auth/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-notifications";
@@ -24,8 +24,8 @@ export default function App() {
     <SafeAreaProvider>
       <ThemeProvider>
         <>
-          <Stack />
-          <Toast ref={(ref) => (global["toast"] = ref)} />
+          <SessionManager />
+          <Toast ref={(ref) => (global["toast"] = ref)} duration={3000} />
         </>
       </ThemeProvider>
     </SafeAreaProvider>

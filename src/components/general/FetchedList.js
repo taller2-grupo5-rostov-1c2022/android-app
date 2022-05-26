@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { ActivityIndicator, Subheading, Text } from "react-native-paper";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, RefreshControl } from "react-native";
 import styles from "../styles.js";
 import PropTypes from "prop-types";
 import { useTheme } from "react-native-paper";
@@ -18,6 +18,7 @@ export default function FetchedList({
   ...viewProps
 }) {
   let theme = useTheme();
+  let [refreshing, setRefreshing] = useState(false);
 
   if ((!response.data && response.isValidating) || forceLoading)
     return (
@@ -28,8 +29,26 @@ export default function FetchedList({
 
   if (response.error) return <ErrorMessage error={response.error} />;
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await response.mutate();
+    setRefreshing(false);
+  };
+
   return (
-    <ScrollView {...viewProps}>
+    <ScrollView
+      refreshControl={
+        response.mutate ? (
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[theme.colors.primary]}
+            progressBackgroundColor={theme.colors.surface}
+          />
+        ) : undefined
+      }
+      {...viewProps}
+    >
       {response?.data?.length > 0 ? (
         mapData(response.data, itemComponent)
       ) : (
@@ -71,6 +90,7 @@ FetchedList.propTypes = {
     data: PropTypes.array,
     isValidating: PropTypes.bool,
     error: PropTypes.any,
+    mutate: PropTypes.func,
   }).isRequired,
   forceLoading: PropTypes.bool,
   itemComponent: PropTypes.any.isRequired,

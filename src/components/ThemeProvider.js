@@ -10,7 +10,7 @@ import {
   Provider as PaperProvider,
 } from "react-native-paper";
 import PropTypes from "prop-types";
-import { Appearance } from "react-native";
+import { Appearance, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const THEME_KEY = "@theme";
@@ -26,9 +26,7 @@ async function getStoredTheme() {
     stored = await AsyncStorage.getItem(THEME_KEY);
   } catch (e) {
     console.error(e);
-    toast.show("Failed to fetch theme setting", {
-      duration: 3000,
-    });
+    toast.show("Failed to fetch theme setting");
   }
 
   if (stored) return JSON.parse(stored);
@@ -42,9 +40,7 @@ async function setStoragedTheme(value) {
   try {
     await AsyncStorage.setItem(THEME_KEY, JSON.stringify(value));
   } catch (e) {
-    toast.show("Failed to store theme setting", {
-      duration: 3000,
-    });
+    toast.show("Failed to store theme setting");
   }
 }
 
@@ -77,7 +73,9 @@ export default function ThemeProvider({ children }) {
     <PaperProvider theme={theme}>
       <NavigationContainer theme={theme}>
         <ThemeContext.Provider value={preferences}>
-          {children}
+          <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+            {children}
+          </View>
         </ThemeContext.Provider>
       </NavigationContainer>
     </PaperProvider>

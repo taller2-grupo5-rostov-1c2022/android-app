@@ -17,7 +17,7 @@ export default function Modal({ title, onDismiss, children, ...rest }) {
       contentContainerStyle={[styles.modal]}
       style={styles.modalContainer}
     >
-      <Surface>
+      <Surface style={{ maxHeight: "100%" }}>
         <View style={[styles.header, styles.modalMargin]}>
           <Headline style={{ fontSize: 20 }}>{title}</Headline>
           <IconButton icon="close" onPress={onDismiss} />

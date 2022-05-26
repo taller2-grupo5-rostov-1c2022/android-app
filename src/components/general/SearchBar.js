@@ -7,6 +7,10 @@ import { VALID_SUB_LEVELS } from "../../util/general";
 
 const options = [
   {
+    name: "name",
+    label: "Name",
+  },
+  {
     name: "artist",
     label: "Artists",
   },

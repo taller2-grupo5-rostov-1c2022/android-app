@@ -1,3 +1,5 @@
+export const ARTIST_ROLES = ["artist", "admin"];
+
 export const VALID_GENRES = [
   "Rock",
   "Pop",

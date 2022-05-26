@@ -1,14 +1,14 @@
 import React from "react";
-import styles from "../../styles.js";
+import styles from "../styles.js";
 import { Title, Subheading, Button } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import PropTypes from "prop-types";
-import { UserForm } from "./UserForm";
+import { UserForm } from "../account/profile/UserForm";
 
 export default function UserCreationMenu({ onSubmit, onCancel }) {
   return (
-    <ScrollView contentContainerStyle={styles.containerCenter}>
-      <View style={styles.formWidth}>
+    <View style={[styles.container, styles.containerCenter]}>
+      <ScrollView contentContainerStyle={styles.containerCenter}>
         <Title
           style={[
             { textAlign: "left", alignSelf: "flex-start" },
@@ -26,20 +26,20 @@ export default function UserCreationMenu({ onSubmit, onCancel }) {
           Please, give us some extra information so you can get the best ouf of
           Spotifiuby
         </Subheading>
-      </View>
-      <UserForm
-        onSubmit={onSubmit}
-        cancelButton={
-          <Button
-            mode="contained"
-            onPress={onCancel}
-            style={[styles.button, { flex: 1 }]}
-          >
-            Cancel
-          </Button>
-        }
-      />
-    </ScrollView>
+        <UserForm
+          onSubmit={onSubmit}
+          cancelButton={
+            <Button
+              mode="contained"
+              onPress={onCancel}
+              style={[styles.button, { flex: 1 }]}
+            >
+              Cancel
+            </Button>
+          }
+        />
+      </ScrollView>
+    </View>
   );
 }
 

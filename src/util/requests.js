@@ -1,8 +1,16 @@
-import { webApi, fetch } from "./services";
+import { useSWRConfig } from "swr";
+
+import { ALBUMS_URL, fetch, PLAYLISTS_URL, SONGS_URL } from "./services";
 const FormData = global.FormData;
 
+const commonHeaders = {
+  Accept: "application/json",
+  // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
+  // "Content-Type": "multipart/form-data",
+};
+
 function getSongUrl(songKey) {
-  return webApi + "/songs/songs/" + (songKey ?? "");
+  return `${SONGS_URL}${songKey ?? ""}`;
 }
 
 export async function saveSong(songKey, formData) {
@@ -16,11 +24,7 @@ export async function saveSong(songKey, formData) {
 
   return fetch(getSongUrl(songKey), {
     method,
-    headers: {
-      Accept: "application/json",
-      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-      // "Content-Type": "multipart/form-data",
-    },
+    headers: commonHeaders,
     body,
   });
 }
@@ -32,7 +36,7 @@ export async function deleteSong(songKey) {
 }
 
 function getAlbumUrl(albumKey) {
-  return webApi + "/songs/albums/" + (albumKey ?? "");
+  return `${ALBUMS_URL}${albumKey ?? ""}`;
 }
 
 export async function saveAlbum(albumKey, formData) {
@@ -46,11 +50,7 @@ export async function saveAlbum(albumKey, formData) {
 
   return fetch(getAlbumUrl(albumKey), {
     method,
-    headers: {
-      Accept: "application/json",
-      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-      // "Content-Type": "multipart/form-data",
-    },
+    headers: commonHeaders,
     body,
   });
 }
@@ -62,7 +62,7 @@ export async function deleteAlbum(albumKey) {
 }
 
 function getPlaylistUrl(playlistKey) {
-  return webApi + "/songs/playlists/" + (playlistKey ?? "");
+  return `${PLAYLISTS_URL}${playlistKey ?? ""}`;
 }
 
 // formData: { name *, description *, songs_ids, cover }
@@ -77,11 +77,7 @@ export async function savePlaylist(playlistKey, formData) {
 
   return fetch(getPlaylistUrl(playlistKey), {
     method,
-    headers: {
-      Accept: "application/json",
-      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-      // "Content-Type": "multipart/form-data",
-    },
+    headers: commonHeaders,
     body,
   });
 }
@@ -98,11 +94,7 @@ export async function addSongToPlaylist(playlistKey, song_id) {
 
   return fetch(getPlaylistUrl(playlistKey) + "/songs/", {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-      // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
-      // "Content-Type": "multipart/form-data",
-    },
+    headers: commonHeaders,
     body,
   });
 }
@@ -112,3 +104,58 @@ export async function removeSongFromPlaylist(playlistKey, song_id) {
     method: "DELETE",
   });
 }
+
+export async function addColabToPlaylist(playlistKey, colab_id) {
+  let body = new FormData();
+  body.append("colab_id", colab_id);
+
+  return fetch(getPlaylistUrl(playlistKey) + "/colabs/", {
+    method: "POST",
+    headers: commonHeaders,
+    body,
+  });
+}
+
+// coment: {text, score} -> atleast one of them is required
+export async function saveComment(albumId, comment, edit) {
+  console.log("ALBUM ID: " + albumId);
+  const route = ALBUMS_URL + albumId + "/comments/";
+  const method = edit ? "PUT" : "POST";
+  const body = JSON.stringify(comment);
+  return fetch(route, {
+    method,
+    headers: {
+      ...commonHeaders,
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+}
+export async function deleteComment(albumId) {
+  const route = ALBUMS_URL + albumId + "/comments/";
+  return fetch(route, {
+    method: "DELETE",
+  });
+}
+
+export const useComments = () => {
+  const { mutate } = useSWRConfig();
+
+  const _saveComment = async (albumId, comment, edit) => {
+    saveComment(albumId, comment, edit).then((res) => {
+      mutate(ALBUMS_URL + albumId + "/comments/");
+      return res;
+    });
+  };
+  const _deleteComment = async (albumId) => {
+    deleteComment(albumId).then((res) => {
+      mutate(ALBUMS_URL + albumId + "/comments/");
+      return res;
+    });
+  };
+
+  return {
+    saveComment: _saveComment,
+    deleteComment: _deleteComment,
+  };
+};

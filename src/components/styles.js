@@ -6,6 +6,10 @@ const styles = StyleSheet.create({
     margin: "3%",
     padding: "1%",
   },
+  containerNoFlex: {
+    margin: "3%",
+    padding: "1%",
+  },
   header: {
     display: "flex",
     flexDirection: "row",
@@ -58,6 +62,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 20,
     fontSize: 16,
+  },
+  userInfo: {
+    fontSize: 16,
+    marginBottom: "2%",
   },
   row: {
     flexDirection: "row",

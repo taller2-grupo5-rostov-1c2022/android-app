@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "react-native-paper";
 import PropTypes from "prop-types";
 import { TouchableOpacity, Image, View } from "react-native";
@@ -8,30 +8,9 @@ export function ShapedImage({ onPress, imageUri, size, icon, shape, style }) {
   let theme = useTheme();
   const [error, setError] = useState(false);
 
-  const imageIcon = useMemo(() => {
-    return <Icon size={size / 2} name={error ? "help-rhombus" : icon} />;
-  }, [icon, size, error]);
-
   useEffect(() => {
     setError(false);
   }, [imageUri]);
-
-  let avatar = null;
-  if (!imageUri || error) avatar = imageIcon;
-  else
-    avatar = (
-      <Image
-        style={{ width: size, height: size }}
-        source={{ uri: imageUri }}
-        onError={(e) => {
-          console.error(e.nativeEvent.error);
-          setError(true);
-          toast.show("Failed to load image", {
-            duration: 3000,
-          });
-        }}
-      />
-    );
 
   const imageStyle = {
     overflow: "hidden",
@@ -46,13 +25,36 @@ export function ShapedImage({ onPress, imageUri, size, icon, shape, style }) {
 
   if (shape == "circle") imageStyle.borderRadius = size / 2;
 
+  let showIcon = error || !imageUri;
+
+  let image = (
+    <>
+      <Image
+        style={[{ width: size, height: size }].concat(
+          showIcon ? { display: "none" } : []
+        )}
+        source={{ uri: imageUri }}
+        onError={(e) => {
+          console.error("Failed to load image: ", e.nativeEvent.error);
+          setError(true);
+        }}
+      />
+      <Icon
+        size={size / 2}
+        name={error ? "help-rhombus" : icon}
+        style={showIcon ? undefined : { display: "none" }}
+      />
+    </>
+  );
+
   if (onPress)
     return (
       <TouchableOpacity style={[imageStyle, style]} onPress={onPress}>
-        {avatar}
+        {image}
       </TouchableOpacity>
     );
-  else return <View style={[imageStyle, style]}>{avatar}</View>;
+
+  return <View style={[imageStyle, style]}>{image}</View>;
 }
 
 ShapedImage.propTypes = {
