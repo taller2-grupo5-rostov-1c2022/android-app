@@ -5,16 +5,10 @@ import { ShapedImage } from "../../general/ShapedImage";
 import { View } from "react-native";
 import styles from "../../styles";
 import { Title, Text, Button } from "react-native-paper";
-import Chat from "./Chat";
 import PlaylistMenuAdd from "../../playlists/PlaylistMenuAdd";
 
-export default function UserInfo({ modalStatus, setModalStatus }) {
+export default function UserInfo({ modalStatus, setModalStatus, onChat }) {
   const user = modalStatus?.user;
-
-  const [sendMsgStatus, setSendMsgStatus] = useState({
-    visible: false,
-    user,
-  });
 
   const [sharePlaylist, setSharePlaylist] = useState(false);
 
@@ -22,7 +16,7 @@ export default function UserInfo({ modalStatus, setModalStatus }) {
     <>
       <Modal
         title="User Information"
-        visible={modalStatus.visible && !sendMsgStatus.visible}
+        visible={modalStatus.visible}
         onDismiss={() => setModalStatus({ user, visible: false })}
       >
         <View>
@@ -48,7 +42,7 @@ export default function UserInfo({ modalStatus, setModalStatus }) {
             </Text>
           </Text>
           <Button
-            onPress={() => setSendMsgStatus({ visible: true, user: user })}
+            onPress={onChat}
             icon="forum"
             mode="contained"
             style={[
@@ -71,7 +65,6 @@ export default function UserInfo({ modalStatus, setModalStatus }) {
           </Button>
         </View>
       </Modal>
-      <Chat status={sendMsgStatus} setStatus={setSendMsgStatus} />
       <PlaylistMenuAdd
         visible={sharePlaylist}
         setVisible={setSharePlaylist}
@@ -92,6 +85,6 @@ UserInfo.propTypes = {
       pfp: PropTypes.string,
     }),
   }).isRequired,
-
+  onChat: PropTypes.func.isRequired,
   setModalStatus: PropTypes.func.isRequired,
 };

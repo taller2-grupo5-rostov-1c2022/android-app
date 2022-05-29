@@ -6,6 +6,26 @@ const styles = StyleSheet.create({
     margin: "3%",
     padding: "1%",
   },
+  chatBubble: {
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: "70%",
+  },
+  chatInput: {
+    flex: 1,
+  },
+  triangle: {
+    width: 0,
+    height: 0,
+    borderStyle: "solid",
+    borderRightWidth: 10,
+    borderBottomWidth: 10,
+    borderRightColor: "transparent",
+  },
+  mirror: {
+    transform: [{ scaleX: -1 }],
+  },
   containerNoFlex: {
     margin: "3%",
     padding: "1%",
