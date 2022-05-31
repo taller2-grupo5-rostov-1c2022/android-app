@@ -2,8 +2,15 @@ import { View } from "react-native";
 import PropTypes from "prop-types";
 import { useTheme, Text, Surface } from "react-native-paper";
 import styles from "../../styles";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function ChatBubble({ name, message, right }) {
+const ICONS = {
+  sent: "check",
+  pending: "clock-outline",
+  error: "close",
+};
+
+export default function ChatBubble({ name, message, right, date, icon }) {
   const theme = useTheme();
   const Container = right ? Surface : View;
 
@@ -21,8 +28,29 @@ export default function ChatBubble({ name, message, right }) {
               ]
         )}
       >
-        <Text style={styles.bold}>{name}</Text>
+        {name ? <Text style={styles.bold}>{name}</Text> : null}
         <Text>{message}</Text>
+        <View
+          style={[styles.row].concat(
+            right ? [{ justifyContent: "flex-end" }] : []
+          )}
+        >
+          {date ? (
+            <Text
+              style={{
+                color: theme.colors.info,
+                fontSize: 10,
+                marginRight: "2%",
+                paddingVertical: 2.5,
+              }}
+            >
+              {date}
+            </Text>
+          ) : null}
+          {icon ? (
+            <Icon color={theme.colors.info} size={15} name={ICONS[icon]}></Icon>
+          ) : undefined}
+        </View>
       </Container>
       <Container
         style={[
@@ -39,7 +67,9 @@ export default function ChatBubble({ name, message, right }) {
 }
 
 ChatBubble.propTypes = {
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   message: PropTypes.string.isRequired,
   right: PropTypes.bool.isRequired,
+  date: PropTypes.string,
+  icon: PropTypes.oneOf(["sent", "pending", "error"]),
 };

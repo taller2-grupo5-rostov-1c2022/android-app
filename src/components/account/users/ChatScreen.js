@@ -1,45 +1,120 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { View } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
-import { ShapedImage } from "../../general/ShapedImage";
 import styles from "../../styles";
-import { ScrollView } from "react-native";
 import ChatBubble from "./ChatBubble";
+import {
+  useSWR,
+  json_fetcher,
+  MESSAGES_URL,
+  fetch,
+} from "../../../util/services";
+import FetchedList from "../../general/FetchedList";
+import ChatHeader from "./ChatHeader";
+
+const RECEIVER_QUERY_PARAM = "receiver_id";
 
 export default function ChatScreen({ navigation, route }) {
-  const { user } = route.params;
+  const { user: otherUser } = route.params;
   const [text, setText] = useState("");
-  const [messages, setMessages] = useState(PLACEHOLDER_MSGS);
-  const scroll = useRef();
+
+  const {
+    mutate,
+    data: fetchedMessages,
+    ...rest
+  } = useSWR(`${MESSAGES_URL}${encodeURI(otherUser.id)}/`, json_fetcher, {
+    // FIXME: actualizar mensajes a mano y no cada 10s
+    refreshInterval: 10000,
+  });
+  const [messages, setMessages] = useState({});
 
   useEffect(() => {
     navigation.setOptions({
-      title: user.name,
-      headerRight: () => (
-        <ShapedImage
-          shape="circle"
-          size={40}
-          icon="account"
-          imageUri={user.pfp}
-          style={{ marginRight: "10%" }}
-        />
-      ),
+      header: () => <ChatHeader user={otherUser} navigation={navigation} />,
     });
   }, []);
 
-  const onSend = () => {
-    if (!text) return;
-    setMessages([...messages, { msg: text, name: "You", right: true }]);
-    setText("");
-    scroll.current.scrollToEnd({ animated: true });
+  useEffect(() => {
+    if (!fetchedMessages) return;
+    let msgs = [];
+
+    const keys = Object.keys(fetchedMessages);
+    if (keys)
+      keys.forEach((key) => {
+        if (!key.startsWith("_")) msgs.concat(messages[key]);
+      });
+    fetchedMessages.forEach((m) => (msgs[`_${m.id}`] = m));
+
+    setMessages(msgs);
+  }, [fetchedMessages]);
+
+  const bubble = ({ data: m }) => {
+    let date = dateLocal(new Date(m.created_at));
+    // FIXME not working on mobile
+    const today = new Date().getDate() == date.getDate();
+    let date_str = `${date.toISOString().slice(11, 16)}`;
+    if (!today) {
+      date_str = `${date.toISOString().slice(0, 10)} ${date_str}`;
+    }
+    const right = m.sender_id != otherUser.id;
+    return (
+      <ChatBubble
+        message={m.text}
+        right={right}
+        date={date_str}
+        icon={right ? m.status ?? "sent" : undefined}
+      />
+    );
   };
 
+  const onSend = async () => {
+    if (!text) return;
+
+    const date = new Date();
+    const optimistic_msg = {
+      text: text,
+      sender: {
+        id: null,
+      },
+      created_at: date.toISOString().slice(0, -1),
+      status: "pending",
+    };
+
+    setMessages((prev) => {
+      prev[date.getTime()] = optimistic_msg;
+      return prev;
+    });
+    setText("");
+
+    try {
+      await sendMsg(text, otherUser.id);
+    } catch (err) {
+      toast.show("Failed to send message");
+      console.error(err);
+      setMessages((prev) => {
+        prev[date.getTime()].status = "error";
+        return { ...prev };
+      });
+      return;
+    }
+
+    await mutate();
+    setMessages((prev) => {
+      delete prev[date.getTime()];
+      return prev;
+    });
+  };
+
+  if (Object.keys(messages).length) rest.data = Object.values(messages);
   return (
     <View style={[styles.container, { justifyContent: "flex-end" }]}>
-      <View style={{ flexDirection: "column-reverse" }}>
-        <ScrollView ref={scroll}>{getMessageBubbles(messages)}</ScrollView>
-      </View>
+      <FetchedList
+        response={{ ...rest }}
+        itemComponent={bubble}
+        emptyMessage={"No messsages"}
+        style={{ flexDirection: "column-reverse" }}
+      />
       <View style={styles.row}>
         <TextInput
           mode="outlined"
@@ -60,13 +135,26 @@ export default function ChatScreen({ navigation, route }) {
   );
 }
 
-function getMessageBubbles(messages) {
-  let i = 0;
-  return messages.map((m) => (
-    <ChatBubble name={m.name} message={m.msg} right={m.right} key={i++} />
-  ));
+async function sendMsg(msg, receiver_id) {
+  await fetch(
+    `${MESSAGES_URL}?${RECEIVER_QUERY_PARAM}=${encodeURI(receiver_id)}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        text: msg,
+      }),
+    }
+  );
 }
 
+function dateLocal(date) {
+  const offset = date.getTimezoneOffset();
+  return new Date(date.getTime() - offset * 60 * 1000);
+}
 ChatScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
@@ -81,28 +169,6 @@ ChatScreen.propTypes = {
   }).isRequired,
   navigation: PropTypes.shape({
     setOptions: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
   }).isRequired,
 };
-
-const PLACEHOLDER_MSGS = [
-  {
-    name: "John",
-    msg: "Hello",
-    right: false,
-  },
-  {
-    name: "You",
-    msg: "Holanda",
-    right: true,
-  },
-  {
-    name: "John",
-    msg: ":D",
-    right: false,
-  },
-  {
-    name: "You",
-    msg: "Wow",
-    right: true,
-  },
-];
