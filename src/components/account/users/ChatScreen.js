@@ -50,14 +50,14 @@ export default function ChatScreen({ navigation, route }) {
   }, [fetchedMessages]);
 
   const bubble = ({ data: m }) => {
-    let date = dateLocal(new Date(m.created_at));
-    // FIXME not working on mobile
-    const today = new Date().getDate() == date.getDate();
-    let date_str = `${date.toISOString().slice(11, 16)}`;
-    if (!today) {
-      date_str = `${date.toISOString().slice(0, 10)} ${date_str}`;
+    let date = m.created_at.slice(0, 10);
+    let today = new Date().toISOString().slice(0, 10);
+
+    let date_str = `${m.created_at.slice(11, 16)}`;
+    if (today != date) {
+      date_str = `${date} ${date_str}`;
     }
-    const right = m.sender_id != otherUser.id;
+    const right = m.sender.id != otherUser.id;
     return (
       <ChatBubble
         message={m.text}
@@ -151,10 +151,6 @@ async function sendMsg(msg, receiver_id) {
   );
 }
 
-function dateLocal(date) {
-  const offset = date.getTimezoneOffset();
-  return new Date(date.getTime() - offset * 60 * 1000);
-}
 ChatScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
