@@ -50,12 +50,16 @@ export default function ChatScreen({ navigation, route }) {
   }, [fetchedMessages]);
 
   const bubble = ({ data: m }) => {
-    let date = m.created_at.slice(0, 10);
-    let today = new Date().toISOString().slice(0, 10);
+    let from_today =
+      new Date().toISOString().slice(0, 10) == m.created_at.slice(0, 10);
 
-    let date_str = `${m.created_at.slice(11, 16)}`;
-    if (today != date) {
-      date_str = `${date} ${date_str}`;
+    let utcDate = new Date(m.created_at + "Z");
+    var localDate = new Date(
+      utcDate.getTime() - utcDate.getTimezoneOffset() * 60 * 1000
+    );
+    let date_str = `${localDate.toISOString().slice(11, 16)}`;
+    if (!from_today) {
+      date_str = `${localDate.toISOString().slice(0, 10)} ${date_str}`;
     }
     const right = m.sender.id != otherUser.id;
     return (
