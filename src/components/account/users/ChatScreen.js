@@ -32,6 +32,7 @@ export default function ChatScreen({ navigation, route }) {
   useEffect(() => {
     navigation.setOptions({
       header: () => <ChatHeader user={otherUser} navigation={navigation} />,
+      headerShown: true,
     });
   }, []);
 

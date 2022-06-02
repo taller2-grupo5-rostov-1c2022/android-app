@@ -46,11 +46,7 @@ export default function Stack() {
             component={UserListScreen}
             options={{ title: "Other users", headerShown: true }}
           />
-          <StackNavigator.Screen
-            name="ChatScreen"
-            component={ChatScreen}
-            options={{ title: "Chat", headerShown: true }}
-          />
+          <StackNavigator.Screen name="ChatScreen" component={ChatScreen} />
         </StackNavigator.Navigator>
       </Portal.Host>
     </AudioProvider>

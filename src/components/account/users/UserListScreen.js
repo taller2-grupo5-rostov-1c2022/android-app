@@ -1,6 +1,6 @@
 import React from "react";
 import { USERS_URL, useSWR } from "../../../util/services";
-import { Portal, List } from "react-native-paper";
+import { Portal, List, IconButton } from "react-native-paper";
 import styles from "../../styles.js";
 import { View } from "react-native";
 import FetchedList from "../../general/FetchedList";
@@ -38,14 +38,16 @@ export default function UserListScreen({ navigation }) {
           style={{ marginRight: "2%" }}
         />
       )}
-      onPress={() => setModalStatus({ visible: true, user: data })}
+      onPress={() => navigation.push("ChatScreen", { user: data })}
+      right={(props) => (
+        <IconButton
+          {...props}
+          icon="information-outline"
+          onPress={() => setModalStatus({ visible: true, user: data })}
+        />
+      )}
     />
   );
-
-  const onChat = () => {
-    setModalStatus({ visible: false, user: modalStatus.user });
-    navigation.push("ChatScreen", { user: modalStatus.user });
-  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -57,11 +59,7 @@ export default function UserListScreen({ navigation }) {
           style={styles.listScreen}
         />
         <Portal>
-          <UserInfo
-            modalStatus={modalStatus}
-            setModalStatus={setModalStatus}
-            onChat={onChat}
-          />
+          <UserInfo modalStatus={modalStatus} setModalStatus={setModalStatus} />
         </Portal>
       </View>
     </View>

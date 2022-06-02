@@ -7,7 +7,7 @@ import styles from "../../styles";
 import { Title, Text, Button } from "react-native-paper";
 import PlaylistMenuAdd from "../../playlists/PlaylistMenuAdd";
 
-export default function UserInfo({ modalStatus, setModalStatus, onChat }) {
+export default function UserInfo({ modalStatus, setModalStatus }) {
   const user = modalStatus?.user;
 
   const [sharePlaylist, setSharePlaylist] = useState(false);
@@ -42,24 +42,18 @@ export default function UserInfo({ modalStatus, setModalStatus, onChat }) {
             </Text>
           </Text>
           <Button
-            onPress={onChat}
-            icon="forum"
-            mode="contained"
-            style={[
-              styles.button,
-              { width: "50%", marginBottom: "4%", alignSelf: "center" },
-            ]}
-          >
-            Chat
-          </Button>
-          <Button
             onPress={() => setSharePlaylist(true)}
             icon="account-plus"
             mode="contained"
             style={[
               styles.button,
-              { width: "50%", marginBottom: "4%", alignSelf: "center" },
+              {
+                marginHorizontal: "10%",
+                marginVertical: "5%",
+                alignSelf: "center",
+              },
             ]}
+            contentStyle={{ width: "100%" }}
           >
             Share Playlist
           </Button>
@@ -85,6 +79,5 @@ UserInfo.propTypes = {
       pfp: PropTypes.string,
     }),
   }).isRequired,
-  onChat: PropTypes.func.isRequired,
   setModalStatus: PropTypes.func.isRequired,
 };
