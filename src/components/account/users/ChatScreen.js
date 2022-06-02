@@ -114,16 +114,14 @@ export default function ChatScreen({ navigation, route }) {
   if (Object.keys(messages).length) rest.data = Object.values(messages);
   return (
     <View style={[styles.container]}>
-      <View style={{ flex: 1 }}>
-        <View style={rest.data ? { marginTop: "auto" } : { flex: 1 }}>
-          <FetchedList
-            response={{ ...rest }}
-            itemComponent={bubble}
-            emptyMessage={"No messsages"}
-            scrollToBottom={true}
-          />
-        </View>
-      </View>
+      <FetchedList
+        response={{ ...rest }}
+        itemComponent={bubble}
+        emptyMessage={"No messsages"}
+        scrollToBottom={true}
+        style={{ transform: [{ scaleY: -1 }] }}
+        contentContainerStyle={{ transform: [{ scaleY: -1 }] }}
+      />
       <View style={[styles.row]}>
         <TextInput
           mode="outlined"

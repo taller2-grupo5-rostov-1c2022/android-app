@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, forwardRef } from "react";
 import { ActivityIndicator, Subheading, Text } from "react-native-paper";
 import { ScrollView, View, RefreshControl } from "react-native";
 import styles from "../styles.js";
@@ -10,72 +10,71 @@ import { useTheme } from "react-native-paper";
 // forceLoading (opcional): si es true, entonces se muestra como cargando
 // emptyMessage (opcional): mensaje a mostrar si la lista esta vacía
 // el resto de los props se pasan a la view
-export default function FetchedList({
-  response,
-  itemComponent,
-  forceLoading,
-  emptyMessage,
-  scrollToBottom,
-  ...viewProps
-}) {
-  let theme = useTheme();
-  let [refreshing, setRefreshing] = useState(false);
-  let [content, setContent] = useState(null);
-  let ref = useRef();
+const FetchedList =
+  forwardRef <
+  ScrollView >
+  (({
+    props: {
+      response,
+      itemComponent,
+      forceLoading,
+      emptyMessage,
+      ...viewProps
+    },
+    ref,
+  }) => {
+    let theme = useTheme();
+    let [refreshing, setRefreshing] = useState(false);
+    let [content, setContent] = useState(null);
+    let component = content;
 
-  useEffect(() => {
-    if (!response.data) return;
-    setContent(mapData(response.data, itemComponent));
-  }, [response.data]);
+    useEffect(() => {
+      if (!response.data) return;
+      setContent(mapData(response.data, itemComponent));
+    }, [response.data]);
 
-  if ((!response.data && response.isValidating) || forceLoading)
-    return <ActivityIndicator style={styles.activityIndicator} />;
+    if (
+      (response.data && response.data.length == 0) ||
+      (!response.data && !response.isValidating)
+    ) {
+      component = (
+        <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
+          {emptyMessage}
+        </Subheading>
+      );
+    }
 
-  if (response.error) return <ErrorMessage error={response.error} />;
+    if (response.error) component = <ErrorMessage error={response.error} />;
 
-  if (
-    (response.data && response.data.length == 0) ||
-    (!response.data && !response.isValidating)
-  ) {
+    if ((!response.data && response.isValidating) || forceLoading)
+      component = <ActivityIndicator style={styles.activityIndicator} />;
+
+    const onRefresh = async () => {
+      setRefreshing(true);
+      await response.mutate();
+      setRefreshing(false);
+    };
+
+    const isContent = component === content;
     return (
-      <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
-        {emptyMessage}
-      </Subheading>
+      <ScrollView
+        refreshControl={
+          response.mutate && isContent ? (
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[theme.colors.primary]}
+              progressBackgroundColor={theme.colors.surface}
+            />
+          ) : undefined
+        }
+        ref={ref}
+        {...(isContent ? {} : viewProps)}
+      >
+        {content}
+      </ScrollView>
     );
-  }
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await response.mutate();
-    setRefreshing(false);
-  };
-
-  return (
-    <ScrollView
-      refreshControl={
-        response.mutate ? (
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={[theme.colors.primary]}
-            progressBackgroundColor={theme.colors.surface}
-          />
-        ) : undefined
-      }
-      ref={ref}
-      onContentSizeChange={
-        scrollToBottom
-          ? () => {
-              ref?.current?.scrollToEnd({ animated: false });
-            }
-          : undefined
-      }
-      {...viewProps}
-    >
-      {content}
-    </ScrollView>
-  );
-}
+  });
 
 function mapData(data, itemComponent) {
   let i = 0;
@@ -85,6 +84,8 @@ function mapData(data, itemComponent) {
     return <Item key={i++} data={element} />;
   });
 }
+
+export default FetchedList;
 
 function ErrorMessage({ error }) {
   let theme = useTheme();
@@ -112,7 +113,6 @@ FetchedList.propTypes = {
   forceLoading: PropTypes.bool,
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
-  scrollToBottom: PropTypes.bool,
   ...ScrollView.propTypes,
 };
 
