@@ -53,12 +53,15 @@ export default function SongList({
     <View style={{ width: "100%" }}>
       <View>{playAllButton}</View>
       <Title>{title}</Title>
-      <FetchedList
-        response={{ data: songs, isValidating: isValidating }}
-        itemComponent={song}
-        viewProps={{ style: { width: "100%" } }}
-        emptyMessage={emptyMessage}
-      />
+      <View style={{ marginVertical: "5%", flex: 1 }}>
+        <FetchedList
+          response={{ data: songs, isValidating: isValidating }}
+          itemComponent={song}
+          viewProps={{ style: { width: "100%" } }}
+          emptyMessage={emptyMessage}
+          scrollToBottom={true}
+        />
+      </View>
     </View>
   );
 }

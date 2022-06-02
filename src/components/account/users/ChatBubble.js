@@ -35,18 +35,15 @@ export default function ChatBubble({ name, message, right, date, icon }) {
             right ? [{ justifyContent: "flex-end" }] : []
           )}
         >
-          {date ? (
-            <Text
-              style={{
-                color: theme.colors.info,
-                fontSize: 10,
-                marginRight: "2%",
-                paddingVertical: 2.5,
-              }}
-            >
-              {date}
-            </Text>
-          ) : null}
+          <Text
+            style={{
+              color: theme.colors.info,
+              fontSize: 10,
+              marginRight: "2%",
+            }}
+          >
+            {date ?? ""}
+          </Text>
           {icon ? (
             <Icon color={theme.colors.info} size={15} name={ICONS[icon]}></Icon>
           ) : undefined}

@@ -50,15 +50,19 @@ export default function ChatScreen({ navigation, route }) {
   }, [fetchedMessages]);
 
   const bubble = ({ data: m }) => {
-    let utc = new Date(m.created_at + "Z");
-    let local = localDate(utc);
-
-    let now = localDate(new Date());
-    let date_str = `${local.toISOString().slice(11, 16)}`;
-    if (now.toISOString().slice(0, 10) != local.toISOString().slice(0, 10)) {
-      date_str = `${local.toISOString().slice(0, 10)} ${date_str}`;
-    }
     const right = m.sender.id != otherUser.id;
+    let date_str = undefined;
+    if (right) {
+      let utc = new Date(m.created_at + "Z");
+      let local = localDate(utc);
+
+      let now = localDate(new Date());
+      date_str = `${local.toISOString().slice(11, 16)}`;
+      if (now.toISOString().slice(0, 10) != local.toISOString().slice(0, 10)) {
+        date_str = `${local.toISOString().slice(0, 10)} ${date_str}`;
+      }
+    }
+
     return (
       <ChatBubble
         message={m.text}
@@ -109,14 +113,18 @@ export default function ChatScreen({ navigation, route }) {
 
   if (Object.keys(messages).length) rest.data = Object.values(messages);
   return (
-    <View style={[styles.container, { justifyContent: "flex-end" }]}>
-      <FetchedList
-        response={{ ...rest }}
-        itemComponent={bubble}
-        emptyMessage={"No messsages"}
-        style={{ flexDirection: "column-reverse" }}
-      />
-      <View style={styles.row}>
+    <View style={[styles.container]}>
+      <View style={{ flex: 1 }}>
+        <View style={rest.data ? { marginTop: "auto" } : { flex: 1 }}>
+          <FetchedList
+            response={{ ...rest }}
+            itemComponent={bubble}
+            emptyMessage={"No messsages"}
+            scrollToBottom={true}
+          />
+        </View>
+      </View>
+      <View style={[styles.row]}>
         <TextInput
           mode="outlined"
           onChangeText={(text) => setText(text)}

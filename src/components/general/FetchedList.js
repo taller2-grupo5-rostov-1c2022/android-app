@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ActivityIndicator, Subheading, Text } from "react-native-paper";
 import { ScrollView, View, RefreshControl } from "react-native";
 import styles from "../styles.js";
@@ -15,19 +15,34 @@ export default function FetchedList({
   itemComponent,
   forceLoading,
   emptyMessage,
+  scrollToBottom,
   ...viewProps
 }) {
   let theme = useTheme();
   let [refreshing, setRefreshing] = useState(false);
+  let [content, setContent] = useState(null);
+  let ref = useRef();
+
+  useEffect(() => {
+    if (!response.data) return;
+    setContent(mapData(response.data, itemComponent));
+  }, [response.data]);
 
   if ((!response.data && response.isValidating) || forceLoading)
-    return (
-      <View {...viewProps}>
-        <ActivityIndicator style={styles.activityIndicator} />
-      </View>
-    );
+    return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (response.error) return <ErrorMessage error={response.error} />;
+
+  if (
+    (response.data && response.data.length == 0) ||
+    (!response.data && !response.isValidating)
+  ) {
+    return (
+      <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
+        {emptyMessage}
+      </Subheading>
+    );
+  }
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -47,15 +62,17 @@ export default function FetchedList({
           />
         ) : undefined
       }
+      ref={ref}
+      onContentSizeChange={
+        scrollToBottom
+          ? () => {
+              ref?.current?.scrollToEnd({ animated: false });
+            }
+          : undefined
+      }
       {...viewProps}
     >
-      {response?.data?.length > 0 ? (
-        mapData(response.data, itemComponent)
-      ) : (
-        <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
-          {emptyMessage}
-        </Subheading>
-      )}
+      {content}
     </ScrollView>
   );
 }
@@ -95,7 +112,8 @@ FetchedList.propTypes = {
   forceLoading: PropTypes.bool,
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
-  ...View.propTypes,
+  scrollToBottom: PropTypes.bool,
+  ...ScrollView.propTypes,
 };
 
 ErrorMessage.propTypes = {

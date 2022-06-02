@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   activityIndicator: {
     alignItems: "center",
     justifyContent: "center",
-    padding: "4%",
     flex: 1,
   },
   disabled: {
@@ -83,6 +82,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 20,
     fontSize: 16,
+    flex: 1,
   },
   userInfo: {
     fontSize: 16,
