@@ -1,12 +1,14 @@
 import React from "react";
 import { USERS_URL, useSWR } from "../../../util/services";
-import { Portal, List } from "react-native-paper";
+import { Portal, List, IconButton } from "react-native-paper";
 import styles from "../../styles.js";
 import { View } from "react-native";
 import FetchedList from "../../general/FetchedList";
 import { fetch } from "../../../util/services";
 import { getAuth } from "firebase/auth";
 import UserInfo from "./UserInfo";
+import PropTypes from "prop-types";
+import { ShapedImage } from "../../general/ShapedImage";
 
 // Removes the current user from the list
 async function customFetcher(url) {
@@ -16,18 +18,34 @@ async function customFetcher(url) {
   return data.filter((user) => user.id !== current_uid);
 }
 
-export default function UserListScreen() {
+export default function UserListScreen({ navigation }) {
   const [modalStatus, setModalStatus] = React.useState({
     visible: false,
     user: null,
   });
   const users = useSWR(USERS_URL, customFetcher);
 
-  const user = ({ data }) => (
+  const item = ({ data }) => (
     <List.Item
       title={data?.name}
-      left={(props) => <List.Icon {...props} icon="account" />}
-      onPress={() => setModalStatus({ visible: true, user: data })}
+      left={(props) => (
+        <ShapedImage
+          {...props}
+          imageUri={data?.pfp}
+          icon="account"
+          size={40}
+          shape="circle"
+          style={{ marginRight: "2%" }}
+        />
+      )}
+      onPress={() => navigation.push("ChatScreen", { user: data })}
+      right={(props) => (
+        <IconButton
+          {...props}
+          icon="information-outline"
+          onPress={() => setModalStatus({ visible: true, user: data })}
+        />
+      )}
     />
   );
 
@@ -36,7 +54,7 @@ export default function UserListScreen() {
       <View style={styles.container}>
         <FetchedList
           response={users}
-          itemComponent={user}
+          itemComponent={item}
           emptyMessage={"There is nothing here..."}
           style={styles.listScreen}
         />
@@ -47,3 +65,9 @@ export default function UserListScreen() {
     </View>
   );
 }
+
+UserListScreen.propTypes = {
+  navigation: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};

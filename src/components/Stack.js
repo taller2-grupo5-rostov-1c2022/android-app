@@ -8,6 +8,8 @@ import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 import UserListScreen from "./account/users/UserListScreen";
 import { Portal } from "react-native-paper";
 import ManageMyPlaylists from "./account/managePlaylists/ManageMyPlaylists";
+import ChatScreen from "./account/users/ChatScreen";
+
 const StackNavigator = createNativeStackNavigator();
 
 export default function Stack() {
@@ -44,6 +46,7 @@ export default function Stack() {
             component={UserListScreen}
             options={{ title: "Other users", headerShown: true }}
           />
+          <StackNavigator.Screen name="ChatScreen" component={ChatScreen} />
         </StackNavigator.Navigator>
       </Portal.Host>
     </AudioProvider>

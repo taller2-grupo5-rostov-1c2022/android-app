@@ -17,6 +17,8 @@ export const MY_PLAYLISTS_URL = `${API_URL}/songs/my_playlists/`;
 export const USERS_URL = `${API_URL}/songs/users/`;
 export const MY_USER_URL = `${API_URL}/songs/my_user/`;
 
+export const MESSAGES_URL = `${API_URL}/messages/messages/`;
+
 export const json_fetcher = async (url) => {
   return await fetch(url);
 };

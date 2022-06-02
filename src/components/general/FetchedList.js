@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ActivityIndicator, Subheading, Text } from "react-native-paper";
 import { ScrollView, View, RefreshControl } from "react-native";
 import styles from "../styles.js";
@@ -15,25 +15,39 @@ export default function FetchedList({
   itemComponent,
   forceLoading,
   emptyMessage,
+  scrollRef,
   ...viewProps
 }) {
   let theme = useTheme();
   let [refreshing, setRefreshing] = useState(false);
+  let [content, setContent] = useState(null);
 
-  if ((!response.data && response.isValidating) || forceLoading)
-    return (
-      <View {...viewProps}>
-        <ActivityIndicator style={styles.activityIndicator} />
-      </View>
-    );
-
-  if (response.error) return <ErrorMessage error={response.error} />;
+  useEffect(() => {
+    if (!response.data) return;
+    setContent(mapData(response.data, itemComponent));
+  }, [response.data]);
 
   const onRefresh = async () => {
     setRefreshing(true);
     await response.mutate();
     setRefreshing(false);
   };
+
+  if ((!response.data && response.isValidating) || forceLoading)
+    return <ActivityIndicator style={styles.activityIndicator} />;
+
+  if (response.error) return <ErrorMessage error={response.error} />;
+
+  if (
+    (response.data && response.data.length == 0) ||
+    (!response.data && !response.isValidating)
+  ) {
+    return (
+      <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
+        {emptyMessage}
+      </Subheading>
+    );
+  }
 
   return (
     <ScrollView
@@ -47,15 +61,10 @@ export default function FetchedList({
           />
         ) : undefined
       }
+      ref={scrollRef}
       {...viewProps}
     >
-      {response?.data?.length > 0 ? (
-        mapData(response.data, itemComponent)
-      ) : (
-        <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
-          {emptyMessage}
-        </Subheading>
-      )}
+      {content}
     </ScrollView>
   );
 }
@@ -95,7 +104,8 @@ FetchedList.propTypes = {
   forceLoading: PropTypes.bool,
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
-  ...View.propTypes,
+  scrollRef: PropTypes.any,
+  ...ScrollView.propTypes,
 };
 
 ErrorMessage.propTypes = {
