@@ -18,7 +18,8 @@ const RECEIVER_QUERY_PARAM = "receiver_id";
 export default function ChatScreen({ navigation, route }) {
   const { user: otherUser } = route.params;
   const [text, setText] = useState("");
-
+  const [messages, setMessages] = useState({});
+  const [content, setContent] = useState(null);
   const {
     mutate,
     data: fetchedMessages,
@@ -27,7 +28,6 @@ export default function ChatScreen({ navigation, route }) {
     // FIXME: actualizar mensajes a mano y no cada 10s
     refreshInterval: 10000,
   });
-  const [messages, setMessages] = useState({});
 
   useEffect(() => {
     navigation.setOptions({
@@ -40,7 +40,7 @@ export default function ChatScreen({ navigation, route }) {
     if (!fetchedMessages) return;
     let msgs = [];
 
-    const keys = Object.keys(fetchedMessages);
+    const keys = Object.keys(messages);
     if (keys)
       keys.forEach((key) => {
         if (!key.startsWith("_")) msgs.concat(messages[key]);
@@ -49,6 +49,11 @@ export default function ChatScreen({ navigation, route }) {
 
     setMessages(msgs);
   }, [fetchedMessages]);
+
+  useEffect(() => {
+    if (!fetchedMessages) setContent(null);
+    else setContent(Object.values(messages));
+  }, [messages]);
 
   const bubble = ({ data: m }) => {
     const right = m.sender.id != otherUser.id;
@@ -89,7 +94,7 @@ export default function ChatScreen({ navigation, route }) {
 
     setMessages((prev) => {
       prev[date.getTime()] = optimistic_msg;
-      return prev;
+      return { ...prev };
     });
     setText("");
 
@@ -112,11 +117,10 @@ export default function ChatScreen({ navigation, route }) {
     });
   };
 
-  if (Object.keys(messages).length) rest.data = Object.values(messages);
   return (
     <View style={[styles.container]}>
       <FetchedList
-        response={{ ...rest }}
+        response={{ ...rest, data: content }}
         itemComponent={bubble}
         emptyMessage={"No messsages"}
         scrollToBottom={true}
@@ -137,6 +141,7 @@ export default function ChatScreen({ navigation, route }) {
           icon="send"
           style={{ alignSelf: "center" }}
           onPress={onSend}
+          disabled={!content}
         ></IconButton>
       </View>
     </View>

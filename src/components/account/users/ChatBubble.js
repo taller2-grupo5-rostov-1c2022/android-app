@@ -40,6 +40,7 @@ export default function ChatBubble({ name, message, right, date, icon }) {
               color: theme.colors.info,
               fontSize: 10,
               marginRight: "2%",
+              minHeight: 10,
             }}
           >
             {date ?? ""}
