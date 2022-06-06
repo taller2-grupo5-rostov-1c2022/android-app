@@ -8,7 +8,7 @@ import { Caption, Subheading, Title, Text } from "react-native-paper";
 import { getArtistsAsString } from "../../util/general";
 import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import SongList from "../songs/SongList";
-import AlbumComments from "./Comments/AlbumComments";
+import AlbumReviews from "./Reviews/AlbumReviews";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
@@ -51,7 +51,7 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
             emptyMessage="This album has no songs"
           />
         </View>
-        <AlbumComments albumId={album?.id} />
+        <AlbumReviews albumId={album?.id} />
       </Modal>
       <PlaylistMenuAdd
         visible={playlistAdd.visible && modalStatus.visible}
