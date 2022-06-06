@@ -1,16 +1,15 @@
 import PropTypes from "prop-types";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-paper";
 import { Button, Title, useTheme } from "react-native-paper";
-import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
-import { SessionContext } from "../../session/SessionProvider";
+//import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
+//import { SessionContext } from "../../session/SessionProvider";
 import { Portal } from "react-native-paper";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const AlbumComments = ({ albumId }) => {
   const theme = useTheme();
-  const { user } = useContext(SessionContext);
+  //const { user } = useContext(SessionContext);
 //   const {
 //     data: comments,
 //     error,
@@ -40,7 +39,6 @@ const AlbumComments = ({ albumId }) => {
   //comments.length = 7
   const error = null
   const isValidating = false
-  const [reviewing, setReviewing] = useState("");
   const [inComment, setInComment] = useState(false);
   const [commentStack, setCommentStack] = useState([])
   const [currentComment, setCurrentComment] = useState([]);
@@ -48,8 +46,8 @@ const AlbumComments = ({ albumId }) => {
 //     (comment) => comment?.commenter?.id === user?.id
 //   );
 
-  const onReview = () => {
-    setReviewing(true);
+  const onAddComment = () => {
+    console.log("add comment to album: " + albumId);
   };
 
   const onComment = (pressedComment) => {
@@ -86,7 +84,7 @@ const AlbumComments = ({ albumId }) => {
           <Button onPress={onBack} disabled={!inComment}>
             {inComment ? "Back" : ""}
           </Button>
-          <Button onPress={onReview}>
+          <Button onPress={onAddComment}>
             {inComment ? "Reply" : "Comment"}
           </Button>
         </View>
