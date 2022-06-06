@@ -9,7 +9,7 @@ import { getArtistsAsString } from "../../util/general";
 import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import SongList from "../songs/SongList";
 import AlbumReviews from "./Reviews/AlbumReviews";
-import AlbumComments from "./Comments/AlbumComments";
+import AlbumComments from "./comments/AlbumComments.js";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
