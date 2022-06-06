@@ -9,6 +9,7 @@ import { getArtistsAsString } from "../../util/general";
 import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import SongList from "../songs/SongList";
 import AlbumReviews from "./Reviews/AlbumReviews";
+import AlbumComments from "./Comments/AlbumComments";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
@@ -52,6 +53,7 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
           />
         </View>
         <AlbumReviews albumId={album?.id} />
+        <AlbumComments albumId={album?.id} />
       </Modal>
       <PlaylistMenuAdd
         visible={playlistAdd.visible && modalStatus.visible}
