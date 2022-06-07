@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./HomeScreen";
 import ManageMySongs from "./account/manageSongs/ManageMySongs";
@@ -8,34 +8,20 @@ import ManageMyAlbums from "./account/manageAlbums/ManageMyAlbums";
 import UserListScreen from "./account/users/UserListScreen";
 import ManageMyPlaylists from "./account/managePlaylists/ManageMyPlaylists";
 import ChatScreen from "./account/users/ChatScreen";
-import { View } from "react-native";
-import { Portal, Text, ActivityIndicator } from "react-native-paper";
-import styles from "./styles.js";
-import Constants from "expo-constants";
-
+import { Portal } from "react-native-paper";
+import NavigationAppbar from "./NavigationAppbar";
+import LiveScreen from "./lives/LiveScreen";
+import StreamProvider from "./lives/StreamProvider";
 const StackNavigator = createNativeStackNavigator();
-
-const liveSupported =
-  Constants.appOwnership != "expo" && !Constants?.platform?.web;
-
-const LiveStreamScreen = liveSupported
-  ? lazy(() => import("./lives/LiveStream"))
-  : () => (
-      <View style={[styles.container, styles.containerCenter]}>
-        <Text>Live streams are not supported on Expo Go or Web</Text>
-      </View>
-    );
 
 export default function Stack() {
   return (
     <AudioProvider>
-      <Portal.Host>
-        <Suspense
-          fallback={<ActivityIndicator style={styles.activityIndicator} />}
-        >
+      <StreamProvider>
+        <Portal.Host>
           <StackNavigator.Navigator
             initialRouteName="Home"
-            screenOptions={{ headerShown: false }}
+            screenOptions={{ headerShown: false, header: NavigationAppbar }}
           >
             <StackNavigator.Screen name="Home" component={HomeScreen} />
             <StackNavigator.Screen
@@ -66,12 +52,12 @@ export default function Stack() {
             <StackNavigator.Screen name="ChatScreen" component={ChatScreen} />
             <StackNavigator.Screen
               name="LiveScreen"
-              component={LiveStreamScreen}
+              component={LiveScreen}
               options={{ title: "Live streams", headerShown: true }}
             />
           </StackNavigator.Navigator>
-        </Suspense>
-      </Portal.Host>
+        </Portal.Host>
+      </StreamProvider>
     </AudioProvider>
   );
 }

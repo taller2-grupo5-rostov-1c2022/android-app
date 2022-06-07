@@ -14,7 +14,7 @@ export default async function requestRecordPermission() {
     )
       return true;
 
-    toast.show("You need to enable microphone to host a live stream");
+    toast.show("You need to enable your microphone to host a live stream");
   } catch (err) {
     toast.show("Internal error");
   }

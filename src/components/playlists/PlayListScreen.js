@@ -27,9 +27,6 @@ export default function PlayListScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Appbar>
-        <Appbar.Content title="Playlists" />
-      </Appbar>
       <View style={styles.container}>
         <FetchedList
           response={playlists}
