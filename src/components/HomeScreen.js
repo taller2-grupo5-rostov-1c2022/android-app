@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { BottomNavigation, Appbar } from "react-native-paper";
 import SongsScreen from "./songs/SongsScreen";
@@ -16,6 +16,19 @@ export default function HomeScreen({ navigation }) {
     { key: "account", title: "More", icon: "menu" },
   ]);
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: routes[index].title,
+      right: (
+        <Appbar.Action
+          icon="antenna"
+          onPress={() => navigation.push("LiveScreen")}
+        />
+      ),
+    });
+  }, [index]);
+
   const renderScene = BottomNavigation.SceneMap({
     music: SongsScreen,
     albums: AlbumsScreen,
@@ -25,13 +38,6 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <Appbar>
-        <Appbar.Content title={routes[index].title} />
-        <Appbar.Action
-          icon="antenna"
-          onPress={() => navigation.push("LiveScreen")}
-        />
-      </Appbar>
       <BottomNavigation
         navigationState={{ index, routes }}
         onIndexChange={setIndex}
@@ -45,5 +51,6 @@ export default function HomeScreen({ navigation }) {
 HomeScreen.propTypes = {
   navigation: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    setOptions: PropTypes.func.isRequired,
   }).isRequired,
 };

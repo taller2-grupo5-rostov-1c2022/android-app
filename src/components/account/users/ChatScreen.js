@@ -11,7 +11,7 @@ import {
   fetch,
 } from "../../../util/services";
 import FetchedList from "../../general/FetchedList";
-import ChatHeader from "./ChatHeader";
+import { ShapedImage } from "../../general/ShapedImage";
 
 const RECEIVER_QUERY_PARAM = "receiver_id";
 
@@ -31,8 +31,17 @@ export default function ChatScreen({ navigation, route }) {
 
   useEffect(() => {
     navigation.setOptions({
-      header: () => <ChatHeader user={otherUser} navigation={navigation} />,
+      title: otherUser.name,
       headerShown: true,
+      left: (
+        <ShapedImage
+          shape="circle"
+          size={40}
+          icon="account"
+          imageUri={otherUser.pfp}
+          style={{ backgroundColor: "#F8F8FF" }}
+        />
+      ),
     });
   }, []);
 
