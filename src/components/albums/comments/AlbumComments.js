@@ -6,6 +6,8 @@ import { Button, Title, useTheme } from "react-native-paper";
 //import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
 //import { SessionContext } from "../../session/SessionProvider";
 import { Portal } from "react-native-paper";
+import Comment from "./Comment";
+
 
 const AlbumComments = ({ albumId }) => {
   const theme = useTheme();
@@ -42,12 +44,14 @@ const AlbumComments = ({ albumId }) => {
   const [inComment, setInComment] = useState(false);
   const [commentStack, setCommentStack] = useState([])
   const [currentComment, setCurrentComment] = useState([]);
+  const [commenting, setCommenting] = useState(false);
 //   const userReview = comments?.find(
 //     (comment) => comment?.commenter?.id === user?.id
 //   );
 
   const onAddComment = () => {
-    console.log("add comment to album: " + albumId);
+    console.log(albumId);
+    setCommenting(true);
   };
 
   const onComment = (pressedComment) => {
@@ -137,6 +141,13 @@ const AlbumComments = ({ albumId }) => {
         ) : null}
       </View>
       <Portal>
+        <Comment
+          visible={!!commenting}
+          setVisible={setCommenting}
+          albumId={albumId}
+          initialComment={comment}
+          inComment={inComment}
+        />
       </Portal>
     </>
   );
