@@ -10,8 +10,10 @@ import ManageMyPlaylists from "./account/managePlaylists/ManageMyPlaylists";
 import ChatScreen from "./account/users/ChatScreen";
 import { Portal } from "react-native-paper";
 import NavigationAppbar from "./NavigationAppbar";
-import LiveScreen from "./lives/LiveScreen";
+import LivesListScreen from "./lives/LivesListScreen";
 import StreamProvider from "./lives/StreamProvider";
+import ListeningLiveScreen from "./lives/ListeningLiveScreen";
+import HostingLiveScreen from "./lives/HostingLiveScreen";
 const StackNavigator = createNativeStackNavigator();
 
 export default function Stack() {
@@ -21,7 +23,10 @@ export default function Stack() {
         <Portal.Host>
           <StackNavigator.Navigator
             initialRouteName="Home"
-            screenOptions={{ headerShown: true, header: NavigationAppbar }}
+            screenOptions={{
+              headerShown: true,
+              header: (props) => <NavigationAppbar {...props} />,
+            }}
           >
             <StackNavigator.Screen name="Home" component={HomeScreen} />
             <StackNavigator.Screen
@@ -51,9 +56,19 @@ export default function Stack() {
             />
             <StackNavigator.Screen name="ChatScreen" component={ChatScreen} />
             <StackNavigator.Screen
-              name="LiveScreen"
-              component={LiveScreen}
+              name="LivesListScreen"
+              component={LivesListScreen}
               options={{ title: "Live streams" }}
+            />
+            <StackNavigator.Screen
+              name="ListeningLiveScreen"
+              component={ListeningLiveScreen}
+              options={{ title: "Listening to a Live Stream" }}
+            />
+            <StackNavigator.Screen
+              name="HostingLiveScreen"
+              component={HostingLiveScreen}
+              options={{ title: "Hosting a Live Stream" }}
             />
           </StackNavigator.Navigator>
         </Portal.Host>

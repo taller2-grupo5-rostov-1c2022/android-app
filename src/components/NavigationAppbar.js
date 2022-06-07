@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 
 export default function NavigationAppbar({ navigation, back, options }) {
   const theme = useTheme();
-  if (!options.headerShown) return null;
 
   return (
     <>

@@ -1,6 +1,7 @@
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import requestRecordPermission from "./permission";
+import { AudioContext } from "../general/AudioProvider.js";
 
 let LIVE_SUPPORTED = false;
 let RtcEngine, ClientRole, ChannelProfile;
@@ -14,10 +15,7 @@ try {
   console.log("Live streams not supported on this platform");
 }
 
-// temporal token
-const token =
-  "00622d869523131488794257a1ec8d9eb2bIADRKLBaXNJkzCHtJJjX9gPAIJtaaN1DxiDrzGq/KnRXa98AXuMAAAAAEAA9DfJzFgSgYgEAAQAWBKBi";
-const appId = "22d869523131488794257a1ec8d9eb2b";
+const APP_ID = "22d869523131488794257a1ec8d9eb2b";
 
 export const StreamContext = createContext({
   startHosting: async () => {},
@@ -33,13 +31,14 @@ function Provider({ children }) {
     joined: false,
     peerIds: [],
   });
+  const music = useContext(AudioContext);
 
   useEffect(() => {
     initEngine();
   }, []);
 
   async function initEngine() {
-    const eng = await RtcEngine.create(appId);
+    const eng = await RtcEngine.create(APP_ID);
     await eng.setChannelProfile(ChannelProfile.LiveBroadcasting);
 
     eng.addListener("Warning", (warn) => {
@@ -82,9 +81,10 @@ function Provider({ children }) {
     setEngine(eng);
   }
 
-  async function startHosting(channelName) {
+  async function startHosting(channelName, token) {
     if (!(await requestRecordPermission())) return;
     try {
+      music.setPaused(true);
       await engine?.setClientRole(ClientRole.Broadcaster);
       await engine?.joinChannel(token, channelName, null, 0);
     } catch (e) {
@@ -93,8 +93,9 @@ function Provider({ children }) {
     }
   }
 
-  async function startListening(channelName) {
+  async function startListening(channelName, token) {
     try {
+      music.setPaused(true);
       await engine?.setClientRole(ClientRole.Audience);
       await engine?.joinChannel(token, channelName, null, 0);
     } catch (e) {
@@ -103,7 +104,7 @@ function Provider({ children }) {
     }
   }
 
-  async function leaveLivestream() {
+  async function stop() {
     try {
       await engine?.leaveChannel();
       setState((prev) => ({ ...prev, joined: false }));
@@ -118,7 +119,7 @@ function Provider({ children }) {
       value={{
         startHosting,
         startListening,
-        leaveLivestream,
+        stop,
         ...state,
       }}
     >
@@ -136,9 +137,9 @@ function NotSupportedProvider({ children }) {
       value={{
         startHosting: notSupported,
         startListening: notSupported,
-        leaveLivestream: notSupported,
+        stop: notSupported,
         peerIds: [],
-        joined: false,
+        joined: true,
       }}
     >
       {children}

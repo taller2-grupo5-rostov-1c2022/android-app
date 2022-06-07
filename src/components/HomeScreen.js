@@ -23,7 +23,7 @@ export default function HomeScreen({ navigation }) {
       right: (
         <Appbar.Action
           icon="antenna"
-          onPress={() => navigation.push("LiveScreen")}
+          onPress={() => navigation.push("LivesListScreen")}
         />
       ),
     });
