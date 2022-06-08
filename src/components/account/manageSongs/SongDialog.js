@@ -12,7 +12,7 @@ import Table from "../../formUtil/Table";
 import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/general";
 import { inputValidator } from "../../../util/general";
 
-export default function SongDialog({ hideDialog, data }) {
+export default function SongDialog({ hideDialog, data, ...restProps }) {
   const { handleSubmit, ...rest } = useForm({
     defaultValues: {
       name: data?.name ?? "",
@@ -34,9 +34,15 @@ export default function SongDialog({ hideDialog, data }) {
   const [status, setStatus] = React.useState({ error: null, loading: false });
 
   if (status.error)
-    return <ErrorDialog error={status.error} hideDialog={hideDialog} />;
+    return (
+      <ErrorDialog
+        error={status.error}
+        hideDialog={hideDialog}
+        {...restProps}
+      />
+    );
 
-  if (status.loading)
+  if (status.loading && restProps?.visible != false)
     return <ActivityIndicator size="large" style={styles.activityIndicator} />;
 
   const sendRequest = async (requestSender, message) => {
@@ -53,9 +59,10 @@ export default function SongDialog({ hideDialog, data }) {
 
   return (
     <Dialog
-      visible="true"
       onDismiss={hideDialog}
       style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
+      visible={true}
+      {...restProps}
     >
       <Dialog.Title>{data?.id ? "Edit" : "Add"} Song</Dialog.Title>
       <Dialog.ScrollArea>

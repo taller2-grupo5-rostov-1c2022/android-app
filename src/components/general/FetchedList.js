@@ -7,13 +7,11 @@ import { useTheme } from "react-native-paper";
 
 // itemComponent es el componente para cada item que recibe la prop data de cada item
 // response tiene la respuesta de SWR
-// forceLoading (opcional): si es true, entonces se muestra como cargando
 // emptyMessage (opcional): mensaje a mostrar si la lista esta vacía
 // el resto de los props se pasan a la view
 export default function FetchedList({
   response,
   itemComponent,
-  forceLoading,
   emptyMessage,
   scrollRef,
   ...viewProps
@@ -39,7 +37,7 @@ export default function FetchedList({
     setRefreshing(false);
   };
 
-  if ((!response.data && response.isValidating) || forceLoading)
+  if (!response.data && response.isValidating)
     return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (response.error) return <ErrorMessage error={response.error} />;
@@ -96,7 +94,6 @@ FetchedList.propTypes = {
     error: PropTypes.any,
     mutate: PropTypes.func,
   }).isRequired,
-  forceLoading: PropTypes.bool,
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
   scrollRef: PropTypes.any,
