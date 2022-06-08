@@ -20,7 +20,6 @@ export default function HostDialog({ hideDialog, user, navigation, ...props }) {
 
   async function getSaveUri() {
     const uri = await SAF.requestDirectoryPermissionsAsync();
-    console.log(decodeURIComponent(uri.directoryUri).split(":"));
     if (uri.granted) setSaveUri(uri.directoryUri);
   }
 

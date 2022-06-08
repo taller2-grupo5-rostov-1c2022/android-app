@@ -1,12 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { View } from "react-native";
-import {
-  Subheading,
-  ActivityIndicator,
-  Button,
-  Chip,
-  Title,
-} from "react-native-paper";
+import { ActivityIndicator, Button, Chip, Title } from "react-native-paper";
 import styles from "../styles";
 import PropTypes from "prop-types";
 import { StreamContext } from "./StreamProvider";
@@ -103,20 +97,17 @@ export default function HostingLiveScreen({ navigation, route }) {
           justifyContent: "flex-start",
         }}
       >
-        <Chip icon="eye" style={{ marginVertical: "5%" }}>
-          {stream.peerIds.length} listeners
+        <Chip icon="record" style={{ marginVertical: "5%" }}>
+          Broadcasting
         </Chip>
       </View>
-      <Title style={{ marginBottom: "5%" }}>{name}</Title>
       <ShapedImage
         icon="access-point"
         shape="circle"
         size={200}
         imageUri={img?.uri}
       />
-      <Subheading style={{ marginVertical: "5%" }}>
-        Hosting a live stream
-      </Subheading>
+      <Title style={{ marginVertical: "5%" }}>{name}</Title>
       <Button
         mode="contained"
         style={styles.button}

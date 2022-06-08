@@ -20,15 +20,15 @@ export const StreamContext = createContext({
   startHosting: async () => {},
   startListening: async () => {},
   leaveLivestream: async () => {},
-  peerIds: [],
   joined: false,
+  engine: null,
 });
 
 function Provider({ children }) {
   const [engine, setEngine] = useState(null);
   const [state, setState] = useState({
     joined: false,
-    peerIds: [],
+    hostJoined: false,
   });
   const music = useContext(AudioContext);
 
@@ -46,28 +46,6 @@ function Provider({ children }) {
 
     eng.addListener("Error", (err) => {
       console.log("Error: ", err);
-    });
-
-    eng.addListener("UserJoined", (uid) => {
-      const { peerIds } = state;
-      if (peerIds.indexOf(uid) === -1)
-        setState((prev) => {
-          return {
-            ...prev,
-            peerIds: [...peerIds, uid],
-          };
-        });
-    });
-
-    eng.addListener("UserOffline", (uid) => {
-      const { peerIds } = state;
-      if (peerIds.indexOf(uid) === -1)
-        setState((prev) => {
-          return {
-            ...prev,
-            peerIds: peerIds.filter((id) => id !== uid),
-          };
-        });
     });
 
     eng.addListener("JoinChannelSuccess", () => {
@@ -114,6 +92,7 @@ function Provider({ children }) {
         startHosting,
         startListening,
         stop,
+        engine,
         ...state,
       }}
     >
@@ -132,8 +111,9 @@ function NotSupportedProvider({ children }) {
         startHosting: notSupported,
         startListening: notSupported,
         stop: notSupported,
-        peerIds: [],
+        hostJoined: true,
         joined: true,
+        engine: null,
       }}
     >
       {children}

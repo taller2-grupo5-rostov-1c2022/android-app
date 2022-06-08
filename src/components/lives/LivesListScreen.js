@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { STREAMINGS_URL, json_fetcher, useSWR } from "../../util/services";
 import { List, FAB, Portal } from "react-native-paper";
 import styles from "../styles.js";
@@ -15,6 +15,8 @@ export default function LivesListScreen({ navigation }) {
   const session = useContext(SessionContext);
   const [visible, setVisible] = useState(false);
 
+  useEffect(() => {}, [session.peerIds]);
+
   const item = ({ data }) => (
     <List.Item
       title={data?.name}
@@ -23,6 +25,7 @@ export default function LivesListScreen({ navigation }) {
           name: data?.name,
           hostId: data?.artist?.id,
           token: data?.token,
+          img_uri: data?.img_url,
         })
       }
       left={(props) => (
