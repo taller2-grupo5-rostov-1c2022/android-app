@@ -1,11 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { View } from "react-native";
-import {
-  Subheading,
-  ActivityIndicator,
-  Button,
-  IconButton,
-} from "react-native-paper";
+import { Subheading, ActivityIndicator, Button } from "react-native-paper";
 import styles from "../styles";
 import PropTypes from "prop-types";
 import { StreamContext } from "./StreamProvider";
@@ -14,9 +9,10 @@ import requestRecordPermission from "./permission";
 import { Audio } from "expo-av";
 import { StorageAccessFramework, EncodingType } from "expo-file-system";
 import { toLocalDate } from "../../util/general";
+import { ShapedImage } from "../general/ShapedImage";
 
 export default function HostingLiveScreen({ navigation, route }) {
-  const { uid, saveUri } = route.params;
+  const { uid, saveUri, name, img } = route.params;
   const stream = useContext(StreamContext);
 
   useEffect(() => {
@@ -34,11 +30,9 @@ export default function HostingLiveScreen({ navigation, route }) {
         navigation.goBack();
         return;
       }
-      const body = new global.FormData();
-      body.append("name", "Live Stream");
       const token = await fetch(STREAMINGS_URL, {
         method: "POST",
-        body,
+        body: getBody(name, img),
       });
       if (saveUri)
         ({ recording } = await Audio.Recording.createAsync(
@@ -56,14 +50,14 @@ export default function HostingLiveScreen({ navigation, route }) {
 
   async function stop(recording_promise, saveUri) {
     try {
+      const recording = await recording_promise;
       await Promise.all([
         fetch(STREAMINGS_URL, {
           method: "DELETE",
         }),
         stream.stop(),
       ]);
-      if (saveUri) {
-        const recording = await recording_promise;
+      if (saveUri && recording) {
         await recording.stopAndUnloadAsync();
         const uri = await StorageAccessFramework.createFileAsync(
           saveUri,
@@ -96,8 +90,15 @@ export default function HostingLiveScreen({ navigation, route }) {
 
   return (
     <View style={[styles.container, styles.containerCenter]}>
-      <IconButton icon="access-point" size={300} />
-      <Subheading>Hosting a live stream</Subheading>
+      <ShapedImage
+        icon="access-point"
+        shape="circle"
+        size={200}
+        imageUri={img?.uri}
+      />
+      <Subheading style={{ marginVertical: "5%" }}>
+        Hosting a live stream
+      </Subheading>
       <Button
         mode="contained"
         style={styles.button}
@@ -114,6 +115,13 @@ function getFileName() {
   return now.toISOString().replace(/\D/g, "");
 }
 
+function getBody(name, img) {
+  const form = new global.FormData();
+  form.append("name", name);
+  if (img) form.append("img", img, "img");
+  return form;
+}
+
 HostingLiveScreen.propTypes = {
   navigation: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
@@ -122,6 +130,8 @@ HostingLiveScreen.propTypes = {
     params: PropTypes.shape({
       uid: PropTypes.string.isRequired,
       saveUri: PropTypes.string,
+      name: PropTypes.string.isRequired,
+      img: PropTypes.any,
     }).isRequired,
   }).isRequired,
 };

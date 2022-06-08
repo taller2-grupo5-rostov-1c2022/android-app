@@ -61,7 +61,6 @@ export default function SongDialog({ hideDialog, data, ...restProps }) {
     <Dialog
       onDismiss={hideDialog}
       style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
-      visible={true}
       {...restProps}
     >
       <Dialog.Title>{data?.id ? "Edit" : "Add"} Song</Dialog.Title>
