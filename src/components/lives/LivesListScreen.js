@@ -7,6 +7,7 @@ import FetchedList from "../general/FetchedList";
 import PropTypes from "prop-types";
 import { SessionContext } from "../session/SessionProvider";
 import { ARTIST_ROLES } from "../../util/general";
+import { ShapedImage } from "../general/ShapedImage";
 import HostDialog from "./HostDialog";
 
 export default function LivesListScreen({ navigation }) {
@@ -16,7 +17,7 @@ export default function LivesListScreen({ navigation }) {
 
   const item = ({ data }) => (
     <List.Item
-      title={`${data?.name}'s live streaming`}
+      title={data?.name}
       onPress={() =>
         navigation.replace("ListeningLiveScreen", {
           hostName: data?.name,
@@ -24,6 +25,18 @@ export default function LivesListScreen({ navigation }) {
           token: data?.token,
         })
       }
+      left={(props) => (
+        <ShapedImage
+          {...props}
+          imageUri={data?.img_url}
+          icon="access-point"
+          size={50}
+          shape="circle"
+          style={{ marginHorizontal: "2%" }}
+        />
+      )}
+      style={{ paddingVertical: "4%" }}
+      titleStyle={{ fontSize: 20 }}
     />
   );
 
