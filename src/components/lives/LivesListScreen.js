@@ -20,7 +20,7 @@ export default function LivesListScreen({ navigation }) {
       title={data?.name}
       onPress={() =>
         navigation.replace("ListeningLiveScreen", {
-          hostName: data?.name,
+          name: data?.name,
           hostId: data?.artist?.id,
           token: data?.token,
         })

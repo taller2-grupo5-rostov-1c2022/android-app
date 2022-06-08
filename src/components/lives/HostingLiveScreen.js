@@ -1,6 +1,12 @@
 import React, { useEffect, useContext } from "react";
 import { View } from "react-native";
-import { Subheading, ActivityIndicator, Button } from "react-native-paper";
+import {
+  Subheading,
+  ActivityIndicator,
+  Button,
+  Chip,
+  Title,
+} from "react-native-paper";
 import styles from "../styles";
 import PropTypes from "prop-types";
 import { StreamContext } from "./StreamProvider";
@@ -90,6 +96,18 @@ export default function HostingLiveScreen({ navigation, route }) {
 
   return (
     <View style={[styles.container, styles.containerCenter]}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+        }}
+      >
+        <Chip icon="eye" style={{ marginVertical: "5%" }}>
+          {stream.peerIds.length} listeners
+        </Chip>
+      </View>
+      <Title style={{ marginBottom: "5%" }}>{name}</Title>
       <ShapedImage
         icon="access-point"
         shape="circle"
@@ -104,7 +122,7 @@ export default function HostingLiveScreen({ navigation, route }) {
         style={styles.button}
         onPress={() => navigation.goBack()}
       >
-        Leave
+        stop
       </Button>
     </View>
   );
