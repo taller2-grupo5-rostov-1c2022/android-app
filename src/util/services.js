@@ -45,19 +45,18 @@ export async function fetch(url, request) {
     ...rest,
   });
 
-  if (!res?.ok) throw new FetchError(res);
+  if (!res?.ok) throw new FetchError(res, await res.text());
 
   const json = await res.json();
-
   return json;
 }
 
-function FetchError(response) {
+function FetchError(response, body) {
   this.message = `Failed to fetch: ${response.status} ${response?.statusText}`;
   this.status = response.status;
   this.statusText = response.statusText;
   this.name = "FetchError";
-  this.body = response.body;
+  this.body = body;
 }
 
 export function useMatchMutate() {

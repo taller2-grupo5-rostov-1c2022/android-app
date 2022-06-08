@@ -24,7 +24,13 @@ export default function FetchedList({
 
   useEffect(() => {
     if (!response.data) return;
-    setContent(mapData(response.data, itemComponent));
+    if (response.data.length === 0)
+      setContent(
+        <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
+          {emptyMessage}
+        </Subheading>
+      );
+    else setContent(mapData(response.data, itemComponent));
   }, [response.data]);
 
   const onRefresh = async () => {
@@ -37,17 +43,6 @@ export default function FetchedList({
     return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (response.error) return <ErrorMessage error={response.error} />;
-
-  if (
-    (response.data && response.data.length == 0) ||
-    (!response.data && !response.isValidating)
-  ) {
-    return (
-      <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
-        {emptyMessage}
-      </Subheading>
-    );
-  }
 
   return (
     <ScrollView

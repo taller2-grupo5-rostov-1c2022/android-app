@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { View, ScrollView } from "react-native";
-import { List } from "react-native-paper";
 import styles from "../styles.js";
 import { useNavigation } from "@react-navigation/native";
 import { AudioContext } from "../general/AudioProvider.js";
@@ -31,16 +30,6 @@ export default function AccountScreen() {
         <UserSettings navigation={navigation} />
         <ArtistSettings role={session.role} navigation={navigation} />
         <ThemeSwitch />
-        <List.Section>
-          <List.Subheader>Live Streaming</List.Subheader>
-          <List.Item
-            title={"Live streams"}
-            onPress={() => navigation.push("LiveScreen")}
-            left={(props) => (
-              <List.Icon {...props} icon={"antenna"}></List.Icon>
-            )}
-          />
-        </List.Section>
       </ScrollView>
     </View>
   );

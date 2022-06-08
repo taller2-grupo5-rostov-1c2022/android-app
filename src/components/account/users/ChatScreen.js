@@ -12,6 +12,7 @@ import {
 } from "../../../util/services";
 import FetchedList from "../../general/FetchedList";
 import { ShapedImage } from "../../general/ShapedImage";
+import { toLocalDate } from "../../../util/general";
 
 const RECEIVER_QUERY_PARAM = "receiver_id";
 
@@ -69,9 +70,9 @@ export default function ChatScreen({ navigation, route }) {
     let date_str = undefined;
     if (right) {
       let utc = new Date(m.created_at + "Z");
-      let local = localDate(utc);
+      let local = toLocalDate(utc);
 
-      let now = localDate(new Date());
+      let now = toLocalDate(new Date());
       date_str = `${local.toISOString().slice(11, 16)}`;
       if (now.toISOString().slice(0, 10) != local.toISOString().slice(0, 10)) {
         date_str = `${local.toISOString().slice(0, 10)} ${date_str}`;
@@ -171,10 +172,6 @@ async function sendMsg(msg, receiver_id) {
       }),
     }
   );
-}
-
-function localDate(date) {
-  return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
 }
 
 ChatScreen.propTypes = {

@@ -1,6 +1,5 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
-import requestRecordPermission from "./permission";
 import { AudioContext } from "../general/AudioProvider.js";
 
 let LIVE_SUPPORTED = false;
@@ -82,15 +81,10 @@ function Provider({ children }) {
   }
 
   async function startHosting(channelName, token) {
-    if (!(await requestRecordPermission())) return;
-    try {
-      music.setPaused(true);
-      await engine?.setClientRole(ClientRole.Broadcaster);
-      await engine?.joinChannel(token, channelName, null, 0);
-    } catch (e) {
-      console.error(e);
-      toast.show("Could not start hosting a live stream");
-    }
+    music.setPaused(true);
+    await engine?.setClientRole(ClientRole.Broadcaster);
+    await engine?.joinChannel(token, channelName, null, 0);
+    return true;
   }
 
   async function startListening(channelName, token) {
