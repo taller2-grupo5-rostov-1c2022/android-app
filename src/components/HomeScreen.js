@@ -37,14 +37,12 @@ export default function HomeScreen({ navigation }) {
   });
 
   return (
-    <View style={{ flex: 1 }}>
-      <BottomNavigation
-        navigationState={{ index, routes }}
-        onIndexChange={setIndex}
-        renderScene={renderScene}
-        shifting={false}
-      />
-    </View>
+    <BottomNavigation
+      navigationState={{ index, routes }}
+      onIndexChange={setIndex}
+      renderScene={renderScene}
+      shifting={false}
+    />
   );
 }
 

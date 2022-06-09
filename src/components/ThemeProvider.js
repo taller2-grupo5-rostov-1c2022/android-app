@@ -12,6 +12,7 @@ import {
 import PropTypes from "prop-types";
 import { Appearance, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "react-native";
 
 const THEME_KEY = "@theme";
 
@@ -73,6 +74,11 @@ export default function ThemeProvider({ children }) {
     <PaperProvider theme={theme}>
       <NavigationContainer theme={theme}>
         <ThemeContext.Provider value={preferences}>
+          <StatusBar
+            backgroundColor={
+              theme.dark ? theme.colors.surface : theme.colors.primary
+            }
+          />
           <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
             {children}
           </View>

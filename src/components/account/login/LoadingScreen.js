@@ -1,7 +1,6 @@
 import image from "../../../img/logo.png";
 import styles from "../../styles.js";
 import { ActivityIndicator } from "react-native-paper";
-import { StatusBar } from "expo-status-bar";
 import { View, Image } from "react-native";
 
 export default function LoadingScreen() {
@@ -16,7 +15,6 @@ export default function LoadingScreen() {
           margin: "15%",
         }}
       />
-      <StatusBar style="auto" />
     </View>
   );
 }
