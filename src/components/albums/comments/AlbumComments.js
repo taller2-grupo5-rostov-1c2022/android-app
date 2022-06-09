@@ -1,22 +1,24 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-paper";
 import { Button, Title, useTheme } from "react-native-paper";
-//import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
+import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
 //import { SessionContext } from "../../session/SessionProvider";
 import { Portal } from "react-native-paper";
 import Comment from "./Comment";
+import { getAuth } from "firebase/auth";
 
 
 const AlbumComments = ({ albumId }) => {
+  const userId = getAuth()?.currentUser?.uid;
   const theme = useTheme();
   //const { user } = useContext(SessionContext);
-//   const {
-//     data: comments,
-//     error,
-//     isValidating,
-//   } = useSWR(`${ALBUMS_URL}${albumId}/comments/`, json_fetcher);
+  let {
+    data: initComments,
+    error,
+    isValidating,
+  } = useSWR(`${ALBUMS_URL}${albumId}/comments/`, json_fetcher);
   const commentt = {
     text: "algo mas",
     comment: null,
@@ -39,15 +41,25 @@ const AlbumComments = ({ albumId }) => {
   }
   const [comments, setComments] = useState([comment, comment2]);
   //comments.length = 7
-  const error = null
-  const isValidating = false
   const [inComment, setInComment] = useState(false);
   const [commentStack, setCommentStack] = useState([])
   const [currentComment, setCurrentComment] = useState([]);
   const [commenting, setCommenting] = useState(false);
+  const [editComment, setEditComment] = useState(null);
 //   const userReview = comments?.find(
 //     (comment) => comment?.commenter?.id === user?.id
 //   );
+  useEffect(() => {
+    setComments(initComments);
+    setCommentStack([]);
+    setInComment(false);
+    setCurrentComment([]);
+  },[initComments]);
+
+  useEffect(() => {
+    console.log(editComment);
+    if (!commenting) setEditComment(null);
+  },[commenting]);
 
   const onAddComment = () => {
     console.log(albumId);
@@ -55,10 +67,13 @@ const AlbumComments = ({ albumId }) => {
   };
 
   const onComment = (pressedComment) => {
-    if (!pressedComment.comment) return;
-    console.log("comment")
+    console.log(comments);
+    if (!pressedComment.responses) return;
+    console.log(pressedComment.responses);
     setCommentStack((commentStack) => [...commentStack, comments])
-    setComments([pressedComment.comment]);
+    setComments(pressedComment.responses);
+    //comments = pressedComment.responses;
+    console.log(comments)
     setInComment(true);
     setCurrentComment((currentComment) => [...currentComment, pressedComment])
   };
@@ -69,9 +84,20 @@ const AlbumComments = ({ albumId }) => {
     const lastComments = commentStack[commentStack.length - 1];
     console.log(commentStack);
     setComments(lastComments);
+    //comments = lastComments;
     if (commentStack.length <= 1) setInComment(false);
     setCommentStack(commentStack.slice(0, -1));
     setCurrentComment(currentComment.slice(0, -1));
+  }
+
+  const isUser = (commenterId) => {
+    if (commenterId == userId) return true;
+    return false;
+  }
+
+  const onEditComment = (comment) => {
+    setEditComment(comment);
+    setCommenting(true);
   }
 
   return (
@@ -94,7 +120,7 @@ const AlbumComments = ({ albumId }) => {
         </View>
         <View disabled={!inComment}>
             <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-                {inComment ? currentComment[currentComment.length - 1].name : ""}
+                {inComment ? currentComment[currentComment.length - 1].commenter.name : ""}
             </Text>
             {inComment ? 
             <Text style={{fontSize: 18}}> 
@@ -123,11 +149,17 @@ const AlbumComments = ({ albumId }) => {
               }}
             >
               <Text style={{ fontWeight: "bold" }}>
-                {comment.name}
+                {comment?.commenter?.name}
               </Text>
               {comment.text ? <Text onPress={() => onComment(comment)}>
               {inComment ? "Reply: " : "Comment: "}
-              {comment.text}</Text> : null}
+              {comment.text}</Text> : 
+              <Text onPress={() => onComment(comment)}>
+                [Deleted]
+              </Text>}
+              {isUser(comment.commenter?.id) ? 
+              <Button onPress={() => onEditComment(comment)}>Edit</Button>
+              : null}
             </View>
           ))
         }
@@ -145,7 +177,8 @@ const AlbumComments = ({ albumId }) => {
           visible={!!commenting}
           setVisible={setCommenting}
           albumId={albumId}
-          initialComment={comment}
+          parentComment={inComment ? currentComment[currentComment.length - 1] : null}
+          currentComment={editComment}
           inComment={inComment}
         />
       </Portal>
