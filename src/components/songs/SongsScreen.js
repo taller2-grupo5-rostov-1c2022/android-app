@@ -1,6 +1,6 @@
 import React from "react";
 import { useSWR, json_fetcher, SONGS_URL } from "../../util/services";
-import { IconButton, Portal, Appbar } from "react-native-paper";
+import { IconButton, Portal } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
 import Player from "../Player";
@@ -32,9 +32,6 @@ export default function SongsScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Appbar>
-        <Appbar.Content title="Music" />
-      </Appbar>
       <View style={styles.container}>
         <SearchBar setQuery={setQuery} />
         <FetchedList

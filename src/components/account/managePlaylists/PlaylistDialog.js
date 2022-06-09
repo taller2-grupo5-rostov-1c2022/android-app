@@ -12,7 +12,7 @@ import { savePlaylist, deletePlaylist } from "../../../util/requests";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import { inputValidator } from "../../../util/general";
 
-export default function PlaylistDialog({ hideDialog, data }) {
+export default function PlaylistDialog({ hideDialog, data, ...restProps }) {
   const isCreator = data?.creator_id === getAuth()?.currentUser?.uid;
 
   const songIds = data?.songs?.map((song) => song.id) ?? [];
@@ -45,9 +45,15 @@ export default function PlaylistDialog({ hideDialog, data }) {
   const [status, setStatus] = React.useState({ error: null, loading: false });
 
   if (status.error)
-    return <ErrorDialog error={status.error} hideDialog={hideDialog} />;
+    return (
+      <ErrorDialog
+        error={status.error}
+        hideDialog={hideDialog}
+        {...restProps}
+      />
+    );
 
-  if (status.loading)
+  if (status.loading && restProps?.visible != false)
     return <ActivityIndicator size="large" style={styles.activityIndicator} />;
 
   const sendRequest = async (requestSender, message) => {
@@ -64,9 +70,9 @@ export default function PlaylistDialog({ hideDialog, data }) {
 
   return (
     <Dialog
-      visible="true"
       onDismiss={hideDialog}
       style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
+      {...restProps}
     >
       <Dialog.Title>Edit Playlists</Dialog.Title>
       <Dialog.ScrollArea>

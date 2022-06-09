@@ -13,7 +13,7 @@ import { fetch, MY_SONGS_URL } from "../../../util/services";
 import ImagePicker from "../../formUtil/ImagePicker";
 import { inputValidator } from "../../../util/general";
 
-export default function AlbumDialog({ hideDialog, data }) {
+export default function AlbumDialog({ hideDialog, data, ...restProps }) {
   const { handleSubmit, ...rest } = useForm({
     defaultValues: {
       name: data?.name ?? "",
@@ -41,8 +41,9 @@ export default function AlbumDialog({ hideDialog, data }) {
   if (status.error)
     return <ErrorDialog error={status.error} hideDialog={hideDialog} />;
 
-  if (status.loading)
+  if (status.loading && restProps?.visible != false) {
     return <ActivityIndicator size="large" style={styles.activityIndicator} />;
+  }
 
   const sendRequest = async (requestSender, message) => {
     setStatus((prev) => ({ ...prev, loading: true }));
@@ -58,8 +59,8 @@ export default function AlbumDialog({ hideDialog, data }) {
 
   return (
     <Dialog
-      visible="true"
       onDismiss={hideDialog}
+      {...restProps}
       style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
     >
       <Dialog.Title>{data?.id ? "Edit" : "Add"} Album</Dialog.Title>

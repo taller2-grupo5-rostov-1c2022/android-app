@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { View, ScrollView } from "react-native";
-import { Appbar } from "react-native-paper";
 import styles from "../styles.js";
 import { useNavigation } from "@react-navigation/native";
 import { AudioContext } from "../general/AudioProvider.js";
@@ -22,10 +21,6 @@ export default function AccountScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Appbar>
-        <Appbar.Content title="More" />
-      </Appbar>
-
       <ScrollView style={styles.container}>
         <UserHeader
           user={session.user}

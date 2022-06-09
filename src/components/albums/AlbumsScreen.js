@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ALBUMS_URL, useSWR, json_fetcher } from "../../util/services";
-import { Appbar, Portal } from "react-native-paper";
+import { Portal } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
 import Player from "../Player";
@@ -23,9 +23,6 @@ export default function AlbumsScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Appbar>
-        <Appbar.Content title="Albums" />
-      </Appbar>
       <View style={[styles.container]}>
         <SearchBar setQuery={setQuery} />
         <FetchedList
