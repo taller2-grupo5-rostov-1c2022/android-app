@@ -8,7 +8,7 @@ import { SessionContext } from "../../session/SessionProvider";
 import { Portal } from "react-native-paper";
 import Review from "./Review";
 
-const AlbumComments = ({ albumId }) => {
+const AlbumReviews = ({ albumId }) => {
   const theme = useTheme();
   const { user } = useContext(SessionContext);
   const {
@@ -48,7 +48,7 @@ const AlbumComments = ({ albumId }) => {
               color: theme.colors.text,
             }}
           >
-            No Comments
+            No Review
           </Text>
         ) : null}
         {
@@ -65,7 +65,7 @@ const AlbumComments = ({ albumId }) => {
                 {comment.commenter.name}
               </Text>
               {comment.score ? <Text>Score: {comment.score}</Text> : null}
-              {comment.text ? <Text>Comment: {comment.text}</Text> : null}
+              {comment.text ? <Text>Review: {comment.text}</Text> : null}
             </View>
           ))
         }
@@ -90,8 +90,8 @@ const AlbumComments = ({ albumId }) => {
   );
 };
 
-AlbumComments.propTypes = {
+AlbumReviews.propTypes = {
   albumId: PropTypes.number,
 };
 
-export default AlbumComments;
+export default AlbumReviews;
