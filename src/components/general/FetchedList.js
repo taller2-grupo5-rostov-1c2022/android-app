@@ -74,9 +74,9 @@ function mapData(data, itemComponent) {
 function ErrorMessage({ error }) {
   let theme = useTheme();
 
-  console.log("Error: ", "\n", error, "\n", { error });
+  console.log("Error: \n", error);
   return (
-    <View>
+    <View style={[styles.container, styles.containerCenter]}>
       <Subheading style={{ color: theme.colors.error }}>
         Error populating the list
       </Subheading>
