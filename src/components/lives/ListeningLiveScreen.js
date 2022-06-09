@@ -17,9 +17,20 @@ export default function ListeningLiveScreen({ navigation, route }) {
   console.log(route.params);
 
   useEffect(() => {
+    let sub_error = stream.engine.addListener("Error", () => {
+      toast.show("Live stream error");
+      navigation.goBack();
+    });
+    let sub_host = stream.engine.addListener("UserOffline", () =>
+      setHostJoined(false)
+    );
+
     stream.startListening(hostId, token);
-    stream?.engine?.addListener("UserOffline", () => setHostJoined(false));
-    return stream.stop;
+    return () => {
+      stream.stop();
+      sub_error.remove();
+      sub_host.remove();
+    };
   }, []);
 
   useEffect(() => {

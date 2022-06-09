@@ -16,12 +16,25 @@ export default function HostingLiveScreen({ navigation, route }) {
   const stream = useContext(StreamContext);
 
   useEffect(() => {
-    const recording_promise = start(saveUri);
-    return () => stop(recording_promise, saveUri);
+    let state = saveUri ? { saveUri } : {};
+    let subscription = stream.engine.addListener("Error", () => {
+      state.error = true;
+      toast.show("Live stream error");
+      navigation.goBack();
+    });
+
+    start(state);
+    return () => {
+      subscription.remove();
+      stop(state);
+    };
   }, []);
 
-  async function start() {
-    let recording = null;
+  useEffect(() => {
+    if (stream.joined) toast.show("Live streaming started");
+  }, [stream.joined]);
+
+  async function start(state) {
     try {
       if (!(await requestRecordPermission())) {
         toast.show(
@@ -34,49 +47,54 @@ export default function HostingLiveScreen({ navigation, route }) {
         method: "POST",
         body: getBody(name, img),
       });
-      if (saveUri)
-        ({ recording } = await Audio.Recording.createAsync(
+      if (state.saveUri)
+        ({ recording: state.recording } = await Audio.Recording.createAsync(
           Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
         ));
       await stream.startHosting(uid, token);
-      toast.show("Live streaming started");
-      return recording;
     } catch (e) {
       console.error(e);
-      toast.show("Could not start live stream");
+      toast.show("Live stream error");
+      state.error = true;
       navigation.goBack();
     }
   }
 
-  async function stop(recording_promise, saveUri) {
+  async function stop(state) {
     try {
-      const recording = await recording_promise;
       await Promise.all([
         fetch(STREAMINGS_URL, {
           method: "DELETE",
         }),
         stream.stop(),
+        (() => {
+          state.recording
+            ? state.recording.stopAndUnloadAsync()
+            : Promise.resolve();
+        })(),
       ]);
-      if (saveUri && recording) {
-        await recording.stopAndUnloadAsync();
+
+      if (state.error) return;
+
+      if (state.recording) {
         const uri = await StorageAccessFramework.createFileAsync(
           saveUri,
           getFileName(),
           "audio/mp4"
         );
         const content = await StorageAccessFramework.readAsStringAsync(
-          recording.getURI(),
+          state.recording.getURI(),
           { encoding: EncodingType.Base64 }
         );
         await StorageAccessFramework.writeAsStringAsync(uri, content, {
           encoding: EncodingType.Base64,
         });
-        toast.show("Live stream stopped, saved recording");
-      } else {
-        toast.show("Live stream stopped");
+        toast.show("Live stream stopped, recording was saved");
       }
+      toast.show("Live stream stopped");
     } catch (e) {
       console.error(e);
+      if (state.error) return;
       toast.show("Error stopping live stream");
     }
   }

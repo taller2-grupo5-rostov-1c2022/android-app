@@ -33,22 +33,22 @@ function Provider({ children }) {
   const music = useContext(AudioContext);
 
   useEffect(() => {
-    initEngine();
+    return initEngine();
   }, []);
 
   async function initEngine() {
     const eng = await RtcEngine.create(APP_ID);
     await eng.setChannelProfile(ChannelProfile.LiveBroadcasting);
 
-    eng.addListener("Warning", (warn) => {
+    const sub_warn = eng.addListener("Warning", (warn) => {
       console.log("Warning: ", warn);
     });
 
-    eng.addListener("Error", (err) => {
+    const sub_err = eng.addListener("Error", (err) => {
       console.log("Error: ", err);
     });
 
-    eng.addListener("JoinChannelSuccess", () => {
+    const sub_list = eng.addListener("JoinChannelSuccess", () => {
       setState((prev) => ({
         ...prev,
         joined: true,
@@ -56,6 +56,12 @@ function Provider({ children }) {
     });
 
     setEngine(eng);
+    return () => {
+      sub_warn.remove();
+      sub_err.remove();
+      sub_list.remove();
+      eng.destroy();
+    };
   }
 
   async function startHosting(channelName, token) {
