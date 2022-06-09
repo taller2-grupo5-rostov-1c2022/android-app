@@ -109,7 +109,7 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
       return;
     }
     toast.show("Saved Review :)", { duration: 2000 });
-    //setVisible(false);
+    setVisible(false);
   };
 
   return (
