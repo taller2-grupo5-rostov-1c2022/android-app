@@ -15,51 +15,43 @@ export default function CrudList({
   revalidateUrl,
   ...rest
 }) {
-  const [dialog, setDialog] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+  const [data, setData] = React.useState(null);
+  const [visible, setVisible] = React.useState(false);
   const response = useSWR(url, json_fetcher);
   const Dialog = editDialog;
   const matchMutate = useMatchMutate();
 
   const hideDialog = async () => {
-    setLoading(true);
-    setDialog(null);
-    if (revalidateUrl) matchMutate((str) => str.startsWith(revalidateUrl));
-    await response.mutate();
-    setLoading(false);
+    setVisible(false);
+    if (revalidateUrl)
+      await matchMutate((str) => str.startsWith(revalidateUrl));
+    else await response.mutate();
   };
 
-  const addDialog = (data) => {
-    setDialog(
-      <Portal>
-        <Dialog hideDialog={hideDialog} data={data} />
-      </Portal>
-    );
+  const onPress = (data) => {
+    setData(data);
+    setVisible(true);
   };
 
   const Item = itemComponent;
   const item = ({ data }) => (
-    <Item onPress={(data) => addDialog(data)} data={data} />
+    <Item onPress={(data) => onPress(data)} data={data} />
   );
 
   return (
-    <View
-      style={[styles.container].concat(dialog ? styles.disabled : [])}
-      pointerEvents={dialog ? "none" : "auto"}
-    >
+    <View style={styles.container}>
       <Portal>
         <FAB
           icon="plus"
           style={styles.fab}
-          disabled={dialog != null}
-          onPress={() => addDialog()}
+          disabled={visible}
+          onPress={() => onPress(null)}
         />
+        <Dialog hideDialog={hideDialog} data={data} visible={visible} />
       </Portal>
-      <Portal>{dialog}</Portal>
       <FetchedList
         response={response}
         itemComponent={item}
-        forceLoading={loading}
         style={styles.listScreen}
         {...rest}
       />

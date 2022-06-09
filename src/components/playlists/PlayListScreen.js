@@ -1,6 +1,6 @@
 import React from "react";
 import { useSWR, json_fetcher, PLAYLISTS_URL } from "../../util/services";
-import { Appbar, Portal, List } from "react-native-paper";
+import { Portal, List } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
 import Player from "../Player";
@@ -27,9 +27,6 @@ export default function PlayListScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Appbar>
-        <Appbar.Content title="Playlists" />
-      </Appbar>
       <View style={styles.container}>
         <FetchedList
           response={playlists}

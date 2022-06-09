@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import {
   Button,
   Portal,
@@ -67,7 +66,6 @@ export default function ForgotPasswordScreen() {
         </Button>
       )}
       <FirebaseError error={error} />
-      <StatusBar style="auto" />
       <Portal>
         {authing ? (
           <ActivityIndicator size="large" style={styles.activityIndicator} />

@@ -3,13 +3,13 @@ import Modal from "../../general/Modal";
 import PropTypes from "prop-types";
 import { View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import { useComments } from "../../../util/requests";
+import { useReview } from "../../../util/requests";
 import DropDown from "react-native-paper-dropdown";
 
 const Review = ({ visible, setVisible, initialReview, albumId }) => {
   const currentReview = initialReview;
   const [text, setText] = React.useState(initialReview?.text ?? "");
-  const { saveComment, deleteComment } = useComments();
+  const { saveReview, deleteReview } = useReview();
 
   const [showDropDown, setShowDropDown] = React.useState(false);
   const [score, setScore] = React.useState(initialReview?.score ?? 7);
@@ -63,16 +63,17 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
   const onCancel = () => {
     setText(initialReview?.text);
     setVisible(false);
+    console.log(currentReview);
   };
 
-  const onDeleteComment = () => {
+  const onDeleteReview = () => {
     try {
-      deleteComment(albumId);
+      deleteReview(albumId);
     } catch (e) {
-      toast.show("Failed to delete comment :(");
+      toast.show("Failed to delete Review :(");
       return;
     }
-    toast.show("Deleted comment :)", { duration: 2000 });
+    toast.show("Deleted Review :)", { duration: 2000 });
   };
 
   React.useEffect(() => {
@@ -89,26 +90,26 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
     console.log("album id: " + albumId);
   }, [visible]);
 
-  const onSaveComment = () => {
+  const onSaveReview = () => {
     const newReview = {
       score: score,
       text: text,
     };
 
     if (!text) {
-      toast.show("write a comment first", { duration: 2000 });
+      toast.show("write a Review first", { duration: 2000 });
       return;
     }
 
     try {
-      saveComment(albumId, newReview, currentReview);
+      saveReview(albumId, newReview, currentReview);
       // setCurrentReview(newReview);
     } catch (e) {
-      toast.show("Failed to save comment :(");
+      toast.show("Failed to save Review :(");
       return;
     }
-    toast.show("Saved comment :)", { duration: 2000 });
-    //setVisible(false);
+    toast.show("Saved Review :)", { duration: 2000 });
+    setVisible(false);
   };
 
   return (
@@ -142,9 +143,9 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
         <View>
           <Button onPress={onCancel}>Cancel</Button>
           {currentReview ? (
-            <Button onPress={onDeleteComment}>Delete</Button>
+            <Button onPress={onDeleteReview}>Delete</Button>
           ) : null}
-          <Button onPress={onSaveComment}>Submit</Button>
+          <Button onPress={onSaveReview}>Submit</Button>
         </View>
       </View>
     </Modal>
@@ -161,8 +162,8 @@ Review.propTypes = {
     text: PropTypes.string,
     score: PropTypes.number,
     commenter: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-    }).isRequired,
+      name: PropTypes.string,
+      id: PropTypes.string,
+    }),
   }),
 };

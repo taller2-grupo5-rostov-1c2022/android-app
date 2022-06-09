@@ -3,21 +3,25 @@ export { default as useSWRImmutable } from "swr/immutable";
 import { useSWRConfig } from "swr";
 import { getAuth } from "firebase/auth";
 
-export const API_URL = "https://rostov-gateway.herokuapp.com";
+const GATEWAY_URL = "https://rostov-gateway.herokuapp.com";
+const SONGS_SV_URL = `${GATEWAY_URL}/songs`;
+const MESSAGES_SV_URL = `${GATEWAY_URL}/messages`;
 
-export const SONGS_URL = `${API_URL}/songs/songs/`;
-export const MY_SONGS_URL = `${API_URL}/songs/my_songs/`;
+export const SONGS_URL = `${SONGS_SV_URL}/songs/`;
+export const MY_SONGS_URL = `${SONGS_SV_URL}/my_songs/`;
 
-export const ALBUMS_URL = `${API_URL}/songs/albums/`;
-export const MY_ALBUMS_URL = `${API_URL}/songs/my_albums/`;
+export const ALBUMS_URL = `${SONGS_SV_URL}/albums/`;
+export const MY_ALBUMS_URL = `${SONGS_SV_URL}/my_albums/`;
 
-export const PLAYLISTS_URL = `${API_URL}/songs/playlists/`;
-export const MY_PLAYLISTS_URL = `${API_URL}/songs/my_playlists/`;
+export const PLAYLISTS_URL = `${SONGS_SV_URL}/playlists/`;
+export const MY_PLAYLISTS_URL = `${SONGS_SV_URL}/my_playlists/`;
 
-export const USERS_URL = `${API_URL}/songs/users/`;
-export const MY_USER_URL = `${API_URL}/songs/my_user/`;
+export const USERS_URL = `${SONGS_SV_URL}/users/`;
+export const MY_USER_URL = `${SONGS_SV_URL}/my_user/`;
 
-export const MESSAGES_URL = `${API_URL}/messages/messages/`;
+export const STREAMINGS_URL = `${SONGS_SV_URL}/streamings/`;
+
+export const MESSAGES_URL = `${MESSAGES_SV_URL}/messages/`;
 
 export const json_fetcher = async (url) => {
   return await fetch(url);
@@ -41,18 +45,18 @@ export async function fetch(url, request) {
     ...rest,
   });
 
-  if (!res?.ok) throw new FetchError(res);
+  if (!res?.ok) throw new FetchError(res, await res.text());
 
   const json = await res.json();
-
   return json;
 }
 
-function FetchError(response) {
+function FetchError(response, body) {
   this.message = `Failed to fetch: ${response.status} ${response?.statusText}`;
   this.status = response.status;
   this.statusText = response.statusText;
   this.name = "FetchError";
+  this.body = body;
 }
 
 export function useMatchMutate() {

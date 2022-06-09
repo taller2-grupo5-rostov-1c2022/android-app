@@ -8,22 +8,23 @@ import { SessionContext } from "../../session/SessionProvider";
 import { Portal } from "react-native-paper";
 import Review from "./Review";
 
-const AlbumComments = ({ albumId }) => {
+const AlbumReviews = ({ albumId }) => {
   const theme = useTheme();
   const { user } = useContext(SessionContext);
   const {
     data: comments,
     error,
     isValidating,
-  } = useSWR(`${ALBUMS_URL}${albumId}/comments/`, json_fetcher);
+  } = useSWR(`${ALBUMS_URL}${albumId}/reviews/`, json_fetcher);
 
   const [reviewing, setReviewing] = useState("");
   const userReview = comments?.find(
-    (comment) => comment?.commenter?.id === user?.id
+    (comment) => comment?.reviewer?.id === user?.id
   );
 
   const onReview = () => {
     setReviewing(true);
+    console.log(comments)
   };
 
   return (
@@ -48,7 +49,7 @@ const AlbumComments = ({ albumId }) => {
               color: theme.colors.text,
             }}
           >
-            No Comments
+            No Review
           </Text>
         ) : null}
         {
@@ -62,10 +63,10 @@ const AlbumComments = ({ albumId }) => {
               }}
             >
               <Text style={{ fontWeight: "bold" }}>
-                {comment.commenter.name}
+                {comment.reviewer.name}
               </Text>
               {comment.score ? <Text>Score: {comment.score}</Text> : null}
-              {comment.text ? <Text>Comment: {comment.text}</Text> : null}
+              {comment.text ? <Text>Review: {comment.text}</Text> : null}
             </View>
           ))
         }
@@ -90,8 +91,8 @@ const AlbumComments = ({ albumId }) => {
   );
 };
 
-AlbumComments.propTypes = {
+AlbumReviews.propTypes = {
   albumId: PropTypes.number,
 };
 
-export default AlbumComments;
+export default AlbumReviews;

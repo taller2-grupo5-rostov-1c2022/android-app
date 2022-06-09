@@ -30,6 +30,10 @@ export function getArtistsAsString(artists) {
   return `by ${[...set].join(", ")}`;
 }
 
+export function toLocalDate(date) {
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+}
+
 export const COUNTRIES = [
   "Afghanistan",
   "Albania",

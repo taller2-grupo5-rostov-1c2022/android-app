@@ -1,9 +1,9 @@
 import { Dialog, Button, Subheading } from "react-native-paper";
 import PropTypes from "prop-types";
 
-export function ErrorDialog({ error, hideDialog }) {
+export function ErrorDialog({ error, hideDialog, ...restProps }) {
   return (
-    <Dialog visible="true" onDismiss={hideDialog}>
+    <Dialog onDismiss={hideDialog} {...restProps}>
       <Dialog.Title>Error</Dialog.Title>
       <Dialog.Content>
         <Subheading>{error?.message}</Subheading>

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Image, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import {
   Subheading,
   Headline,
@@ -87,7 +86,6 @@ export default function LoginScreen({ navigation }) {
         Forgot Password
       </Button>
       <FirebaseError error={error} style={{ textAlign: "center" }} />
-      <StatusBar style="auto" />
       <Portal>
         {authing ? (
           <ActivityIndicator size="large" style={styles.activityIndicator} />
