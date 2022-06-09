@@ -94,6 +94,7 @@ const Comment = ({ visible, setVisible, parentComment, currentComment, albumId, 
           value={text ? text : ""}
           onChangeText={(text) => setText(text)}
           multiline={true}
+          numberOfLines={5}
         />
         <View>
           <Button onPress={onCancel}>Cancel</Button>

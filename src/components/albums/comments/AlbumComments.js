@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { View } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, List } from "react-native-paper";
 import { Button, Title, useTheme } from "react-native-paper";
 import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
 //import { SessionContext } from "../../session/SessionProvider";
@@ -46,6 +46,7 @@ const AlbumComments = ({ albumId }) => {
   const [currentComment, setCurrentComment] = useState([]);
   const [commenting, setCommenting] = useState(false);
   const [editComment, setEditComment] = useState(null);
+  const [isReplying, setIsReplying] = useState(false);
 //   const userReview = comments?.find(
 //     (comment) => comment?.commenter?.id === user?.id
 //   );
@@ -58,7 +59,13 @@ const AlbumComments = ({ albumId }) => {
 
   useEffect(() => {
     console.log(editComment);
-    if (!commenting) setEditComment(null);
+    if (!commenting){
+      setEditComment(null);
+      if (isReplying) {
+        onBack();
+        setIsReplying(false);
+      }
+    }
   },[commenting]);
 
   const onAddComment = () => {
@@ -98,6 +105,29 @@ const AlbumComments = ({ albumId }) => {
   const onEditComment = (comment) => {
     setEditComment(comment);
     setCommenting(true);
+  }
+
+
+      // {comment.text ? <Text onPress={() => onComment(comment)}>
+      // {inComment ? "Reply: " : "Comment: "}
+      // {comment.text}</Text> : 
+      // <Text onPress={() => onComment(comment)}>
+      //   [Deleted]
+      // </Text>}
+
+  const onReply = (comment) => {
+    onComment(comment);
+    onEditComment(comment);
+    setIsReplying(true);
+  }
+
+  const replyButton = (commenterId, comment) => {
+    return ([
+      isUser(commenterId) ? 
+      <Button icon="pencil-outline" key={2} onPress={() => onEditComment(comment)}></Button> 
+      : null,
+      <Button icon="reply" key={1} onPress={() => onReply(comment)}></Button>
+    ])
   }
 
   return (
@@ -151,15 +181,10 @@ const AlbumComments = ({ albumId }) => {
               <Text style={{ fontWeight: "bold" }}>
                 {comment?.commenter?.name}
               </Text>
-              {comment.text ? <Text onPress={() => onComment(comment)}>
-              {inComment ? "Reply: " : "Comment: "}
-              {comment.text}</Text> : 
-              <Text onPress={() => onComment(comment)}>
-                [Deleted]
-              </Text>}
-              {isUser(comment.commenter?.id) ? 
-              <Button onPress={() => onEditComment(comment)}>Edit</Button>
-              : null}
+              <List.Item onPress={() => onComment(comment)}
+              tittle={inComment ? "Reply: " : "Comment: "}
+              description={comment.text ? comment.text : "[Deleted]"}
+              right={() => replyButton(comment.commenter?.id, comment)}/>
             </View>
           ))
         }
