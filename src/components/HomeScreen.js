@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
 import { BottomNavigation, Appbar } from "react-native-paper";
 import SongsScreen from "./songs/SongsScreen";
 import AccountScreen from "./account/AccountScreen.js";
