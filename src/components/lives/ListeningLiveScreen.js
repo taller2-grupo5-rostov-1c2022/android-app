@@ -14,22 +14,20 @@ export default function ListeningLiveScreen({ navigation, route }) {
   const { name, hostId, token, img_uri } = route.params;
   const { mutate } = useSWRConfig();
 
-  console.log(route.params);
-
   useEffect(() => {
-    let sub_error = stream.engine.addListener("Error", () => {
+    let sub_error = stream?.engine?.addListener("Error", () => {
       toast.show("Live stream error");
       navigation.goBack();
     });
-    let sub_host = stream.engine.addListener("UserOffline", () =>
+    let sub_host = stream?.engine?.addListener("UserOffline", () =>
       setHostJoined(false)
     );
 
     stream.startListening(hostId, token);
     return () => {
       stream.stop();
-      sub_error.remove();
-      sub_host.remove();
+      sub_error?.remove();
+      sub_host?.remove();
     };
   }, []);
 

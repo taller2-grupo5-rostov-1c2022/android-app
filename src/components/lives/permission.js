@@ -2,7 +2,7 @@ import { PermissionsAndroid } from "react-native";
 import { Platform } from "react-native";
 
 export default async function requestRecordPermission() {
-  if (Platform.OS != "android") return;
+  if (Platform.OS != "android") return true;
 
   try {
     const granted = await PermissionsAndroid.requestMultiple([
@@ -13,8 +13,6 @@ export default async function requestRecordPermission() {
       PermissionsAndroid.RESULTS.GRANTED
     )
       return true;
-
-    toast.show("You need to enable your microphone to host a live stream");
   } catch (err) {
     toast.show("Internal error");
   }

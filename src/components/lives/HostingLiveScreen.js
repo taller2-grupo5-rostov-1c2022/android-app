@@ -17,7 +17,7 @@ export default function HostingLiveScreen({ navigation, route }) {
 
   useEffect(() => {
     let state = saveUri ? { saveUri } : {};
-    let subscription = stream.engine.addListener("Error", () => {
+    let subscription = stream?.engine?.addListener("Error", () => {
       state.error = true;
       toast.show("Live stream error");
       navigation.goBack();
@@ -25,7 +25,7 @@ export default function HostingLiveScreen({ navigation, route }) {
 
     start(state);
     return () => {
-      subscription.remove();
+      subscription?.remove();
       stop(state);
     };
   }, []);
@@ -37,10 +37,9 @@ export default function HostingLiveScreen({ navigation, route }) {
   async function start(state) {
     try {
       if (!(await requestRecordPermission())) {
-        toast.show(
-          "You need to grant miscrophone access to host a live stream"
-        );
+        toast.show("You need to grant microphone access to host a live stream");
         navigation.goBack();
+        state.error = true;
         return;
       }
       const token = await fetch(STREAMINGS_URL, {
@@ -68,9 +67,7 @@ export default function HostingLiveScreen({ navigation, route }) {
         }),
         stream.stop(),
         (() => {
-          state.recording
-            ? state.recording.stopAndUnloadAsync()
-            : Promise.resolve();
+          state?.recording?.stopAndUnloadAsync() ?? Promise.resolve();
         })(),
       ]);
 
