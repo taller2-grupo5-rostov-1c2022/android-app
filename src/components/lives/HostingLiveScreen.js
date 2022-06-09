@@ -90,8 +90,9 @@ export default function HostingLiveScreen({ navigation, route }) {
           encoding: EncodingType.Base64,
         });
         toast.show("Live stream stopped, recording was saved");
+      } else {
+        toast.show("Live stream stopped");
       }
-      toast.show("Live stream stopped");
     } catch (e) {
       console.error(e);
       if (state.error) return;
