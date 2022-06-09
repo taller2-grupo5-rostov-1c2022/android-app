@@ -3,48 +3,55 @@ import Modal from "../../general/Modal";
 import PropTypes from "prop-types";
 import { View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-//import { useComments } from "../../../util/requests";
+import { useComments } from "../../../util/requests";
 
-const Comment = ({ visible, setVisible, initialComment, albumId, inComment }) => {
-  const currentComment = initialComment;
+const Comment = ({ visible, setVisible, parentComment, currentComment, albumId, inComment }) => {
+  let edit = currentComment ? true : false;
   const replyOrComment = inComment ? "Reply" : "Comment"
-  const [text, setText] = React.useState(initialComment?.text ?? "");
-  //const { saveComment, deleteComment } = useComments();
+  const [text, setText] = React.useState();
+  const { saveComment, editComment, deleteComment } = useComments();
 
-  const [score, setScore] = React.useState(initialComment?.score ?? 7);
+  const updateText = () => {
+    edit = currentComment ? true : false;
+    if (!edit){
+        setText("");
+        return;
+    }
+    setText(currentComment.text);
+  }
 
   const onCancel = () => {
-    setText(initialComment?.text);
+    updateText();
     setVisible(false);
   };
 
   const onDeleteComment = () => {
+    console.log("comment id: " + currentComment.id);
     try {
-      //deleteComment(albumId);
+      deleteComment(albumId, currentComment.id);
     } catch (e) {
       toast.show("Failed to delete " + replyOrComment + " :(");
       return;
     }
     toast.show("Deleted " + replyOrComment + " :)", { duration: 2000 });
+    setVisible(false);
   };
 
   React.useEffect(() => {
-    setText(initialComment?.text);
-    setScore(initialComment?.score);
+    updateText();
     console.log("currentComment: " + currentComment?.text);
-    console.log("text: " + text);
-    console.log("album id: " + albumId);
-  }, [initialComment]);
+  }, [currentComment]);
 
   React.useEffect(() => {
-    console.log("currentComment: " + currentComment?.text);
-    console.log("text: " + text);
-    console.log("album id: " + albumId);
+    //console.log("currentComment: " + currentComment?.text);
+    //console.log("text: " + text);
+    // console.log("album id: " + albumId);
   }, [visible]);
 
   const onSaveComment = () => {
+    console.log("text: " + text);
+
     const newComment = {
-      score: score,
       text: text,
     };
 
@@ -54,14 +61,20 @@ const Comment = ({ visible, setVisible, initialComment, albumId, inComment }) =>
     }
 
     try {
-      //saveComment(albumId, newComment, currentComment);
-      // setCurrentComment(newComment);
+      if (edit) {
+        editComment(albumId, currentComment.id, newComment);
+      } else {
+        if (inComment) {
+            newComment.parent_id = parentComment.id;
+        }
+        saveComment(albumId, newComment);
+      }
     } catch (e) {
       toast.show("Failed to save " + replyOrComment + " :(");
       return;
     }
     toast.show("Saved " + replyOrComment + " :)", { duration: 2000 });
-    //setVisible(false);
+    setVisible(false);
   };
 
   return (
@@ -78,7 +91,7 @@ const Comment = ({ visible, setVisible, initialComment, albumId, inComment }) =>
         <TextInput
           placeholder={replyOrComment}
           mode={"outlined"}
-          value={text}
+          value={text ? text : ""}
           onChangeText={(text) => setText(text)}
           multiline={true}
         />
@@ -101,4 +114,11 @@ Comment.propTypes = {
   setVisible: PropTypes.func.isRequired,
   albumId: PropTypes.number.isRequired,
   inComment: PropTypes.bool.isRequired,
+  parentComment: PropTypes.shape({
+    id: PropTypes.number
+  }),
+  currentComment: PropTypes.shape({
+    id: PropTypes.number,
+    text: PropTypes.text
+  })
 };

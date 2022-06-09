@@ -15,15 +15,16 @@ const AlbumReviews = ({ albumId }) => {
     data: comments,
     error,
     isValidating,
-  } = useSWR(`${ALBUMS_URL}${albumId}/comments/`, json_fetcher);
+  } = useSWR(`${ALBUMS_URL}${albumId}/reviews/`, json_fetcher);
 
   const [reviewing, setReviewing] = useState("");
   const userReview = comments?.find(
-    (comment) => comment?.commenter?.id === user?.id
+    (comment) => comment?.reviewer?.id === user?.id
   );
 
   const onReview = () => {
     setReviewing(true);
+    console.log(comments)
   };
 
   return (
@@ -62,7 +63,7 @@ const AlbumReviews = ({ albumId }) => {
               }}
             >
               <Text style={{ fontWeight: "bold" }}>
-                {comment.commenter.name}
+                {comment.reviewer.name}
               </Text>
               {comment.score ? <Text>Score: {comment.score}</Text> : null}
               {comment.text ? <Text>Review: {comment.text}</Text> : null}

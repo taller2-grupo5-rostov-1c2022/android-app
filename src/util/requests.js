@@ -116,10 +116,10 @@ export async function addColabToPlaylist(playlistKey, colab_id) {
   });
 }
 
-// coment: {text, score} -> atleast one of them is required
-export async function saveComment(albumId, comment, edit) {
+// review: {text, score} -> atleast one of them is required
+export async function saveReview(albumId, comment, edit) {
   console.log("ALBUM ID: " + albumId);
-  const route = ALBUMS_URL + albumId + "/comments/";
+  const route = ALBUMS_URL + albumId + "/reviews/";
   const method = edit ? "PUT" : "POST";
   const body = JSON.stringify(comment);
   return fetch(route, {
@@ -131,8 +131,68 @@ export async function saveComment(albumId, comment, edit) {
     body,
   });
 }
-export async function deleteComment(albumId) {
+export async function deleteReview(albumId) {
+  const route = ALBUMS_URL + albumId + "/reviews/";
+  return fetch(route, {
+    method: "DELETE",
+  });
+}
+
+export const useReview = () => {
+  const { mutate } = useSWRConfig();
+
+  const _saveReview = async (albumId, comment, edit) => {
+    console.log("save")
+    saveReview(albumId, comment, edit).then((res) => {
+      mutate(ALBUMS_URL + albumId + "/reviews/");
+      return res;
+    });
+  };
+  const _deleteReview = async (albumId) => {
+    deleteReview(albumId).then((res) => {
+      mutate(ALBUMS_URL + albumId + "/reviews/");
+      return res;
+    });
+  };
+
+  return {
+    saveReview: _saveReview,
+    deleteReview: _deleteReview,
+  };
+};
+
+
+// coment: {text}
+export async function saveComment(albumId, comment) {
   const route = ALBUMS_URL + albumId + "/comments/";
+  const method = "POST";
+  const body = JSON.stringify(comment);
+  return fetch(route, {
+    method,
+    headers: {
+      ...commonHeaders,
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+}
+
+export async function editComment(commentId, comment) {
+  const route = ALBUMS_URL + "/comments/" + commentId + "/";
+  const method = "PUT";
+  const body = JSON.stringify(comment);
+  return fetch(route, {
+    method,
+    headers: {
+      ...commonHeaders,
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+}
+
+export async function deleteComment(commentId) {
+  const route = ALBUMS_URL + "/comments/"  + commentId + "/";
   return fetch(route, {
     method: "DELETE",
   });
@@ -141,14 +201,22 @@ export async function deleteComment(albumId) {
 export const useComments = () => {
   const { mutate } = useSWRConfig();
 
-  const _saveComment = async (albumId, comment, edit) => {
-    saveComment(albumId, comment, edit).then((res) => {
+  const _saveComment = async (albumId, comment) => {
+    saveComment(albumId, comment).then((res) => {
       mutate(ALBUMS_URL + albumId + "/comments/");
       return res;
     });
   };
-  const _deleteComment = async (albumId) => {
-    deleteComment(albumId).then((res) => {
+
+  const _deleteComment = async (albumId, commentId) => {
+    deleteComment(commentId).then((res) => {
+      mutate(ALBUMS_URL + albumId + "/comments/");
+      return res;
+    });
+  };
+
+  const _editComment = async (albumId, commentId, comment) => {
+    editComment(commentId, comment).then((res) => {
       mutate(ALBUMS_URL + albumId + "/comments/");
       return res;
     });
@@ -156,6 +224,7 @@ export const useComments = () => {
 
   return {
     saveComment: _saveComment,
+    editComment: _editComment,
     deleteComment: _deleteComment,
   };
 };
