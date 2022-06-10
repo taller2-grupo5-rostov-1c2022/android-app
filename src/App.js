@@ -8,6 +8,7 @@ import { getReactNativePersistence } from "firebase/auth/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-notifications";
 import ThemeProvider from "./components/ThemeProvider";
+import * as Notifications from "expo-notifications";
 
 export default function App() {
   React.useEffect(() => {
@@ -18,6 +19,22 @@ export default function App() {
       });
     }
     initializeFirebase();
+
+    // Handler para cuando la app esta abierta
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+      }),
+    });
+
+    // Handler para cualquier momento
+    const sub = Notifications.addNotificationResponseReceivedListener(
+      console.log
+    );
+
+    return () => sub?.remove();
   }, []);
 
   return (
