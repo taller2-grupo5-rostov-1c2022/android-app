@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { View } from "react-native";
 import { Text, List } from "react-native-paper";
-import { Button, Title, useTheme } from "react-native-paper";
+import { IconButton, Button, Title, useTheme } from "react-native-paper";
 import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
 //import { SessionContext } from "../../session/SessionProvider";
 import { Portal } from "react-native-paper";
@@ -117,9 +117,9 @@ const AlbumComments = ({ albumId }) => {
   const replyButton = (commenterId, comment) => {
     return ([
       isUser(commenterId) ? 
-      <Button icon="pencil-outline" key={2} onPress={() => onEditComment(comment)}></Button> 
+      <IconButton icon="pencil-outline" key={2} onPress={() => onEditComment(comment)}></IconButton> 
       : null,
-      <Button icon="reply" key={1} onPress={() => onReply(comment)}></Button>
+      <IconButton icon="reply" key={1} onPress={() => onReply(comment)}></IconButton>
     ])
   }
 
