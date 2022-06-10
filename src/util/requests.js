@@ -1,6 +1,13 @@
-import { useSWRConfig } from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
-import { ALBUMS_URL, fetch, PLAYLISTS_URL, SONGS_URL } from "./services";
+import {
+  fetch,
+  json_fetcher,
+  PLAYLISTS_URL,
+  ALBUMS_URL,
+  SONGS_URL,
+  SUBSCRIPTIONS_URL,
+} from "./services";
 const FormData = global.FormData;
 
 const commonHeaders = {
@@ -142,7 +149,7 @@ export const useReview = () => {
   const { mutate } = useSWRConfig();
 
   const _saveReview = async (albumId, comment, edit) => {
-    console.log("save")
+    console.log("save");
     saveReview(albumId, comment, edit).then((res) => {
       mutate(ALBUMS_URL + albumId + "/reviews/");
       return res;
@@ -160,7 +167,6 @@ export const useReview = () => {
     deleteReview: _deleteReview,
   };
 };
-
 
 // coment: {text}
 export async function saveComment(albumId, comment) {
@@ -192,7 +198,7 @@ export async function editComment(commentId, comment) {
 }
 
 export async function deleteComment(commentId) {
-  const route = ALBUMS_URL + "/comments/"  + commentId + "/";
+  const route = ALBUMS_URL + "/comments/" + commentId + "/";
   return fetch(route, {
     method: "DELETE",
   });
@@ -227,4 +233,38 @@ export const useComments = () => {
     editComment: _editComment,
     deleteComment: _deleteComment,
   };
+};
+
+export const useSubLevels = () => {
+  const { data } = useSWR(SUBSCRIPTIONS_URL, json_fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+
+  // these should rarely change
+  const defaultSubscriptions = [
+    {
+      level: 0,
+      name: "Free",
+      price: "0",
+    },
+    {
+      level: 1,
+      name: "Premium",
+      price: "0.0000001",
+    },
+    {
+      level: 2,
+      name: "Pro",
+      price: "0.0000005",
+    },
+    {
+      level: 3,
+      name: "God",
+      price: "1000",
+    },
+  ];
+
+  return data ?? defaultSubscriptions;
 };
