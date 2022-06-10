@@ -178,7 +178,7 @@ export async function saveComment(albumId, comment) {
 }
 
 export async function editComment(commentId, comment) {
-  const route = ALBUMS_URL + "/comments/" + commentId + "/";
+  const route = ALBUMS_URL + "comments/" + commentId + "/";
   const method = "PUT";
   const body = JSON.stringify(comment);
   return fetch(route, {

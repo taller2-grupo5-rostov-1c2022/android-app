@@ -60,6 +60,7 @@ const AlbumComments = ({ albumId }) => {
   useEffect(() => {
     console.log(editComment);
     if (!commenting){
+      console.log("borrando edit comment");
       setEditComment(null);
       if (isReplying) {
         onBack();
@@ -107,18 +108,10 @@ const AlbumComments = ({ albumId }) => {
     setCommenting(true);
   }
 
-
-      // {comment.text ? <Text onPress={() => onComment(comment)}>
-      // {inComment ? "Reply: " : "Comment: "}
-      // {comment.text}</Text> : 
-      // <Text onPress={() => onComment(comment)}>
-      //   [Deleted]
-      // </Text>}
-
   const onReply = (comment) => {
-    onComment(comment);
-    onEditComment(comment);
     setIsReplying(true);
+    onComment(comment);
+    onAddComment();
   }
 
   const replyButton = (commenterId, comment) => {

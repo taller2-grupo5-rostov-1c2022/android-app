@@ -20,9 +20,13 @@ const Comment = ({ visible, setVisible, parentComment, currentComment, albumId, 
     setText(currentComment.text);
   }
 
-  const onCancel = () => {
+  const hide = () => {
     updateText();
     setVisible(false);
+  }
+
+  const onCancel = () => {
+    hide()
   };
 
   const onDeleteComment = () => {
@@ -34,17 +38,18 @@ const Comment = ({ visible, setVisible, parentComment, currentComment, albumId, 
       return;
     }
     toast.show("Deleted " + replyOrComment + " :)", { duration: 2000 });
-    setVisible(false);
+    hide();
   };
 
   React.useEffect(() => {
+    console.warn("ayuda")
     updateText();
     console.log("currentComment: " + currentComment?.text);
-  }, [currentComment]);
+  }, [JSON.stringify(currentComment)]);
 
   React.useEffect(() => {
     //console.log("currentComment: " + currentComment?.text);
-    //console.log("text: " + text);
+    console.log("TEXT: " + text);
     // console.log("album id: " + albumId);
   }, [visible]);
 
@@ -74,7 +79,7 @@ const Comment = ({ visible, setVisible, parentComment, currentComment, albumId, 
       return;
     }
     toast.show("Saved " + replyOrComment + " :)", { duration: 2000 });
-    setVisible(false);
+    hide();
   };
 
   return (
