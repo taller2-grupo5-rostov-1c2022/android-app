@@ -40,7 +40,6 @@ export default function SessionManager() {
     const subscriber = getAuth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, [status.wasLoggedOut]);
-  console.log(status);
   if (status.loading) return <LoadingScreen />;
   if (!status.uid) return <LoginStack />;
   return <SessionFetcher signOut={signOut} />;
