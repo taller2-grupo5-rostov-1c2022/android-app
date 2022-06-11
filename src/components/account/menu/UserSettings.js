@@ -21,8 +21,7 @@ export default function UserSettings({ navigation, role }) {
         title="Subscription"
         left={(props) => <List.Icon {...props} icon="card-plus"></List.Icon>}
         onPress={() => {
-          console.log("SUBSCRIPTIONS");
-          // navigation.push("UserListScreen");
+          navigation.push("ManageSubscription");
         }}
       />
       {!role || role === "listener" ? (

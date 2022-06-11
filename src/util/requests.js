@@ -281,3 +281,10 @@ export const useMakeArtist = () => {
       headers: commonHeaders,
     }).then(() => updateRole());
 };
+
+export const subscribe = async (sub_level) =>
+  fetch(SUBSCRIPTIONS_URL, {
+    method: "POST",
+    headers: { ...commonHeaders, "Content-Type": "application/json" },
+    body: JSON.stringify({ sub_level }),
+  });
