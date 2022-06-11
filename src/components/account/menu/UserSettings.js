@@ -1,7 +1,10 @@
 import { List } from "react-native-paper";
 import PropTypes from "prop-types";
+import { useMakeArtist } from "../../../util/requests";
 
 export default function UserSettings({ navigation, role }) {
+  const makeArtist = useMakeArtist();
+
   return (
     <List.Section>
       <List.Subheader>User settings</List.Subheader>
@@ -26,9 +29,7 @@ export default function UserSettings({ navigation, role }) {
         <List.Item
           title="Become Artist"
           left={(props) => <List.Icon {...props} icon="music"></List.Icon>}
-          onPress={() => {
-            console.log("MAKE ARTIST", role);
-          }}
+          onPress={makeArtist}
         />
       ) : null}
       <List.Item

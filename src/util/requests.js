@@ -1,11 +1,14 @@
+import { useContext } from "react";
 import useSWR, { useSWRConfig } from "swr";
+import { SessionContext } from "../components/session/SessionProvider";
 
 import {
   fetch,
   json_fetcher,
-  PLAYLISTS_URL,
-  ALBUMS_URL,
+  USERS_URL,
   SONGS_URL,
+  ALBUMS_URL,
+  PLAYLISTS_URL,
   SUBSCRIPTIONS_URL,
 } from "./services";
 const FormData = global.FormData;
@@ -267,4 +270,14 @@ export const useSubLevels = () => {
   ];
 
   return data ?? defaultSubscriptions;
+};
+
+export const useMakeArtist = () => {
+  const { updateRole } = useContext(SessionContext);
+
+  return () =>
+    fetch(USERS_URL + "/make_artist/", {
+      method: "POST",
+      headers: commonHeaders,
+    }).then(() => updateRole());
 };
