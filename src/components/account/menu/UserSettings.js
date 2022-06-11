@@ -1,7 +1,7 @@
 import { List } from "react-native-paper";
 import PropTypes from "prop-types";
 
-export default function UserSettings({ navigation }) {
+export default function UserSettings({ navigation, role }) {
   return (
     <List.Section>
       <List.Subheader>User settings</List.Subheader>
@@ -14,6 +14,23 @@ export default function UserSettings({ navigation }) {
           navigation.push("ManageMyPlaylists");
         }}
       />
+      <List.Item
+        title="Subscription"
+        left={(props) => <List.Icon {...props} icon="card-plus"></List.Icon>}
+        onPress={() => {
+          console.log("SUBSCRIPTIONS");
+          // navigation.push("UserListScreen");
+        }}
+      />
+      {!role || role === "listener" ? (
+        <List.Item
+          title="Become Artist"
+          left={(props) => <List.Icon {...props} icon="music"></List.Icon>}
+          onPress={() => {
+            console.log("MAKE ARTIST", role);
+          }}
+        />
+      ) : null}
       <List.Item
         title="Other users..."
         left={(props) => (

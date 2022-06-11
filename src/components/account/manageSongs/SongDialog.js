@@ -6,13 +6,19 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { SongPicker } from "./SongPicker";
 import styles from "../../styles";
-import { saveSong, deleteSong } from "../../../util/requests";
+import { saveSong, deleteSong, useSubLevels } from "../../../util/requests";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Table from "../../formUtil/Table";
-import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/general";
+import { VALID_GENRES } from "../../../util/general";
 import { inputValidator } from "../../../util/general";
 
 export default function SongDialog({ hideDialog, data, ...restProps }) {
+  const subLevels = useSubLevels();
+  const VALID_SUB_LEVELS = subLevels?.map(({ level, name }) => ({
+    value: level,
+    label: name,
+  }));
+
   const { handleSubmit, ...rest } = useForm({
     defaultValues: {
       name: data?.name ?? "",
@@ -99,6 +105,12 @@ export default function SongDialog({ hideDialog, data, ...restProps }) {
 }
 
 function FormDefinition({ creating, ...rest }) {
+  const subLevels = useSubLevels();
+  const VALID_SUB_LEVELS = subLevels?.map(({ level, name }) => ({
+    value: level,
+    label: name,
+  }));
+
   return (
     <FormBuilder
       {...rest}

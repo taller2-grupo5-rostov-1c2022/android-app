@@ -6,7 +6,7 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import styles from "../../styles";
 import { saveAlbum, deleteAlbum } from "../../../util/requests";
-import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/general";
+import { VALID_GENRES } from "../../../util/general";
 import { ErrorDialog } from "../../general/ErrorDialog";
 import Checklist from "../../formUtil/Checklist";
 import { fetch, MY_SONGS_URL } from "../../../util/services";
@@ -22,11 +22,6 @@ export default function AlbumDialog({ hideDialog, data, ...restProps }) {
         data?.genre && VALID_GENRES.includes(data.genre)
           ? data.genre
           : VALID_GENRES[0],
-      sub_level:
-        data?.sub_level &&
-        VALID_SUB_LEVELS.map((lvl) => lvl.value).includes(data.sub_level)
-          ? data.sub_level
-          : VALID_SUB_LEVELS[0].value,
       songs_ids: data?.songs?.map((song) => song.id) ?? [],
     },
     mode: "onChange",
@@ -191,22 +186,6 @@ function FormDefinition({ creating, validSongs, initialImageUri, ...rest }) {
           })),
         },
         {
-          type: "select",
-          name: "sub_level",
-          rules: {
-            required: {
-              value: true,
-              message: "Subscription level is required",
-            },
-          },
-          textInputProps: {
-            mode: "flat",
-            label: "Subscription level",
-            style: styles.textInput,
-          },
-          options: VALID_SUB_LEVELS,
-        },
-        {
           name: "songs_ids",
           type: "custom",
           JSX: Checklist,
@@ -229,7 +208,6 @@ AlbumDialog.propTypes = {
     description: PropTypes.string,
     genre: PropTypes.string,
     cover: PropTypes.string,
-    sub_level: PropTypes.number,
     songs: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
