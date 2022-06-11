@@ -48,6 +48,6 @@ PlayableSongItem.propTypes = {
         name: PropTypes.string.isRequired,
       }).isRequired
     ),
-  }).isRequired,
+  }),
   right: PropTypes.func,
 };
