@@ -24,17 +24,10 @@ export default function App() {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldShowAlert: true,
-        shouldPlaySound: false,
+        shouldPlaySound: true,
         shouldSetBadge: false,
       }),
     });
-
-    // Handler para cualquier momento
-    const sub = Notifications.addNotificationResponseReceivedListener(
-      console.log
-    );
-
-    return () => sub?.remove();
   }, []);
 
   return (

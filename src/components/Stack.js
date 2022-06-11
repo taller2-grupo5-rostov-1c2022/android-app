@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import HomeScreen from "./HomeScreen";
 import ManageMySongs from "./account/manageSongs/ManageMySongs";
 import MyProfileScreen from "./account/profile/MyProfileScreen";
@@ -14,9 +15,23 @@ import LivesListScreen from "./lives/LivesListScreen";
 import StreamProvider from "./lives/StreamProvider";
 import ListeningLiveScreen from "./lives/ListeningLiveScreen";
 import HostingLiveScreen from "./lives/HostingLiveScreen";
+import * as Notifications from "expo-notifications";
 const StackNavigator = createNativeStackNavigator();
 
 export default function Stack() {
+  const notification = Notifications.useLastNotificationResponse();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const type = notification?.notification?.request?.content?.data?.type;
+    if (type == "message")
+      navigation.dispatch({
+        ...StackActions.push("ChatScreen", {
+          id: notification?.notification?.request?.content?.data?.sender_uid,
+        }),
+      });
+  }, [notification]);
+
   return (
     <AudioProvider>
       <StreamProvider>
