@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { SessionContext } from "../../session/SessionProvider";
 import PropTypes from "prop-types";
-import { Dialog, Button, Headline, Subheading, Text } from "react-native-paper";
+import { Dialog, Button, Subheading, Text, Caption } from "react-native-paper";
 import { ScrollView, View, Dimensions } from "react-native";
 import styles from "../../styles";
 import { subscribe, useSubLevels } from "../../../util/requests";
@@ -31,7 +31,7 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
 
   const _hide = () => !processing && hide();
 
-  //const sufficientBalance = true;
+  const sufficientBalance = false;
 
   return (
     <Dialog
@@ -56,17 +56,33 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
             Current Balance: {"\t"}
             {currentBalance}
           </Subheading>
-          <Subheading>After Transaction: {"\t"}0.0001</Subheading>
+          {sufficientBalance ? (
+            <Subheading>After Transaction: {"\t"}0.0001</Subheading>
+          ) : (
+            <>
+              <Subheading>Insufficient Balance</Subheading>
+              <Text>Please Transfer more money to your wallet</Text>
+              <Caption>{user?.wallet ?? ""}</Caption>
+            </>
+          )}
         </ScrollView>
       </Dialog.ScrollArea>
       <Dialog.Actions>
         <View style={styles.row}>
-          <Button onPress={_hide} disabled={processing}>
-            Cancel
-          </Button>
-          <Button onPress={confirmSubscription} disabled={processing}>
-            Purchase
-          </Button>
+          {sufficientBalance ? (
+            <>
+              <Button onPress={_hide} disabled={processing}>
+                Cancel
+              </Button>
+              <Button onPress={confirmSubscription} disabled={processing}>
+                Purchase
+              </Button>
+            </>
+          ) : (
+            <Button onPress={_hide} disabled={processing}>
+              Exit
+            </Button>
+          )}
         </View>
       </Dialog.Actions>
     </Dialog>

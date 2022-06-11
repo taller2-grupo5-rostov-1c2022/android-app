@@ -8,10 +8,8 @@ import SubscribeDialog from "./SubscribeDialog";
 
 const getRemainingDays = (str_date) => {
   if (!str_date) return null;
-  const date = new Date(str_date);
-  const today = new Date();
-  const diff = date.getDate() - today.getDate();
-  const totalDays = Math.ceil(diff / (1000 * 3600 * 24));
+  const diff = new Date(str_date) - new Date();
+  const totalDays = Math.floor(diff / (1000 * 3600 * 24));
   return totalDays;
 };
 
