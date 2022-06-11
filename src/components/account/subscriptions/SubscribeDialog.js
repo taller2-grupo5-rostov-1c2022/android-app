@@ -40,18 +40,17 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
       onDismiss={_hide}
       style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
     >
-      <Dialog.Title>Update Subscription</Dialog.Title>
+      <Dialog.Title>
+        {userSub?.level === newSub?.level
+          ? "Refresh " + userSub?.name ?? ""
+          : userSub?.level > newSub?.level ?? ""
+          ? "Downgrade to " + newSub?.name
+          : "Upgrade to " + newSub?.name ?? ""}
+      </Dialog.Title>
       <Dialog.ScrollArea>
         <ScrollView>
-          {userSub?.level === newSub?.level ? (
-            <Headline>Refresh {userSub?.name}</Headline>
-          ) : userSub?.level > newSub?.level ? (
-            <Headline>Downgrade to {newSub?.name}</Headline>
-          ) : (
-            <Headline>Upgrade to {newSub?.name}</Headline>
-          )}
           <Subheading>Duration: 30 days</Subheading>
-          <Subheading>Price: {newSub?.price}</Subheading>
+          <Subheading>Price: {newSub?.price ?? ""}</Subheading>
           <Text>{"\n"}</Text>
           <Subheading>
             Current Balance: {"\t"}
