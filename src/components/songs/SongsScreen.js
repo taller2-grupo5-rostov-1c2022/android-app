@@ -20,8 +20,6 @@ export default function SongsScreen() {
   const songs = useSWR(`${SONGS_URL}${query}`, json_fetcher);
   const {
     data: favorites,
-    error,
-    isValidating,
   } = useSWR(`${USERS_URL}${uid}/favorites/songs/`, json_fetcher);
   const favoritesId = favorites?.map(function(favorite) {return favorite.id;});
   
