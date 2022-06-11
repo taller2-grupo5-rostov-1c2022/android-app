@@ -31,7 +31,7 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
 
   const _hide = () => !processing && hide();
 
-  const sufficientBalance = false;
+  const sufficientBalance = newSub?.level < 3;
 
   return (
     <Dialog
