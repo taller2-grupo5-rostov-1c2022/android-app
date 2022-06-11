@@ -1,6 +1,6 @@
 import { useSWRConfig } from "swr";
 
-import { ALBUMS_URL, fetch, PLAYLISTS_URL, SONGS_URL } from "./services";
+import { ALBUMS_URL, fetch, PLAYLISTS_URL, SONGS_URL, USERS_URL } from "./services";
 const FormData = global.FormData;
 
 const commonHeaders = {
@@ -88,6 +88,7 @@ export async function deletePlaylist(playlistKey) {
   });
 }
 
+//moose
 export async function addSongToPlaylist(playlistKey, song_id) {
   let body = new FormData();
   body.append("song_id", song_id);
@@ -226,5 +227,57 @@ export const useComments = () => {
     saveComment: _saveComment,
     editComment: _editComment,
     deleteComment: _deleteComment,
+  };
+};
+
+export async function saveFavorite(uid, id, type) {
+  const route = USERS_URL + uid + "/favorites" + type;
+  const method = "POST";
+  let idType = "song_id"
+  if (type == "/albums/") { 
+    idType = "album_id";
+  } else if (type == "/playlists/") { 
+    idType = "playlist_id"
+  }
+  return fetch(route + "?" + idType + "=" + id, {
+    method,
+    headers: commonHeaders,
+  });
+}
+
+export async function deleteFavorite(uid, id, type) {
+  const route = USERS_URL + uid + "/favorites" + type;
+  let idType = "song_id"
+  if (type == "/albums/") { 
+    idType = "album_id";
+  } else if (type == "/playlists/") { 
+    idType = "playlist_id"
+  }
+  return fetch(route + "?" + idType + "=" + id, {
+    method: "DELETE",
+    headers: commonHeaders,
+  });
+}
+
+export const useFavorites = () => {
+  const { mutate } = useSWRConfig();
+
+  const _saveFavorite = async (uid, id, type) => {
+    saveFavorite(uid, id, type).then((res) => {
+      mutate(USERS_URL + uid + "/favorites" + type);
+      return res;
+    });
+  };
+
+  const _deleteFavorite = async (uid, id, type) => {
+    deleteFavorite(uid, id, type).then((res) => {
+      mutate(USERS_URL + uid + "/favorites" + type);
+      return res;
+    });
+  };
+
+  return {
+    saveFavorite: _saveFavorite,
+    deleteFavorite: _deleteFavorite,
   };
 };

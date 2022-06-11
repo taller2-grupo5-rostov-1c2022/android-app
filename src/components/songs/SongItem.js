@@ -6,8 +6,8 @@ import { getArtistsAsString } from "../../util/general";
 export default function SongItem({ data, right, onPress, ...rest }) {
   return (
     <List.Item
-      title={data.name}
-      description={getArtistsAsString(data.artists)}
+      title={data?.name}
+      description={getArtistsAsString(data?.artists)}
       right={right}
       onPress={onPress ? () => onPress(data) : undefined}
       {...rest}
@@ -23,7 +23,7 @@ SongItem.propTypes = {
         name: PropTypes.string.isRequired,
       }).isRequired
     ),
-  }).isRequired,
+  }),
   right: PropTypes.func,
   onPress: PropTypes.func,
 };
