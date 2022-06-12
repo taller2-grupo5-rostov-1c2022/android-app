@@ -30,36 +30,49 @@ export default function ChatBubble({ name, message, right, date, icon }) {
       >
         {name ? <Text style={styles.bold}>{name}</Text> : null}
         <Text>{message}</Text>
+      </Container>
+      <View
+        style={
+          right ? { flexDirection: "row-reverse" } : { flexDirection: "row" }
+        }
+      >
+        <Container
+          style={[
+            styles.triangle,
+            { borderBottomColor: theme.colors.background },
+          ].concat(
+            right
+              ? []
+              : [{ backgroundColor: theme.colors.primary }, styles.mirror]
+          )}
+        />
         <View
-          style={[styles.row].concat(
-            right ? [{ justifyContent: "flex-end" }] : []
+          style={[
+            { marginHorizontal: 3, marginBottom: 5, marginTop: 2 },
+          ].concat(
+            right ? { flexDirection: "row-reverse" } : { flexDirection: "row" }
           )}
         >
+          {icon ? (
+            <Icon
+              color={theme.colors.info}
+              size={12}
+              name={ICONS[icon]}
+              style={[{ alignSelf: "center" }].concat(
+                right ? { marginLeft: 5 } : { marginRight: 5 }
+              )}
+            />
+          ) : undefined}
           <Text
             style={{
               color: theme.colors.info,
               fontSize: 10,
-              marginRight: "2%",
-              minHeight: 10,
             }}
           >
             {date ?? ""}
           </Text>
-          {icon ? (
-            <Icon color={theme.colors.info} size={15} name={ICONS[icon]}></Icon>
-          ) : undefined}
         </View>
-      </Container>
-      <Container
-        style={[
-          styles.triangle,
-          { borderBottomColor: theme.colors.background },
-        ].concat(
-          right
-            ? []
-            : [{ backgroundColor: theme.colors.primary }, styles.mirror]
-        )}
-      />
+      </View>
     </View>
   );
 }

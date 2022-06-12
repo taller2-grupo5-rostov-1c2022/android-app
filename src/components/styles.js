@@ -8,8 +8,7 @@ const styles = StyleSheet.create({
   },
   chatBubble: {
     borderRadius: 30,
-    paddingTop: 10,
-    paddingBottom: 5,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     width: "70%",
   },
