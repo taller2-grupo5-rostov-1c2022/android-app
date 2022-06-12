@@ -1,45 +1,40 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View } from "react-native";
 import { ActivityIndicator, Button, Chip, Title } from "react-native-paper";
 import styles from "../styles";
 import PropTypes from "prop-types";
-import { StreamContext } from "./StreamProvider";
 import { STREAMINGS_URL, fetch } from "../../util/services";
 import requestRecordPermission from "./permission";
 import { Audio } from "expo-av";
 import { StorageAccessFramework, EncodingType } from "expo-file-system";
 import { toLocalDate } from "../../util/general";
 import { ShapedImage } from "../general/ShapedImage";
+import useStreamings from "./useStreamings";
+
+function Loading() {
+  return (
+    <View style={[styles.container, styles.containerCenter]}>
+      <ActivityIndicator style={styles.activityIndicator} />
+    </View>
+  );
+}
 
 export default function HostingLiveScreen({ navigation, route }) {
-  const { uid, saveUri, name, img } = route.params;
-  const stream = useContext(StreamContext);
+  const [token, setToken] = useState(null);
+  const state = useRef({ error: false, recording: null });
+  let { name, img, saveUri } = route.params;
 
   useEffect(() => {
-    let state = saveUri ? { saveUri } : {};
-    let subscription = stream?.engine?.addListener("Error", () => {
-      state.error = true;
-      toast.show("Live stream error");
-      navigation.goBack();
-    });
-
-    start(state);
-    return () => {
-      subscription?.remove();
-      stop(state);
-    };
+    start();
+    return stop;
   }, []);
 
-  useEffect(() => {
-    if (stream.joined) toast.show("Live streaming started");
-  }, [stream.joined]);
-
-  async function start(state) {
+  async function start() {
     try {
       if (!(await requestRecordPermission())) {
         toast.show("You need to grant microphone access to host a live stream");
         navigation.goBack();
-        state.error = true;
+        state.current.error = true;
         return;
       }
       const token = await fetch(STREAMINGS_URL, {
@@ -47,40 +42,42 @@ export default function HostingLiveScreen({ navigation, route }) {
         body: getBody(name, img),
       });
       if (state.saveUri)
-        ({ recording: state.recording } = await Audio.Recording.createAsync(
-          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-        ));
-      await stream.startHosting(uid, token);
+        ({ recording: state.current.recording } =
+          await Audio.Recording.createAsync(
+            Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+          ));
+
+      setToken(token);
     } catch (e) {
       console.error(e);
       toast.show("Live stream error");
-      state.error = true;
+      state.current.error = true;
       navigation.goBack();
     }
   }
 
-  async function stop(state) {
+  async function stop() {
+    const recording = state.current.recording;
     try {
       await Promise.all([
         fetch(STREAMINGS_URL, {
           method: "DELETE",
         }),
-        stream.stop(),
         (() => {
-          state?.recording?.stopAndUnloadAsync() ?? Promise.resolve();
+          recording?.stopAndUnloadAsync() ?? Promise.resolve();
         })(),
       ]);
 
-      if (state.error) return;
+      if (state.current.error) return;
 
-      if (state.recording) {
+      if (recording) {
         const uri = await StorageAccessFramework.createFileAsync(
           saveUri,
           getFileName(),
           "audio/mp4"
         );
         const content = await StorageAccessFramework.readAsStringAsync(
-          state.recording.getURI(),
+          recording.getURI(),
           { encoding: EncodingType.Base64 }
         );
         await StorageAccessFramework.writeAsStringAsync(uri, content, {
@@ -92,17 +89,44 @@ export default function HostingLiveScreen({ navigation, route }) {
       }
     } catch (e) {
       console.error(e);
-      if (state.error) return;
+      if (state.current.error) return;
       toast.show("Error stopping live stream");
     }
   }
 
-  if (!stream.joined)
-    return (
-      <View style={[styles.container, styles.containerCenter]}>
-        <ActivityIndicator style={styles.activityIndicator} />
-      </View>
-    );
+  if (!token) return <Loading />;
+
+  return (
+    <Hosting
+      {...route.params}
+      navigation={navigation}
+      token={token}
+      onError={() => (state.current.error = true)}
+    />
+  );
+}
+
+function Hosting({ uid, name, img, token, navigation, onError }) {
+  const { engine, joined } = useStreamings(uid, token, true);
+
+  useEffect(() => {
+    if (!engine) return;
+    let subscription = engine.addListener("Error", () => {
+      onError();
+      toast.show("Live stream error");
+      navigation.goBack();
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, [engine]);
+
+  useEffect(() => {
+    if (joined) toast.show("Live streaming started");
+  }, [joined]);
+
+  if (!joined) return <Loading />;
 
   return (
     <View style={[styles.container, styles.containerCenter]}>
@@ -159,4 +183,15 @@ HostingLiveScreen.propTypes = {
       img: PropTypes.any,
     }).isRequired,
   }).isRequired,
+};
+
+Hosting.propTypes = {
+  navigation: PropTypes.shape({
+    goBack: PropTypes.func.isRequired,
+  }).isRequired,
+  uid: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  token: PropTypes.string.isRequired,
+  img: PropTypes.any,
+  onError: PropTypes.func.isRequired,
 };
