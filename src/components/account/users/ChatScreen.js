@@ -22,7 +22,7 @@ export default function ChatScreen({ navigation, route }) {
   const [content, setContent] = useState(null);
 
   useEffect(() => {
-    if (!data && rest.isValidating) return null;
+    if (!data) return setContent(null);
     setContent(
       localMessages
         .concat(data ?? [])
@@ -59,8 +59,8 @@ export default function ChatScreen({ navigation, route }) {
       toast.show("Failed to send message");
       console.error(err);
     });
-    setText("");
     addMessage(text, promise);
+    setText("");
   };
 
   return (

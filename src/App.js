@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-notifications";
 import ThemeProvider from "./components/ThemeProvider";
 import * as Notifications from "expo-notifications";
+import notificationHandler from "./components/notifications/notificationHandler";
 
 export default function App() {
   React.useEffect(() => {
@@ -22,11 +23,7 @@ export default function App() {
 
     // Handler para cuando la app esta abierta
     Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: false,
-      }),
+      handleNotification: notificationHandler,
     });
   }, []);
 

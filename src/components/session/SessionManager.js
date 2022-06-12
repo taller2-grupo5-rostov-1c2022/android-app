@@ -49,7 +49,7 @@ async function updateNotificationToken(wasLoggedOut) {
   if (!wasLoggedOut) return;
 
   const token = await getDevicePushTokenAsync();
-  if (token.type == "web" || token.type == "ios") return;
+  if (token.type != "android") return;
 
   try {
     await fetch(NOTIFICATIONS_TOKEN_URL, {
