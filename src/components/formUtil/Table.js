@@ -33,7 +33,6 @@ export default function Table(props) {
       field?.value?.every((_, i) => current[i] == field?.value[i])
     )
       return;
-    console.log(`setting it... (${field?.value} vs ${values})`);
     setValues(field.value ?? [""]);
   }, [field.value]);
 
