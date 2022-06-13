@@ -3,12 +3,14 @@ import LoadingScreen from "../account/login/LoadingScreen";
 import LoginStack from "./LoginStack";
 import SessionFetcher from "./SessionFetcher";
 import { getDevicePushTokenAsync } from "expo-notifications";
+import { getAuth, signOut as _signOut } from "firebase/auth";
+import { useSWRConfig } from "swr";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NOTIFICATIONS_TOKEN_URL,
   fetch,
   HTTP_NOT_FOUND,
 } from "../../util/services";
-import { getAuth, signOut as _signOut } from "firebase/auth";
 
 export default function SessionManager() {
   const [status, setStatus] = useState({
@@ -16,6 +18,7 @@ export default function SessionManager() {
     uid: null,
     wasLoggedOut: false,
   });
+  const { cache } = useSWRConfig();
 
   const onAuthStateChanged = (user) => {
     if (user?.uid) {
@@ -32,6 +35,8 @@ export default function SessionManager() {
     }));
 
     await deleteNotificationToken();
+    await AsyncStorage.clear();
+    cache.clear();
 
     _signOut(auth).catch();
   };

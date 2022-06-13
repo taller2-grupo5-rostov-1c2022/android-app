@@ -26,8 +26,10 @@ export default function SessionFetcher({ signOut }) {
 
   useEffect(() => {
     async function onNewLogin() {
-      // invalidate previous user data
-      let data = await response.mutate(null, { optimisticData: null });
+      let data = await response.mutate();
+
+      if (response?.error && response.error.status != HTTP_NOT_FOUND) return;
+
       setStatus((prev) => ({ ...prev, loading: false }));
       if (!data?.id) return;
 
@@ -39,10 +41,17 @@ export default function SessionFetcher({ signOut }) {
   }, [status]);
 
   useEffect(() => {
+    if (!response?.error) return;
+
     if (response?.error?.status == HTTP_NOT_FOUND) {
       setStatus((prev) => ({ ...prev, paused: true }));
+      return;
     }
-  }, [response?.error]);
+
+    console.error(response?.error);
+    toast.show("Error signing you in, please try again later");
+    signOut();
+  }, [response?.error?.status]);
 
   if (
     !status.loading &&
