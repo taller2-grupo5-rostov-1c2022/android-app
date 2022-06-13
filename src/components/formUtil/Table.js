@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
 import { TextInput, HelperText } from "react-native-paper";
@@ -24,11 +24,23 @@ export default function Table(props) {
   const [values, setValues] = useState(field.value ?? [""]);
   const onAdd = () => setValues((prev) => prev.concat([""]));
 
+  const filtered = (v) => v?.filter((v) => v !== "");
+
+  useEffect(() => {
+    const current = filtered(values);
+    if (
+      field?.value?.length == current.length &&
+      field?.value?.every((_, i) => current[i] == field?.value[i])
+    )
+      return;
+    setValues(field.value ?? [""]);
+  }, [field.value]);
+
   const updateValues = (index, text) =>
     setValues((prev) => {
       const newValues = [...prev];
       newValues[index] = text;
-      field.onChange(newValues.filter((v) => v !== ""));
+      field.onChange(filtered(newValues));
       return newValues;
     });
 
@@ -36,7 +48,7 @@ export default function Table(props) {
     setValues((prev) => {
       const newValues = [...prev];
       newValues.splice(index, 1);
-      field.onChange(newValues.filter((v) => v !== ""));
+      field.onChange(filtered(newValues));
       return newValues;
     });
 
@@ -58,7 +70,7 @@ export default function Table(props) {
   };
 
   const onBlur = (index) => {
-    if (values[index] === "" && index != values.length - 1) onDelete(index);
+    if (values[index] === "" && index != 0) onDelete(index);
   };
 
   const getInputs = () => {

@@ -1,5 +1,10 @@
-import React from "react";
-import { useSWR, json_fetcher, SONGS_URL, USERS_URL } from "../../util/services";
+import React, { useState, useEffect } from "react";
+import {
+  useSWR,
+  json_fetcher,
+  SONGS_URL,
+  USERS_URL,
+} from "../../util/services";
 import { IconButton, Portal } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
@@ -13,28 +18,28 @@ import { useFavorites } from "../../util/requests";
 
 export default function SongsScreen() {
   const uid = getAuth()?.currentUser?.uid;
-  const [visible, setVisible] = React.useState(false);
-  const [songId, setSongId] = React.useState("");
-  const [query, setQuery] = React.useState("");
+  const [visible, setVisible] = useState(false);
+  const [songId, setSongId] = useState("");
+  const [query, setQuery] = useState("");
   const { saveFavorite, deleteFavorite } = useFavorites();
   const songs = useSWR(`${SONGS_URL}${query}`, json_fetcher);
-  const {
-    data: favorites,
-  } = useSWR(`${USERS_URL}${uid}/favorites/songs/`, json_fetcher);
-  const favoritesId = favorites?.map(function(favorite) {return favorite.id;});
-  
-  
-  const getSongs2 = () => {
-    const sortedSongs = favorites?.concat(songs?.data?.filter(song => !favoritesId?.includes(song?.id)))
-    return {
-      data: sortedSongs,
-      error: songs?.error,
-      isValidating: songs?.isValidating
-    }
-  }
-  const songs2 = getSongs2();
+  const [songList, setSongList] = useState([]);
+  const { data: favorites } = useSWR(
+    `${USERS_URL}${uid}/favorites/songs/`,
+    json_fetcher
+  );
+
+  useEffect(() => {
+    const sortedSongs = favorites?.concat(
+      songs?.data?.filter(
+        (song) => !getFavoritesIds(favorites)?.includes(song?.id)
+      )
+    );
+    setSongList(sortedSongs);
+  }, [songs?.data, favorites]);
+
   const onLike = (id) => {
-    if (favoritesId.includes(id)) {
+    if (getFavoritesIds(favorites)?.includes(id)) {
       deleteFavorite(uid, id, "/songs/");
     } else {
       saveFavorite(uid, id, "/songs/");
@@ -44,13 +49,17 @@ export default function SongsScreen() {
   const song = ({ data }) => (
     <PlayableSongItem
       data={data}
-      right={(props) => ([
+      right={(props) => [
         <IconButton
           {...props}
           onPress={() => {
             onLike(data?.id);
           }}
-          icon= {favoritesId?.includes(data?.id) ? "heart" : "heart-outline"}
+          icon={
+            getFavoritesIds(favorites)?.includes(data?.id)
+              ? "heart"
+              : "heart-outline"
+          }
           key={1}
         />,
         <IconButton
@@ -60,8 +69,8 @@ export default function SongsScreen() {
           }}
           icon="playlist-plus"
           key={2}
-        />
-        ])}
+        />,
+      ]}
     />
   );
 
@@ -70,7 +79,7 @@ export default function SongsScreen() {
       <View style={styles.container}>
         <SearchBar setQuery={setQuery} />
         <FetchedList
-          response={songs2}
+          response={{ ...songs, data: songList }}
           itemComponent={song}
           emptyMessage={query ? "No results" : "There is nothing here..."}
           style={styles.listScreen}
@@ -86,4 +95,10 @@ export default function SongsScreen() {
       <Player />
     </View>
   );
+}
+
+function getFavoritesIds(favorites) {
+  return favorites?.map(function (favorite) {
+    return favorite.id;
+  });
 }

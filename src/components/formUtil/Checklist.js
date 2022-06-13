@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
 import { Checkbox, HelperText, Title, List, Text } from "react-native-paper";
@@ -29,6 +29,15 @@ export default function Checklist(props) {
   const err = control.getFieldState(name).error?.message;
 
   const [values, setValues] = useState(field?.value ?? []);
+
+  useEffect(() => {
+    if (
+      field.value?.length == values.length &&
+      field.value?.every((_, i) => values[i] == field?.value[i])
+    )
+      return;
+    setValues(field.value ?? []);
+  }, [field.value]);
 
   const onPress = (value) =>
     setValues((prev) => {
