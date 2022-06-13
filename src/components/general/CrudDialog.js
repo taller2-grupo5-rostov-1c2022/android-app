@@ -6,6 +6,15 @@ import { useForm } from "react-hook-form";
 import styles from "../styles";
 import { ErrorDialog } from "./ErrorDialog";
 
+// data: the data to populate the form (song, album or playlist data)
+// visible: whether the dialog is visible or not
+// onDismiss: function to call when the dialog is dismissed. Can receive
+// a boolean parameter which will be set to true if changes were made
+// defaultGen; function which generates the default values for the form from the data
+// form: form definition to use
+// onSave: function to call when the save button is pressed
+// onDelete: function to call when the delete button is pressed
+// extraFetcher: optional function to fetch extra data before showing the form
 export default function CrudDialog({
   data,
   visible,
