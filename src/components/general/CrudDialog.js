@@ -37,18 +37,20 @@ export default function CrudDialog({
   });
 
   const [extra, setExtra] = useState(null);
-  useEffect(() => {
-    if (status.loading && extraFetcher) extraFetcher(data, setExtra, setStatus);
-  }, [extraFetcher, status.loading]);
 
   useEffect(() => {
     rest.reset(defaultGen(data));
-    setStatus((prev) => ({ ...prev, loading: !!extraFetcher }));
+    setStatus({ error: null, loading: !!extraFetcher });
+    if (extraFetcher) extraFetcher(data, setExtra, setStatus);
   }, [extraFetcher, data]);
 
-  if (status.error && visible)
+  if (status.error)
     return (
-      <ErrorDialog error={status.error} hideDialog={() => onDismiss(false)} />
+      <ErrorDialog
+        error={status.error}
+        hideDialog={() => onDismiss(false)}
+        visible={visible}
+      />
     );
 
   if (status.loading && visible) {
@@ -57,13 +59,17 @@ export default function CrudDialog({
 
   const FormDefinition = form;
 
-  const sendRequest = async (requestSender, message) => {
+  // si saving es true, estamos guardando. sino borrando
+  const sendRequest = async (requestSender, saving) => {
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
       await requestSender();
-      if (message) toast.show(message);
+      toast.show(`${name} ${saving ? "saved" : "deleted"}`);
       onDismiss(true);
+      setStatus({ loading: false, error: null });
     } catch (err) {
+      console.error(err);
+      toast.show(`${name} could not be ${saving ? "saved" : "deleted"}`);
       setStatus({ loading: false, error: err });
     }
   };
@@ -86,10 +92,7 @@ export default function CrudDialog({
           {data?.id ? (
             <Button
               onPress={() =>
-                sendRequest(
-                  async () => await onDelete(data?.id),
-                  `${name} deleted`
-                )
+                sendRequest(async () => await onDelete(data?.id), false)
               }
             >
               Delete
@@ -97,10 +100,7 @@ export default function CrudDialog({
           ) : undefined}
           <Button
             onPress={handleSubmit((formData) =>
-              sendRequest(
-                async () => await onSave(data?.id, formData),
-                `${name} saved`
-              )
+              sendRequest(async () => await onSave(data?.id, formData), true)
             )}
           >
             Save

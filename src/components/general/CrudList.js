@@ -16,7 +16,7 @@ export default function CrudList({
   dialogProps,
   ...rest
 }) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({});
   const [visible, setVisible] = useState(false);
   const response = useSWR(url, json_fetcher);
   const matchMutate = useMatchMutate();
@@ -52,7 +52,7 @@ export default function CrudList({
           icon="plus"
           style={styles.fab}
           disabled={visible}
-          onPress={() => onPress(null)}
+          onPress={() => onPress({})}
         />
         <CrudDialog
           {...dialogProps}

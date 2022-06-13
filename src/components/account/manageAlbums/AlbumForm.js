@@ -40,8 +40,7 @@ export async function getMySongs(album, setExtra, setStatus) {
       },
       out: id,
     }));
-    if (songs.length > 0)
-      setExtra({ validSongs: songs, initialImageUri: album?.cover });
+    setExtra({ validSongs: songs, initialImageUri: album?.cover });
     setStatus((prev) => ({ ...prev, loading: false }));
   } catch (e) {
     console.error(e);
@@ -74,7 +73,7 @@ export default function FormDefinition({
           },
           rules: {
             required: {
-              value: !!data?.id,
+              value: !data?.id,
               message: "Cover is required",
             },
           },
@@ -164,6 +163,6 @@ FormDefinition.propTypes = {
     initialImageUri: PropTypes.string,
   }),
   data: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
   }),
 };
