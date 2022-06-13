@@ -50,9 +50,9 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
       </Dialog.Title>
       <Dialog.ScrollArea>
         <ScrollView>
-          <Subheading>Duration: 30 days</Subheading>
+          <Subheading>Duration: {"\t"}30 days</Subheading>
           <Subheading>
-            Price: {"\t"}
+            Price: {"\t\t"}
             {newSub?.price ?? ""} ETH
           </Subheading>
           <Text>{"\n"}</Text>
