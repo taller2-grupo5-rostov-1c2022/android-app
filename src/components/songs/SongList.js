@@ -7,6 +7,7 @@ import styles from "../styles";
 import { fetch, SONGS_URL } from "../../util/services";
 import { AudioContext } from "../general/AudioProvider";
 import PropTypes from "prop-types";
+import { errStr } from "../../util/general";
 
 export default function SongList({
   songs,
@@ -72,7 +73,7 @@ export async function playSongList(songs, context, setLoading) {
     const songsWithUrl = await Promise.all(
       songs.map((song) =>
         fetch(SONGS_URL + song.id).catch((e) => {
-          const detail = JSON.parse(e.body)?.detail;
+          const detail = errStr(e);
           const error_message = `Cannot play ${song.name}\n${detail}`;
           toast.show(error_message);
         })
@@ -89,8 +90,8 @@ export async function playSongList(songs, context, setLoading) {
     context.setQueue(queue.slice(1));
     context.setPaused(false);
   } catch (e) {
-    console.error(e);
-    toast.show("Could not play list :(");
+    const detail = errStr(e);
+    toast.show(`Could not play list\n${detail}`);
   } finally {
     setLoading && setLoading(false);
   }
