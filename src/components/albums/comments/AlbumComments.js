@@ -9,7 +9,6 @@ import { Portal } from "react-native-paper";
 import Comment from "./Comment";
 import { getAuth } from "firebase/auth";
 
-
 const AlbumComments = ({ albumId }) => {
   const userId = getAuth()?.currentUser?.uid;
   const theme = useTheme();
@@ -22,106 +21,106 @@ const AlbumComments = ({ albumId }) => {
   const commentt = {
     text: "algo mas",
     comment: null,
-    name: "tomas"
-  }
+    name: "tomas",
+  };
   const commenttt = {
     text: "caca",
     comment: null,
-    name: "tomas"
-  }
+    name: "tomas",
+  };
   const comment = {
     text: "algo",
     comment: commentt,
-    name: "jose"
-  }
+    name: "jose",
+  };
   const comment2 = {
     text: "algo",
     comment: commenttt,
-    name: "jose"
-  }
+    name: "jose",
+  };
   const [comments, setComments] = useState([comment, comment2]);
   //comments.length = 7
   const [inComment, setInComment] = useState(false);
-  const [commentStack, setCommentStack] = useState([])
+  const [commentStack, setCommentStack] = useState([]);
   const [currentComment, setCurrentComment] = useState([]);
   const [commenting, setCommenting] = useState(false);
   const [editComment, setEditComment] = useState(null);
   const [isReplying, setIsReplying] = useState(false);
-//   const userReview = comments?.find(
-//     (comment) => comment?.commenter?.id === user?.id
-//   );
+  //   const userReview = comments?.find(
+  //     (comment) => comment?.commenter?.id === user?.id
+  //   );
   useEffect(() => {
     setComments(initComments);
     setCommentStack([]);
     setInComment(false);
     setCurrentComment([]);
-  },[initComments]);
+  }, [initComments]);
 
   useEffect(() => {
-    console.log(editComment);
-    if (!commenting){
-      console.log("borrando edit comment");
+    if (!commenting) {
       setEditComment(null);
       if (isReplying) {
         onBack();
         setIsReplying(false);
       }
     }
-  },[commenting]);
+  }, [commenting]);
 
   const onAddComment = () => {
-    console.log(albumId);
     setCommenting(true);
   };
 
   const onComment = (pressedComment) => {
-    console.log(comments);
     if (!pressedComment.responses) return;
-    console.log(pressedComment.responses);
-    setCommentStack((commentStack) => [...commentStack, comments])
+    setCommentStack((commentStack) => [...commentStack, comments]);
     setComments(pressedComment.responses);
     //comments = pressedComment.responses;
-    console.log(comments)
     setInComment(true);
-    setCurrentComment((currentComment) => [...currentComment, pressedComment])
+    setCurrentComment((currentComment) => [...currentComment, pressedComment]);
   };
 
   const onBack = () => {
     if (commentStack.length <= 0) return;
-    console.log("back");
     const lastComments = commentStack[commentStack.length - 1];
-    console.log(commentStack);
     setComments(lastComments);
     //comments = lastComments;
     if (commentStack.length <= 1) setInComment(false);
     setCommentStack(commentStack.slice(0, -1));
     setCurrentComment(currentComment.slice(0, -1));
-  }
+  };
 
   const isUser = (commenterId) => {
     if (commenterId == userId) return true;
     return false;
-  }
+  };
 
   const onEditComment = (comment) => {
     setEditComment(comment);
     setCommenting(true);
-  }
+  };
 
   const onReply = (comment) => {
     setIsReplying(true);
     onComment(comment);
     onAddComment();
-  }
+  };
 
   const replyButton = (commenterId, comment) => {
-    return ([
-      isUser(commenterId) ? 
-      <IconButton icon="pencil-outline" key={2} onPress={() => onEditComment(comment)}></IconButton> 
-      : null,
-      <IconButton icon="reply" key={1} onPress={() => onReply(comment)}></IconButton>
-    ])
-  }
+    return [
+      isUser(commenterId) ? (
+        <IconButton
+          icon="pencil-outline"
+          key={2}
+          onPress={() => onEditComment(comment)}
+        ></IconButton>
+      ) : null,
+      <IconButton
+        icon="reply"
+        key={1}
+        onPress={() => onReply(comment)}
+      ></IconButton>,
+    ];
+  };
 
   return (
     <>
@@ -142,14 +141,16 @@ const AlbumComments = ({ albumId }) => {
           </Button>
         </View>
         <View disabled={!inComment}>
-            <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-                {inComment ? currentComment[currentComment.length - 1].commenter.name : ""}
+          <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+            {inComment
+              ? currentComment[currentComment.length - 1].commenter.name
+              : ""}
+          </Text>
+          {inComment ? (
+            <Text style={{ fontSize: 18 }}>
+              Comment: {currentComment[currentComment.length - 1].text}
             </Text>
-            {inComment ? 
-            <Text style={{fontSize: 18}}> 
-                Comment: {currentComment[currentComment.length - 1].text} 
-            </Text>
-            : null}
+          ) : null}
         </View>
         {comments?.length == 0 ? (
           <Text
@@ -174,10 +175,12 @@ const AlbumComments = ({ albumId }) => {
               <Text style={{ fontWeight: "bold" }}>
                 {comment?.commenter?.name}
               </Text>
-              <List.Item onPress={() => onComment(comment)}
-              tittle={inComment ? "Reply: " : "Comment: "}
-              description={comment.text ? comment.text : "[Deleted]"}
-              right={() => replyButton(comment.commenter?.id, comment)}/>
+              <List.Item
+                onPress={() => onComment(comment)}
+                tittle={inComment ? "Reply: " : "Comment: "}
+                description={comment.text ? comment.text : "[Deleted]"}
+                right={() => replyButton(comment.commenter?.id, comment)}
+              />
             </View>
           ))
         }
@@ -195,7 +198,9 @@ const AlbumComments = ({ albumId }) => {
           visible={!!commenting}
           setVisible={setCommenting}
           albumId={albumId}
-          parentComment={inComment ? currentComment[currentComment.length - 1] : null}
+          parentComment={
+            inComment ? currentComment[currentComment.length - 1] : null
+          }
           currentComment={editComment}
           inComment={inComment}
         />

@@ -130,7 +130,6 @@ export async function addColabToPlaylist(playlistKey, colab_id) {
 
 // review: {text, score} -> atleast one of them is required
 export async function saveReview(albumId, comment, edit) {
-  console.log("ALBUM ID: " + albumId);
   const route = ALBUMS_URL + albumId + "/reviews/";
   const method = edit ? "PUT" : "POST";
   const body = JSON.stringify(comment);
@@ -154,7 +153,6 @@ export const useReview = () => {
   const { mutate } = useSWRConfig();
 
   const _saveReview = async (albumId, comment, edit) => {
-    console.log("save");
     saveReview(albumId, comment, edit).then((res) => {
       mutate(ALBUMS_URL + albumId + "/reviews/");
       return res;
