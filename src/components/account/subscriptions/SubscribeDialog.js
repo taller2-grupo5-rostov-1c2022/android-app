@@ -6,12 +6,10 @@ import { ScrollView, View, Dimensions } from "react-native";
 import styles from "../../styles";
 import { subscribe, useSubLevels } from "../../../util/requests";
 
-const currentBalance = "0.0002";
-
 export default function SubscribeDialog({ selectedLevel, hide }) {
   const [processing, setProcessing] = useState(false);
 
-  const { user, update } = useContext(SessionContext);
+  const { user, update, balance, updateBalance } = useContext(SessionContext);
 
   const confirmSubscription = async () => {
     setProcessing(true);
@@ -19,6 +17,7 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
       await subscribe(selectedLevel);
       toast.show("Successfully Subscribed");
       update();
+      updateBalance();
     } catch (e) {
       toast.show("Error Subscribing");
     }
@@ -31,7 +30,9 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
 
   const _hide = () => !processing && hide();
 
-  const sufficientBalance = newSub?.level < 3;
+  const remainingBalance = parseFloat(balance) - parseFloat(newSub?.price) ?? 0;
+
+  const sufficientBalance = remainingBalance > 0;
 
   return (
     <Dialog
@@ -50,14 +51,20 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
       <Dialog.ScrollArea>
         <ScrollView>
           <Subheading>Duration: 30 days</Subheading>
-          <Subheading>Price: {newSub?.price ?? ""}</Subheading>
+          <Subheading>
+            Price: {"\t"}
+            {newSub?.price ?? ""} ETH
+          </Subheading>
           <Text>{"\n"}</Text>
           <Subheading>
             Current Balance: {"\t"}
-            {currentBalance}
+            {balance} ETH
           </Subheading>
           {sufficientBalance ? (
-            <Subheading>After Transaction: {"\t"}0.0001</Subheading>
+            <Subheading>
+              After Transaction: {"\t"}
+              {remainingBalance} ETH
+            </Subheading>
           ) : (
             <>
               <Subheading>Insufficient Balance</Subheading>

@@ -24,6 +24,7 @@ export const SUBSCRIPTIONS_URL = `${SONGS_SV_URL}/subscriptions/`;
 export const STREAMINGS_URL = `${SONGS_SV_URL}/streamings/`;
 
 export const MESSAGES_URL = `${MESSAGES_SV_URL}/messages/`;
+export const BALANCE_URL = `${GATEWAY_URL}/balance/`;
 
 export const json_fetcher = async (url) => {
   return await fetch(url);

@@ -17,7 +17,7 @@ export default function ManageSubscription() {
   const subLevels = useSubLevels();
   const [selectedLevel, setSelectedLevel] = useState();
 
-  const { user } = useContext(SessionContext);
+  const { user, balance } = useContext(SessionContext);
 
   const remainingDays = getRemainingDays(user?.sub_expires);
   const level =
@@ -47,6 +47,10 @@ export default function ManageSubscription() {
           <Text>{remainingDays} days remaining</Text>
         ) : null}
       </View>
+      <Subheading>
+        Current balance: {"\t"}
+        {balance} ETH
+      </Subheading>
       <Headline>Change Subscription</Headline>
       {subLevels?.map((sub, i) => (
         <Button key={i} mode={"outlined"} onPress={subscribeTo(sub?.level)}>
