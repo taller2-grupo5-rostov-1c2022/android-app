@@ -1,6 +1,12 @@
 import { useSWRConfig } from "swr";
 
-import { ALBUMS_URL, fetch, PLAYLISTS_URL, SONGS_URL, USERS_URL } from "./services";
+import {
+  ALBUMS_URL,
+  fetch,
+  PLAYLISTS_URL,
+  SONGS_URL,
+  USERS_URL,
+} from "./services";
 const FormData = global.FormData;
 
 const commonHeaders = {
@@ -143,7 +149,7 @@ export const useReview = () => {
   const { mutate } = useSWRConfig();
 
   const _saveReview = async (albumId, comment, edit) => {
-    console.log("save")
+    console.log("save");
     saveReview(albumId, comment, edit).then((res) => {
       mutate(ALBUMS_URL + albumId + "/reviews/");
       return res;
@@ -161,7 +167,6 @@ export const useReview = () => {
     deleteReview: _deleteReview,
   };
 };
-
 
 // coment: {text}
 export async function saveComment(albumId, comment) {
@@ -193,7 +198,7 @@ export async function editComment(commentId, comment) {
 }
 
 export async function deleteComment(commentId) {
-  const route = ALBUMS_URL + "/comments/"  + commentId + "/";
+  const route = ALBUMS_URL + "/comments/" + commentId + "/";
   return fetch(route, {
     method: "DELETE",
   });
@@ -233,11 +238,11 @@ export const useComments = () => {
 export async function saveFavorite(uid, id, type) {
   const route = USERS_URL + uid + "/favorites" + type;
   const method = "POST";
-  let idType = "song_id"
-  if (type == "/albums/") { 
+  let idType = "song_id";
+  if (type == "/albums/") {
     idType = "album_id";
-  } else if (type == "/playlists/") { 
-    idType = "playlist_id"
+  } else if (type == "/playlists/") {
+    idType = "playlist_id";
   }
   return fetch(route + "?" + idType + "=" + id, {
     method,
@@ -247,11 +252,11 @@ export async function saveFavorite(uid, id, type) {
 
 export async function deleteFavorite(uid, id, type) {
   const route = USERS_URL + uid + "/favorites" + type;
-  let idType = "song_id"
-  if (type == "/albums/") { 
+  let idType = "song_id";
+  if (type == "/albums/") {
     idType = "album_id";
-  } else if (type == "/playlists/") { 
-    idType = "playlist_id"
+  } else if (type == "/playlists/") {
+    idType = "playlist_id";
   }
   return fetch(route + "?" + idType + "=" + id, {
     method: "DELETE",
