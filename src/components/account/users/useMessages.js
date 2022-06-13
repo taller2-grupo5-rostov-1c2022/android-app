@@ -24,7 +24,6 @@ export default function useMessages(user_id) {
     json_fetcher,
     {
       isPaused: () => query == null,
-      onSuccess: (data) => console.log(data),
     }
   );
   const componentWillUnmount = useRef(false);
@@ -99,6 +98,7 @@ export default function useMessages(user_id) {
   }
 
   async function write_cached() {
+    if (!messages) return;
     const msgs = Object.fromEntries(messages.map((m) => [m.id, m]));
     await AsyncStorage.setItem(
       `${CHAT_PREFIX_KEY}${user_id}`,
