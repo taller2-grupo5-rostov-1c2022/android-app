@@ -15,22 +15,24 @@ export default function CrudList({
   revalidateUrl,
   ...rest
 }) {
-  const [data, setData] = React.useState(null);
-  const [visible, setVisible] = React.useState(false);
+  const [dialog, setDialog] = React.useState(null);
+  const [disabled, setDisabled] = React.useState(false);
   const response = useSWR(url, json_fetcher);
   const Dialog = editDialog;
   const matchMutate = useMatchMutate();
 
   const hideDialog = async () => {
-    setVisible(false);
+    setDialog(<Dialog visible="false" />);
+    setDialog(null);
+    setDisabled(false);
     if (revalidateUrl)
       await matchMutate((str) => str.startsWith(revalidateUrl));
     else await response.mutate();
   };
 
   const onPress = (data) => {
-    setData(data);
-    setVisible(true);
+    setDialog(<Dialog hideDialog={hideDialog} data={data} visible="true" />);
+    setDisabled(true);
   };
 
   const Item = itemComponent;
@@ -44,10 +46,10 @@ export default function CrudList({
         <FAB
           icon="plus"
           style={styles.fab}
-          disabled={visible}
+          disabled={disabled}
           onPress={() => onPress(null)}
         />
-        <Dialog hideDialog={hideDialog} data={data} visible={visible} />
+        {dialog}
       </Portal>
       <FetchedList
         response={response}
