@@ -14,6 +14,7 @@ import NavigationAppbar from "./NavigationAppbar";
 import LivesListScreen from "./streamings/LivesListScreen";
 import ListeningLiveScreen from "./streamings/ListeningLiveScreen";
 import HostingLiveScreen from "./streamings/HostingLiveScreen";
+import NotificationListScreen from "./notifications/NotificationListScreen";
 import * as Notifications from "expo-notifications";
 const StackNavigator = createNativeStackNavigator();
 
@@ -82,6 +83,11 @@ export default function Stack() {
             name="HostingLiveScreen"
             component={HostingLiveScreen}
             options={{ title: "Hosting a Live Stream" }}
+          />
+          <StackNavigator.Screen
+            name="NotificationListScreen"
+            component={NotificationListScreen}
+            options={{ title: "Notifications" }}
           />
         </StackNavigator.Navigator>
       </Portal.Host>

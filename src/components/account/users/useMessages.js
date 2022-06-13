@@ -1,10 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { setNotificationHandler } from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import notificationHandler, {
-  CHAT_PREFIX_KEY,
-} from "../../notifications/notificationHandler";
-
+import handleNotification from "../../notifications/notificationHandler";
 import {
   useSWRImmutable,
   json_fetcher,
@@ -12,6 +9,7 @@ import {
 } from "../../../util/services";
 
 const ID_QUERY_PARAMETER = "?id_start=";
+const CHAT_PREFIX_KEY = "chat_";
 
 export default function useMessages(user_id) {
   const [query, setQuery] = useState(null);
@@ -47,7 +45,7 @@ export default function useMessages(user_id) {
         const data = n?.request?.content?.data;
 
         if (data?.type != "message" || data?.sender?.id != user_id)
-          return notificationHandler(n);
+          return handleNotification(n);
 
         await mutate();
         return {
@@ -60,7 +58,7 @@ export default function useMessages(user_id) {
     return () => {
       componentWillUnmount.current = true;
       setNotificationHandler({
-        handleNotification: notificationHandler,
+        handleNotification,
       });
     };
   }, []);

@@ -13,7 +13,6 @@ export default function FetchedList({
   response,
   itemComponent,
   emptyMessage,
-  scrollRef,
   ...viewProps
 }) {
   let theme = useTheme();
@@ -54,7 +53,6 @@ export default function FetchedList({
           />
         ) : undefined
       }
-      ref={scrollRef}
       {...viewProps}
     >
       {content}
@@ -96,7 +94,6 @@ FetchedList.propTypes = {
   }).isRequired,
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
-  scrollRef: PropTypes.any,
   ...ScrollView.propTypes,
 };
 

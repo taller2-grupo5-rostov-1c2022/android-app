@@ -19,12 +19,18 @@ export default function HomeScreen({ navigation }) {
     navigation.setOptions({
       headerShown: true,
       title: routes[index].title,
-      right: (
+      right: [
         <Appbar.Action
           icon="antenna"
           onPress={() => navigation.push("LivesListScreen")}
-        />
-      ),
+          key={1}
+        />,
+        <Appbar.Action
+          icon="bell"
+          onPress={() => navigation.push("NotificationListScreen")}
+          key={2}
+        />,
+      ],
     });
   }, [index]);
 

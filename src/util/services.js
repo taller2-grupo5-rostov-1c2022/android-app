@@ -25,6 +25,7 @@ export const STREAMINGS_URL = `${SONGS_SV_URL}/streamings/`;
 export const MESSAGES_URL = `${MESSAGES_SV_URL}/messages/`;
 
 export const NOTIFICATIONS_TOKEN_URL = `${NOTIFICATIONS_SV_URL}/tokens/`;
+export const NOTIFICATIONS_URL = `${NOTIFICATIONS_SV_URL}/notifications/`;
 
 export const HTTP_NOT_FOUND = 404;
 
