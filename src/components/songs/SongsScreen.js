@@ -1,5 +1,10 @@
 import React from "react";
-import { useSWR, json_fetcher, SONGS_URL, USERS_URL } from "../../util/services";
+import {
+  useSWR,
+  json_fetcher,
+  SONGS_URL,
+  USERS_URL,
+} from "../../util/services";
 import { IconButton, Portal } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
@@ -18,20 +23,25 @@ export default function SongsScreen() {
   const [query, setQuery] = React.useState("");
   const { saveFavorite, deleteFavorite } = useFavorites();
   const songs = useSWR(`${SONGS_URL}${query}`, json_fetcher);
-  const {
-    data: favorites,
-  } = useSWR(`${USERS_URL}${uid}/favorites/songs/`, json_fetcher);
-  const favoritesId = favorites?.map(function(favorite) {return favorite.id;});
-  
-  
+  const { data: favorites } = useSWR(
+    `${USERS_URL}${uid}/favorites/songs/`,
+    json_fetcher
+  );
+  const favoritesId = favorites?.map(function (favorite) {
+    return favorite.id;
+  });
+
   const getSongs2 = () => {
-    const sortedSongs = favorites?.concat(songs?.data?.filter(song => !favoritesId?.includes(song?.id)))
+    const sortedSongs = favorites?.concat(
+      songs?.data?.filter((song) => !favoritesId?.includes(song?.id))
+    );
     return {
       data: sortedSongs,
       error: songs?.error,
-      isValidating: songs?.isValidating
-    }
-  }
+      isValidating: songs?.isValidating,
+      mutate: songs?.mutate,
+    };
+  };
   const songs2 = getSongs2();
   const onLike = (id) => {
     if (favoritesId.includes(id)) {
@@ -44,13 +54,13 @@ export default function SongsScreen() {
   const song = ({ data }) => (
     <PlayableSongItem
       data={data}
-      right={(props) => ([
+      right={(props) => [
         <IconButton
           {...props}
           onPress={() => {
             onLike(data?.id);
           }}
-          icon= {favoritesId?.includes(data?.id) ? "heart" : "heart-outline"}
+          icon={favoritesId?.includes(data?.id) ? "heart" : "heart-outline"}
           key={1}
         />,
         <IconButton
@@ -60,8 +70,8 @@ export default function SongsScreen() {
           }}
           icon="playlist-plus"
           key={2}
-        />
-        ])}
+        />,
+      ]}
     />
   );
 
