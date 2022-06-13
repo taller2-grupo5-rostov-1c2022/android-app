@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
 import { TextInput, HelperText } from "react-native-paper";
@@ -23,6 +23,15 @@ export default function Table(props) {
 
   const [values, setValues] = useState(field.value ?? [""]);
   const onAdd = () => setValues((prev) => prev.concat([""]));
+
+  useEffect(() => {
+    if (
+      field.value?.length == values.length &&
+      field.value?.every((_, i) => values[i] == field?.value[i])
+    )
+      return;
+    setValues(field.value ?? [""]);
+  }, [field.value]);
 
   const updateValues = (index, text) =>
     setValues((prev) => {
