@@ -53,7 +53,7 @@ export async function saveAlbum(albumKey, formData) {
   Object.entries(rest).forEach(([key, value]) => body.append(key, value));
   if (cover) body.append("cover", cover, "cover");
   if (songs_ids) body.append("songs_ids", JSON.stringify(songs_ids));
-
+  console.log("saving album");
   return fetch(getAlbumUrl(albumKey), {
     method,
     headers: commonHeaders,
