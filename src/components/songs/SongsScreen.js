@@ -30,9 +30,14 @@ export default function SongsScreen() {
   );
 
   useEffect(() => {
-    const sortedSongs = favorites?.concat(
+    let favoritesFilted = favorites;
+    if (query) {
+      const songsIds = getFavoritesIds(songs?.data);
+      favoritesFilted = favorites.filter((song) => songsIds?.includes(song.id));
+    }
+    const sortedSongs = favoritesFilted?.concat(
       songs?.data?.filter(
-        (song) => !getFavoritesIds(favorites)?.includes(song?.id)
+        (song) => !getFavoritesIds(favoritesFilted)?.includes(song?.id)
       )
     );
     setSongList(sortedSongs);
