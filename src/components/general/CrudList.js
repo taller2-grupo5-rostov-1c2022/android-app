@@ -27,9 +27,9 @@ export default function CrudList({
   }, []);
 
   const onDismiss = useCallback(
-    (canceled = true) => {
+    (revalidate = false) => {
       setVisible(false);
-      if (!canceled && revalidateUrl)
+      if (revalidate && revalidateUrl)
         matchMutate((str) => str.startsWith(revalidateUrl));
       response.mutate();
     },

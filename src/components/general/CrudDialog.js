@@ -38,7 +38,9 @@ export default function CrudDialog({
   }, [extraFetcher, data]);
 
   if (status.error && visible)
-    return <ErrorDialog error={status.error} hideDialog={onDismiss} />;
+    return (
+      <ErrorDialog error={status.error} hideDialog={() => onDismiss(false)} />
+    );
 
   if (status.loading && visible) {
     return <ActivityIndicator size="large" style={styles.activityIndicator} />;
@@ -51,7 +53,7 @@ export default function CrudDialog({
     try {
       await requestSender();
       if (message) toast.show(message);
-      onDismiss();
+      onDismiss(true);
     } catch (err) {
       setStatus({ loading: false, error: err });
     }
@@ -59,7 +61,7 @@ export default function CrudDialog({
 
   return (
     <Dialog
-      onDismiss={onDismiss}
+      onDismiss={() => onDismiss(false)}
       style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
       visible={visible}
     >
@@ -71,7 +73,7 @@ export default function CrudDialog({
       </Dialog.ScrollArea>
       <Dialog.Actions>
         <View style={styles.row}>
-          <Button onPress={onDismiss}>Cancel</Button>
+          <Button onPress={() => onDismiss(false)}>Cancel</Button>
           {data?.id ? (
             <Button
               onPress={() =>
