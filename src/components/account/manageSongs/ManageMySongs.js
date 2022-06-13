@@ -3,15 +3,16 @@ import SongDialog from "./SongDialog";
 import PropTypes from "prop-types";
 import CrudList from "../../general/CrudList.js";
 import SongItem from "../../songs/SongItem";
-import { SONGS_URL } from "../../../util/services";
+import { SONGS_URL, MY_SONGS_URL } from "../../../util/services";
 
 export default function ManageMySongs() {
   return (
     <CrudList
-      url={SONGS_URL}
+      url={MY_SONGS_URL}
       editDialog={SongDialog}
       itemComponent={SongItem}
       emptyMessage="You don't have any songs yet"
+      revalidateUrl={SONGS_URL}
     />
   );
 }

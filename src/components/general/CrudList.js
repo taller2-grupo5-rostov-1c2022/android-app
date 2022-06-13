@@ -27,7 +27,7 @@ export default function CrudList({
     setDisabled(false);
     if (revalidateUrl)
       await matchMutate((str) => str.startsWith(revalidateUrl));
-    else await response.mutate();
+    await response.mutate();
   };
 
   const onPress = (data) => {
