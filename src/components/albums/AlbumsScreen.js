@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { ALBUMS_URL, USERS_URL, useSWR, json_fetcher } from "../../util/services";
+import {
+  ALBUMS_URL,
+  USERS_URL,
+  useSWR,
+  json_fetcher,
+} from "../../util/services";
 import { Portal, IconButton } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
@@ -25,7 +30,6 @@ export default function AlbumsScreen() {
     `${USERS_URL}${uid}/favorites/albums/`,
     json_fetcher
   );
-  console.log(songs);
 
   useEffect(() => {
     let favoritesFilted = favorites;
@@ -44,7 +48,7 @@ export default function AlbumsScreen() {
   const onPress = (album) => setModalStatus({ album: album, visible: true });
 
   const onLike = (id) => {
-    console.log(id)
+    console.log(id);
     if (getFavoritesIds(favorites)?.includes(id)) {
       deleteFavorite(uid, id, "/albums/");
     } else {
@@ -52,22 +56,25 @@ export default function AlbumsScreen() {
     }
   };
 
-  const album = ({ data }) => <AlbumItem 
-    onPress={onPress} 
-    data={data}
-    right={
-      <IconButton
-        onPress={() => {
-          onLike(data?.id);
-        }}
-        icon={
-          getFavoritesIds(favorites)?.includes(data?.id)
-            ? "heart"
-            : "heart-outline"
-        }
-        color={"#808080"}
-      />}
-  />;
+  const album = ({ data }) => (
+    <AlbumItem
+      onPress={onPress}
+      data={data}
+      right={
+        <IconButton
+          onPress={() => {
+            onLike(data?.id);
+          }}
+          icon={
+            getFavoritesIds(favorites)?.includes(data?.id)
+              ? "heart"
+              : "heart-outline"
+          }
+          color={"#808080"}
+        />
+      }
+    />
+  );
 
   return (
     <View style={{ flex: 1 }}>

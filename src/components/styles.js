@@ -134,6 +134,13 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
   },
+  notificationBadge: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    fontSize: 12,
+    fontWeight: "bold",
+  },
 });
 
 export default styles;

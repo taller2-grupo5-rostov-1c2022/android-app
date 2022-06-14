@@ -1,43 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { List, Caption, useTheme, FAB } from "react-native-paper";
-import { addNotificationReceivedListener } from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import PropTypes from "prop-types";
 import FetchedList from "../general/FetchedList";
 import styles from "../styles";
-import { NOTIFICATIONS_URL, fetch } from "../../util/services";
 import { toLocalDate } from "../../util/general";
+import { isFromSameChat, NotificationContext } from "./NotificationProvider";
 
 const NOTIF_PREFIX = "notifications";
 
 export default function NotificationListScreen({ navigation }) {
   const [notifications, setNotifications] = useState([]);
+  const { notifications: data, clear } = useContext(NotificationContext);
 
   useEffect(() => {
     read_cached();
-    fetch_notifications();
+    clear();
   }, []);
 
-  const fetch_notifications = async () => {
-    try {
-      const data = await fetch(NOTIFICATIONS_URL);
-      data?.length > 0 &&
-        addNotifications(
-          data.map((n) => {
-            n.body = JSON.parse(n.body);
-            return {
-              value: n,
-              date: new Date().toISOString(),
-              read: false,
-            };
-          })
-        );
-      await fetch(NOTIFICATIONS_URL, { method: "DELETE" });
-    } catch (e) {
-      console.error(e);
-      toast.show("Could not update notifications");
+  useEffect(() => {
+    const newNotifications =
+      notifications?.length == 0 ||
+      (data?.new && data?.values && data?.values?.length > 0);
+    if (newNotifications) {
+      addNotifications(data?.values);
+      clear();
     }
-  };
+  }, [data]);
 
   useEffect(() => {
     if (!notifications) return;
@@ -53,11 +42,6 @@ export default function NotificationListScreen({ navigation }) {
     );
   };
 
-  useEffect(() => {
-    const sub = addNotificationReceivedListener(fetch_notifications);
-    return () => sub.remove();
-  }, []);
-
   const read_cached = async () => {
     try {
       const local = await AsyncStorage.getItem(NOTIF_PREFIX);
@@ -69,12 +53,18 @@ export default function NotificationListScreen({ navigation }) {
   };
 
   const onPress = (data) => {
-    setNotifications(notifications.map((n) => ({ ...n, read: true })));
     const body = data?.value?.body;
-    if (body?.type == "message")
-      navigation.push("ChatScreen", {
-        id: body?.sender?.id,
-      });
+    if (body?.type != "message") return;
+    const id = body?.sender?.id;
+    navigation.push("ChatScreen", {
+      id,
+    });
+    setNotifications(
+      notifications.map((n) => ({
+        ...n,
+        read: isFromSameChat(n?.value?.body, id) ? true : n.read,
+      }))
+    );
   };
 
   const item = ({ data }) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { View } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
@@ -10,6 +10,7 @@ import useChatHeader from "./useChatHeader";
 import { toLocalDate } from "../../../util/general";
 import useMessages from "./useMessages";
 import useLocalMessages from "./useLocalMessages";
+import { NotificationContext } from "../../notifications/NotificationProvider";
 
 const RECEIVER_QUERY_PARAM = "receiver_id";
 
@@ -20,6 +21,14 @@ export default function ChatScreen({ navigation, route }) {
   const { mutate, data, ...rest } = useMessages(id);
   const { addMessage, localMessages } = useLocalMessages(mutate);
   const [content, setContent] = useState(null);
+  const { setActiveChat, activeChat } = useContext(NotificationContext);
+
+  useEffect(() => {
+    if (!id) return;
+    const prev = activeChat;
+    setActiveChat(id);
+    return () => setActiveChat(prev);
+  }, [id]);
 
   useEffect(() => {
     if (!data) return setContent(null);

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StackActions, useNavigation } from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
 import HomeScreen from "./HomeScreen";
 import ManageMySongs from "./account/manageSongs/ManageMySongs";
 import MyProfileScreen from "./account/profile/MyProfileScreen";
@@ -15,7 +16,7 @@ import LivesListScreen from "./streamings/LivesListScreen";
 import ListeningLiveScreen from "./streamings/ListeningLiveScreen";
 import HostingLiveScreen from "./streamings/HostingLiveScreen";
 import NotificationListScreen from "./notifications/NotificationListScreen";
-import * as Notifications from "expo-notifications";
+import NotificationProvider from "./notifications/NotificationProvider";
 const StackNavigator = createNativeStackNavigator();
 
 export default function Stack() {
@@ -34,63 +35,65 @@ export default function Stack() {
 
   return (
     <AudioProvider>
-      <Portal.Host>
-        <StackNavigator.Navigator
-          initialRouteName="Home"
-          screenOptions={{
-            headerShown: true,
-            header: (props) => <NavigationAppbar {...props} />,
-          }}
-        >
-          <StackNavigator.Screen name="Home" component={HomeScreen} />
-          <StackNavigator.Screen
-            name="ManageMySongs"
-            component={ManageMySongs}
-            options={{ title: "Manage my songs" }}
-          />
-          <StackNavigator.Screen
-            name="MyProfileScreen"
-            component={MyProfileScreen}
-            options={{ title: "My Profile" }}
-          />
-          <StackNavigator.Screen
-            name="ManageMyAlbums"
-            component={ManageMyAlbums}
-            options={{ title: "Manage my albums" }}
-          />
-          <StackNavigator.Screen
-            name="ManageMyPlaylists"
-            component={ManageMyPlaylists}
-            options={{ title: "Manage my Playlists" }}
-          />
-          <StackNavigator.Screen
-            name="UserListScreen"
-            component={UserListScreen}
-            options={{ title: "Other users" }}
-          />
-          <StackNavigator.Screen name="ChatScreen" component={ChatScreen} />
-          <StackNavigator.Screen
-            name="LivesListScreen"
-            component={LivesListScreen}
-            options={{ title: "Live streams" }}
-          />
-          <StackNavigator.Screen
-            name="ListeningLiveScreen"
-            component={ListeningLiveScreen}
-            options={{ title: "Listening to a Live Stream" }}
-          />
-          <StackNavigator.Screen
-            name="HostingLiveScreen"
-            component={HostingLiveScreen}
-            options={{ title: "Hosting a Live Stream" }}
-          />
-          <StackNavigator.Screen
-            name="NotificationListScreen"
-            component={NotificationListScreen}
-            options={{ title: "Notifications" }}
-          />
-        </StackNavigator.Navigator>
-      </Portal.Host>
+      <NotificationProvider>
+        <Portal.Host>
+          <StackNavigator.Navigator
+            initialRouteName="Home"
+            screenOptions={{
+              headerShown: true,
+              header: (props) => <NavigationAppbar {...props} />,
+            }}
+          >
+            <StackNavigator.Screen name="Home" component={HomeScreen} />
+            <StackNavigator.Screen
+              name="ManageMySongs"
+              component={ManageMySongs}
+              options={{ title: "Manage my songs" }}
+            />
+            <StackNavigator.Screen
+              name="MyProfileScreen"
+              component={MyProfileScreen}
+              options={{ title: "My Profile" }}
+            />
+            <StackNavigator.Screen
+              name="ManageMyAlbums"
+              component={ManageMyAlbums}
+              options={{ title: "Manage my albums" }}
+            />
+            <StackNavigator.Screen
+              name="ManageMyPlaylists"
+              component={ManageMyPlaylists}
+              options={{ title: "Manage my Playlists" }}
+            />
+            <StackNavigator.Screen
+              name="UserListScreen"
+              component={UserListScreen}
+              options={{ title: "Other users" }}
+            />
+            <StackNavigator.Screen name="ChatScreen" component={ChatScreen} />
+            <StackNavigator.Screen
+              name="LivesListScreen"
+              component={LivesListScreen}
+              options={{ title: "Live streams" }}
+            />
+            <StackNavigator.Screen
+              name="ListeningLiveScreen"
+              component={ListeningLiveScreen}
+              options={{ title: "Listening to a Live Stream" }}
+            />
+            <StackNavigator.Screen
+              name="HostingLiveScreen"
+              component={HostingLiveScreen}
+              options={{ title: "Hosting a Live Stream" }}
+            />
+            <StackNavigator.Screen
+              name="NotificationListScreen"
+              component={NotificationListScreen}
+              options={{ title: "Notifications" }}
+            />
+          </StackNavigator.Navigator>
+        </Portal.Host>
+      </NotificationProvider>
     </AudioProvider>
   );
 }
