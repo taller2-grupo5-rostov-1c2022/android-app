@@ -19,11 +19,9 @@ export default function NotificationListScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
-    const newNotifications =
-      notifications?.length == 0 ||
-      (data?.new && data?.values && data?.values?.length > 0);
+    const newNotifications = data && data.length > 0;
     if (newNotifications) {
-      addNotifications(data?.values);
+      addNotifications(data);
       clear();
     }
   }, [data]);

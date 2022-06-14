@@ -9,7 +9,7 @@ import {
 import { addNotificationReceivedListener } from "expo-notifications";
 
 export const NotificationContext = createContext({
-  notifications: { values: [], new: false },
+  notifications: [],
   clear: async () => {},
   mutate: async () => {},
   setActiveChat: () => {},
@@ -21,26 +21,21 @@ export default function NotificationProvider({ children }) {
     NOTIFICATIONS_URL,
     json_fetcher
   );
-  const [notifications, setNotifications] = useState({
-    values: [],
-    new: false,
-  });
+  const [notifications, setNotifications] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
 
   useEffect(() => {
     if (!data && isValidating) return;
-    setNotifications({
-      values:
-        data?.map((n) => {
-          n.body = JSON.parse(n.body);
-          return {
-            value: n,
-            date: new Date().toISOString(),
-            read: !!(activeChat && isFromSameChat(n.body, activeChat)),
-          };
-        }) ?? [],
-      new: true,
-    });
+    setNotifications(
+      data?.map((n) => {
+        n.body = JSON.parse(n.body);
+        return {
+          value: n,
+          date: new Date().toISOString(),
+          read: !!(activeChat && isFromSameChat(n.body, activeChat)),
+        };
+      }) ?? []
+    );
   }, [data]);
 
   useEffect(() => {

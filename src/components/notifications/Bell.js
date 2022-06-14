@@ -11,7 +11,7 @@ export default function Bell({ navigation, ...rest }) {
   const theme = useTheme();
 
   useEffect(() => {
-    setUnread(data?.values?.filter((n) => !n.read).length ?? 0);
+    setUnread(data?.filter((n) => !n.read).length ?? 0);
   }, [data]);
 
   return (
