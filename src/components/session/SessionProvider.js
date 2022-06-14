@@ -31,6 +31,7 @@ export default function SessionProvider({ user, signOut, update, children }) {
     try {
       const balance = await fetch(BALANCE_URL);
       setBalance(balance?.balance ?? "unknown");
+      return balance?.balance ?? "unknown";
     } catch (e) {
       console.error("Could not get user balance: ", e);
     }

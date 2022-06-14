@@ -17,7 +17,8 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
       await subscribe(selectedLevel);
       toast.show("Successfully Subscribed");
       update();
-      updateBalance();
+      const newBalance = await updateBalance();
+      toast.show(`Balance: ${newBalance}`);
     } catch (e) {
       toast.show("Error Subscribing");
     }
@@ -53,7 +54,7 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
           <Subheading>Duration: {"\t"}30 days</Subheading>
           <Subheading>
             Price: {"\t\t"}
-            {newSub?.price ?? ""} ETH
+            {newSub?.price ?? ""} ETH + Gas
           </Subheading>
           <Text>{"\n"}</Text>
           <Subheading>
@@ -61,10 +62,15 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
             {balance} ETH
           </Subheading>
           {sufficientBalance ? (
-            <Subheading>
-              After Transaction: {"\t"}
-              {remainingBalance} ETH
-            </Subheading>
+            <>
+              <Subheading>
+                After Transaction: {"\t< "}
+                {remainingBalance} ETH
+              </Subheading>
+              <Caption>
+                Gas price will be determined after the transaction is finalized
+              </Caption>
+            </>
           ) : (
             <>
               <Subheading>Insufficient Balance</Subheading>
