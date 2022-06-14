@@ -63,14 +63,17 @@ export default function NotificationProvider({ children }) {
   useEffect(() => {
     setNotificationHandler(
       {
-        handleNotification: (n) => defaultHandleNotification(n, activeChat),
+        handleNotification: (n) => handleNotification(n, activeChat),
       },
       [activeChat]
     );
   }, [activeChat]);
 
   useEffect(() => {
-    return () => setNotificationHandler(null);
+    return () =>
+      setNotificationHandler({
+        handleNotification: defaultHandleNotification,
+      });
   }, []);
 
   return (
@@ -90,7 +93,7 @@ NotificationProvider.propTypes = {
   children: PropTypes.any,
 };
 
-async function defaultHandleNotification(notification, activeChat) {
+async function handleNotification(notification, activeChat) {
   const data = notification?.request?.content?.data;
   if (data?.type == "message" && data?.sender_uid == activeChat)
     return {
@@ -99,6 +102,10 @@ async function defaultHandleNotification(notification, activeChat) {
       shouldSetBadge: false,
     };
 
+  return await defaultHandleNotification();
+}
+
+export async function defaultHandleNotification() {
   return {
     shouldShowAlert: true,
     shouldPlaySound: true,
