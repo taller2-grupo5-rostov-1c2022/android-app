@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ALBUMS_URL, USERS_URL, useSWR, json_fetcher } from "../../util/services";
 import { Portal, IconButton } from "react-native-paper";
 import styles from "../styles.js";
@@ -13,7 +13,7 @@ import { useFavorites } from "../../util/requests";
 
 export default function AlbumsScreen() {
   const uid = getAuth()?.currentUser?.uid;
-  const [query, setQuery] = React.useState("");
+  const [query, setQuery] = useState("");
   const [songList, setSongList] = useState([]);
   const { saveFavorite, deleteFavorite } = useFavorites();
   const songs = useSWR(`${ALBUMS_URL}${query}`, json_fetcher);
@@ -25,7 +25,6 @@ export default function AlbumsScreen() {
     `${USERS_URL}${uid}/favorites/albums/`,
     json_fetcher
   );
-  console.log(songs);
 
   useEffect(() => {
     let favoritesFilted = favorites;

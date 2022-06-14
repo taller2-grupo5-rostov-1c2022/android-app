@@ -4,52 +4,28 @@ import { View } from "react-native";
 import { Text, List } from "react-native-paper";
 import { IconButton, Button, Title, useTheme } from "react-native-paper";
 import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
-//import { SessionContext } from "../../session/SessionProvider";
 import { Portal } from "react-native-paper";
 import Comment from "./Comment";
 import { getAuth } from "firebase/auth";
 
-
 const AlbumComments = ({ albumId }) => {
+
   const userId = getAuth()?.currentUser?.uid;
   const theme = useTheme();
-  //const { user } = useContext(SessionContext);
   let {
     data: initComments,
     error,
     isValidating,
   } = useSWR(`${ALBUMS_URL}${albumId}/comments/`, json_fetcher);
-  const commentt = {
-    text: "algo mas",
-    comment: null,
-    name: "tomas"
-  }
-  const commenttt = {
-    text: "caca",
-    comment: null,
-    name: "tomas"
-  }
-  const comment = {
-    text: "algo",
-    comment: commentt,
-    name: "jose"
-  }
-  const comment2 = {
-    text: "algo",
-    comment: commenttt,
-    name: "jose"
-  }
-  const [comments, setComments] = useState([comment, comment2]);
-  //comments.length = 7
+
+  const [comments, setComments] = useState([]);
   const [inComment, setInComment] = useState(false);
   const [commentStack, setCommentStack] = useState([])
   const [currentComment, setCurrentComment] = useState([]);
   const [commenting, setCommenting] = useState(false);
   const [editComment, setEditComment] = useState(null);
   const [isReplying, setIsReplying] = useState(false);
-//   const userReview = comments?.find(
-//     (comment) => comment?.commenter?.id === user?.id
-//   );
+
   useEffect(() => {
     setComments(initComments);
     setCommentStack([]);
@@ -58,9 +34,7 @@ const AlbumComments = ({ albumId }) => {
   },[initComments]);
 
   useEffect(() => {
-    console.log(editComment);
     if (!commenting){
-      console.log("borrando edit comment");
       setEditComment(null);
       if (isReplying) {
         onBack();
@@ -70,30 +44,25 @@ const AlbumComments = ({ albumId }) => {
   },[commenting]);
 
   const onAddComment = () => {
-    console.log(albumId);
     setCommenting(true);
   };
 
   const onComment = (pressedComment) => {
-    console.log(comments);
     if (!pressedComment.responses) return;
-    console.log(pressedComment.responses);
     setCommentStack((commentStack) => [...commentStack, comments])
     setComments(pressedComment.responses);
-    //comments = pressedComment.responses;
-    console.log(comments)
     setInComment(true);
     setCurrentComment((currentComment) => [...currentComment, pressedComment])
   };
 
   const onBack = () => {
     if (commentStack.length <= 0) return;
-    console.log("back");
+
     const lastComments = commentStack[commentStack.length - 1];
-    console.log(commentStack);
+
     setComments(lastComments);
-    //comments = lastComments;
     if (commentStack.length <= 1) setInComment(false);
+
     setCommentStack(commentStack.slice(0, -1));
     setCurrentComment(currentComment.slice(0, -1));
   }
@@ -114,10 +83,21 @@ const AlbumComments = ({ albumId }) => {
     onAddComment();
   }
 
+  const onBackToTop = () => {
+    setComments(initComments);
+    setCommentStack([]);
+    setInComment(false);
+    setCurrentComment([]);
+  }
+
   const replyButton = (commenterId, comment) => {
     return ([
       isUser(commenterId) ? 
-      <IconButton icon="pencil-outline" key={2} onPress={() => onEditComment(comment)}></IconButton> 
+      <IconButton 
+        icon="pencil-outline" 
+        key={2} 
+        onPress={() => onEditComment(comment)}>
+      </IconButton> 
       : null,
       <IconButton icon="reply" key={1} onPress={() => onReply(comment)}></IconButton>
     ])
@@ -134,28 +114,51 @@ const AlbumComments = ({ albumId }) => {
           }}
         >
           <Title>Comments</Title>
-          <Button onPress={onBack} disabled={!inComment}>
-            {inComment ? "Back" : ""}
-          </Button>
-          <Button onPress={onAddComment}>
-            {inComment ? "Reply" : "Comment"}
-          </Button>
+          { inComment ?
+            <Button onPress={onBackToTop}>
+              Back to top
+            </Button> :
+            <Button onPress={onAddComment}>
+              Comment
+            </Button>
+          }
         </View>
-        <View disabled={!inComment}>
-            <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+        <View disabled={!inComment} style={{flexDirection: 'row', paddingBottom: 8}}>
+          <View style={{flex: 1, flexWrap: 'wrap'}}>
+            <Text style={{fontSize: 16 }}>
                 {inComment ? currentComment[currentComment.length - 1].commenter.name : ""}
             </Text>
             {inComment ? 
-            <Text style={{fontSize: 18}}> 
-                Comment: {currentComment[currentComment.length - 1].text} 
-            </Text>
-            : null}
+              <Text style={{fontWeight: "bold", fontSize: 18, paddingLeft:0}}> 
+                  {currentComment[currentComment.length - 1].text} 
+              </Text>
+              : null
+            }
+          </View>
+          <View style={{flexWrap: 'wrap', flexDirection: "row"}}>
+            {inComment ? 
+              [<IconButton icon="undo" onPress={onBack} key={1}></IconButton>,
+              <IconButton icon="reply" onPress={onAddComment} key={2}></IconButton>]
+              : null
+            }
+          </View>
         </View>
+        <View style={inComment ? {
+          borderBottomLeftColor: "#000000", 
+          borderLeftWidth: 3,
+          marginLeft: 10, 
+          paddingLeft: 10,
+          marginBottom: 10
+        } : {}}>
         {comments?.length == 0 ? (
           <Text
             style={{
               margin: 10,
               color: theme.colors.text,
+              borderBottom: "1px solid black",
+              fontSize: 16,
+              fontWeight: "bold",
+              paddingBottom: 5
             }}
           >
             {inComment ? "No Reply" : "No Comment"}
@@ -171,16 +174,23 @@ const AlbumComments = ({ albumId }) => {
                 borderBottom: "1px solid black",
               }}
             >
-              <Text style={{ fontWeight: "bold" }}>
+              <Text style={{}}>
                 {comment?.commenter?.name}
               </Text>
               <List.Item onPress={() => onComment(comment)}
-              tittle={inComment ? "Reply: " : "Comment: "}
-              description={comment.text ? comment.text : "[Deleted]"}
-              right={() => replyButton(comment.commenter?.id, comment)}/>
+                description={comment.text ? comment.text : "[Deleted]"}
+                right={() => replyButton(comment.commenter?.id, comment)}
+                descriptionStyle={{
+                  fontWeight: "bold", 
+                  fontSize: 16, 
+                  color: theme.colors.text
+                }}
+                descriptionNumberOfLines={10}
+              />
             </View>
           ))
         }
+        </View>
         {!comments && isValidating ? (
           <Text style={{ margin: 10, color: theme.colors.text }}>
             Loading...

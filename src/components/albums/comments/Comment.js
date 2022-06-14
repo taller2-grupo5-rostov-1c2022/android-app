@@ -42,7 +42,6 @@ const Comment = ({ visible, setVisible, parentComment, currentComment, albumId, 
   };
 
   React.useEffect(() => {
-    console.warn("ayuda")
     updateText();
     console.log("currentComment: " + currentComment?.text);
   }, [JSON.stringify(currentComment)]);
