@@ -69,6 +69,10 @@ export default function NotificationProvider({ children }) {
     );
   }, [activeChat]);
 
+  useEffect(() => {
+    return () => setNotificationHandler(null);
+  }, []);
+
   return (
     <NotificationContext.Provider
       value={{ notifications, clear, setActiveChat, activeChat }}
