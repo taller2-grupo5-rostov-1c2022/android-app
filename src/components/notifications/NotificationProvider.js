@@ -7,6 +7,7 @@ import {
   useSWRImmutable,
 } from "../../util/services";
 import { addNotificationReceivedListener } from "expo-notifications";
+import { setNotificationHandler } from "expo-notifications";
 
 export const NotificationContext = createContext({
   notifications: [],
@@ -59,6 +60,15 @@ export default function NotificationProvider({ children }) {
     }
   };
 
+  useEffect(() => {
+    setNotificationHandler(
+      {
+        handleNotification: (n) => defaultHandleNotification(n, activeChat),
+      },
+      [activeChat]
+    );
+  }, [activeChat]);
+
   return (
     <NotificationContext.Provider
       value={{ notifications, clear, setActiveChat, activeChat }}
@@ -69,9 +79,25 @@ export default function NotificationProvider({ children }) {
 }
 
 export function isFromSameChat(body, id) {
-  return body?.type === "message" && body?.sender?.id === id;
+  return body?.type === "message" && body?.sender_uid === id;
 }
 
 NotificationProvider.propTypes = {
   children: PropTypes.any,
 };
+
+async function defaultHandleNotification(notification, activeChat) {
+  const data = notification?.request?.content?.data;
+  if (data?.type == "message" && data?.sender_uid == activeChat)
+    return {
+      shouldShowAlert: false,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    };
+
+  return {
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  };
+}

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { setNotificationHandler } from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import handleNotification from "../../notifications/notificationHandler";
+import { addNotificationReceivedListener } from "expo-notifications";
 import {
   useSWRImmutable,
   json_fetcher,
@@ -39,31 +38,22 @@ export default function useMessages(user_id) {
 
   useEffect(() => {
     get_cached();
-    setNotificationHandler({
-      handleNotification: async (n) => {
-        const data = n?.request?.content?.data;
-
-        if (data?.type != "message" || data?.sender?.id != user_id)
-          return handleNotification(n);
-
-        await mutate();
-        return {
-          shouldShowAlert: false,
-          shouldPlaySound: false,
-          shouldSetBadge: false,
-        };
-      },
+    const sub = addNotificationReceivedListener((n) => {
+      const data = n?.request?.content?.data;
+      if (data?.type == "message" || data?.sender?.id == user_id) mutate();
     });
-    return () => {
-      componentWillUnmount.current = true;
-      setNotificationHandler({
-        handleNotification,
-      });
-    };
+    return () => sub.remove();
   }, []);
 
   useEffect(() => {
-    if (data) setMessages(cached.concat(data));
+    if (!query) return;
+
+    if (data)
+      setMessages(
+        Object.values(
+          Object.fromEntries(cached.concat(data).map((m) => [m.id, m]))
+        )
+      );
     else if (cached.length > 0) setMessages(cached);
     else setMessages(null);
   }, [data, cached]);

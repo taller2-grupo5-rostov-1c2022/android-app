@@ -4,14 +4,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import PropTypes from "prop-types";
 import FetchedList from "../general/FetchedList";
 import styles from "../styles";
-import { toLocalDate } from "../../util/general";
 import { isFromSameChat, NotificationContext } from "./NotificationProvider";
 
 const NOTIF_PREFIX = "notifications";
 
 export default function NotificationListScreen({ navigation }) {
   const [notifications, setNotifications] = useState([]);
-  const { notifications: data, clear } = useContext(NotificationContext);
+  const {
+    notifications: data,
+    clear,
+    activeChat,
+  } = useContext(NotificationContext);
 
   useEffect(() => {
     read_cached();
@@ -25,6 +28,10 @@ export default function NotificationListScreen({ navigation }) {
       clear();
     }
   }, [data]);
+
+  useEffect(() => {
+    return () => activeChat && markAsRead(activeChat);
+  }, [activeChat]);
 
   useEffect(() => {
     if (!notifications) return;
@@ -53,10 +60,12 @@ export default function NotificationListScreen({ navigation }) {
   const onPress = (data) => {
     const body = data?.value?.body;
     if (body?.type != "message") return;
-    const id = body?.sender?.id;
     navigation.push("ChatScreen", {
-      id,
+      id: body?.sender_uid,
     });
+  };
+
+  const markAsRead = (id) => {
     setNotifications(
       notifications.map((n) => ({
         ...n,
@@ -111,8 +120,8 @@ export default function NotificationListScreen({ navigation }) {
 }
 
 function getDateText(dateText) {
-  const date = toLocalDate(new Date(dateText));
-  const now = toLocalDate(new Date());
+  const date = new Date(dateText);
+  const now = new Date();
   if (date.getDate() == now.getDate()) {
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
