@@ -3,6 +3,7 @@ import { SessionContext } from "../../session/SessionProvider";
 import PropTypes from "prop-types";
 import { Dialog, Button, Subheading, Text, Caption } from "react-native-paper";
 import { ScrollView, View, Dimensions } from "react-native";
+import { setStringAsync } from "expo-clipboard";
 import styles from "../../styles";
 import { subscribe, useSubLevels } from "../../../util/requests";
 
@@ -54,7 +55,7 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
           <Subheading>Duration: {"\t"}30 days</Subheading>
           <Subheading>
             Price: {"\t\t"}
-            {newSub?.price ?? ""} ETH + Gas
+            {newSub?.price ? `${newSub?.price} ETH + Gas` : "0 ETH"}
           </Subheading>
           <Text>{"\n"}</Text>
           <Subheading>

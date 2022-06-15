@@ -4,8 +4,8 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { SongPicker } from "./SongPicker";
 import styles from "../../styles";
 import Table from "../../formUtil/Table";
-import { VALID_GENRES, useSubLevels } from "../../../util/general";
-import { inputValidator } from "../../../util/general";
+import { inputValidator, VALID_GENRES } from "../../../util/general";
+import { useSubLevels } from "../../../util/requests";
 
 export function defaultGen(data) {
   return {
