@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import styles from "../../styles";
-import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/general";
+import { VALID_GENRES } from "../../../util/general";
 import Checklist from "../../formUtil/Checklist";
 import { fetch, MY_SONGS_URL } from "../../../util/services";
 import ImagePicker from "../../formUtil/ImagePicker";
@@ -16,11 +16,6 @@ export function defaultGen(data) {
       data?.genre && VALID_GENRES.includes(data.genre)
         ? data.genre
         : VALID_GENRES[0],
-    sub_level:
-      data?.sub_level &&
-      VALID_SUB_LEVELS.map((lvl) => lvl.value).includes(data.sub_level)
-        ? data.sub_level
-        : VALID_SUB_LEVELS[0].value,
     songs_ids: data?.songs?.map((song) => song.id) ?? [],
   };
 }
@@ -117,22 +112,6 @@ export default function FormDefinition({
             value: genre,
             label: genre,
           })),
-        },
-        {
-          type: "select",
-          name: "sub_level",
-          rules: {
-            required: {
-              value: true,
-              message: "Subscription level is required",
-            },
-          },
-          textInputProps: {
-            mode: "flat",
-            label: "Subscription level",
-            style: styles.textInput,
-          },
-          options: VALID_SUB_LEVELS,
         },
         {
           name: "songs_ids",

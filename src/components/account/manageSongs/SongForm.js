@@ -4,7 +4,7 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { SongPicker } from "./SongPicker";
 import styles from "../../styles";
 import Table from "../../formUtil/Table";
-import { VALID_GENRES, VALID_SUB_LEVELS } from "../../../util/general";
+import { VALID_GENRES, useSubLevels } from "../../../util/general";
 import { inputValidator } from "../../../util/general";
 
 export function defaultGen(data) {
@@ -16,16 +16,17 @@ export function defaultGen(data) {
       data?.genre && VALID_GENRES.includes(data.genre)
         ? data.genre
         : VALID_GENRES[0],
-    sub_level:
-      data?.sub_level &&
-      VALID_SUB_LEVELS.map((lvl) => lvl.value).includes(data.sub_level)
-        ? data.sub_level
-        : VALID_SUB_LEVELS[0].value,
+    sub_level: data?.sub_level ?? 0,
     file: null,
   };
 }
 
 export default function FormDefinition({ data, ...rest }) {
+  const subLevels = useSubLevels()?.map(({ level, name }) => ({
+    value: level,
+    label: name,
+  }));
+
   return (
     <FormBuilder
       {...rest}
@@ -106,7 +107,7 @@ export default function FormDefinition({ data, ...rest }) {
             label: "Subscription level",
             style: styles.textInput,
           },
-          options: VALID_SUB_LEVELS,
+          options: subLevels,
         },
         {
           name: "file",

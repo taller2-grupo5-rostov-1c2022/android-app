@@ -43,8 +43,7 @@ export default function SearchBar({ setQuery, ...rest }) {
   const [text, setText] = useState("");
   const [disabled, setDisabled] = useState(false);
 
-  const subLevels = useSubLevels();
-  const VALID_SUB_LEVELS = subLevels?.map(({ level, name }) => ({
+  const subLevels = useSubLevels()?.map(({ level, name }) => ({
     value: level,
     label: name,
   }));
@@ -66,7 +65,7 @@ export default function SearchBar({ setQuery, ...rest }) {
   const options = subLevels
     ? [
         ...baseOptions,
-        ...VALID_SUB_LEVELS.map((level) => ({
+        ...subLevels.map((level) => ({
           ...level,
           name: "sub_level",
           value: level.value.toString(),
