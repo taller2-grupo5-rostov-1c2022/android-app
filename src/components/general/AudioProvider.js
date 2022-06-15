@@ -43,20 +43,16 @@ export const AudioProvider = ({ children }) => {
   const unloadSound = () => {
     audio.old_sound.map(async (sound) => {
       const status = await sound?.getStatusAsync();
-      console.log(status);
       if (!status) return false; //keeps the sound
       if (!status.isLoaded) {
-        console.log("deleted");
         return false; //throws away the sound
       }
       sound.unloadAsync().catch(); //unload the still loaded
       return true; //we throw them away next iter in case unload fails
     });
-    console.log("length: " + audio.old_sound.length);
   };
 
   const play = async (uri) => {
-    console.log("started play process");
     if (uri && audio.uri !== uri) {
       //await audio.sound?.stopAsync();
       // El catch es para que no muera si no había canción cargada
@@ -73,11 +69,10 @@ export const AudioProvider = ({ children }) => {
       audio.sound = sound;
     }
     await audio?.sound?.playAsync().catch((error) => {
-      console.error(error);
+      console.warn("Error on Play Song", error);
       errorOnPlaySong();
     });
     unloadSound();
-    console.log("ended play process");
   };
 
   const previous = () => {

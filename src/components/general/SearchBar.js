@@ -3,29 +3,9 @@ import PropTypes from "prop-types";
 import { TextInput, Button, IconButton } from "react-native-paper";
 import { View, ScrollView } from "react-native";
 import styles from "../styles.js";
-import { VALID_SUB_LEVELS } from "../../util/general";
+import { useSubLevels } from "../../util/requests.js";
 
-const options = [
-  {
-    name: "name",
-    label: "Name",
-  },
-  {
-    name: "artist",
-    label: "Artists",
-  },
-  {
-    name: "genre",
-    label: "Genres",
-  },
-  ...VALID_SUB_LEVELS.map((level) => ({
-    ...level,
-    name: "sub_level",
-    value: level.value.toString(),
-  })),
-];
-
-function getButtons(selected, setSelected, setDisabled, onSearch) {
+function getButtons(selected, setSelected, setDisabled, onSearch, options) {
   let i = 0;
 
   const onPress = (option) => {
@@ -61,8 +41,40 @@ function getButtons(selected, setSelected, setDisabled, onSearch) {
 
 export default function SearchBar({ setQuery, ...rest }) {
   const [text, setText] = useState("");
-  const [selected, setSelected] = useState(options[0]);
   const [disabled, setDisabled] = useState(false);
+
+  const subLevels = useSubLevels();
+  const VALID_SUB_LEVELS = subLevels?.map(({ level, name }) => ({
+    value: level,
+    label: name,
+  }));
+
+  const baseOptions = [
+    {
+      name: "name",
+      label: "Name",
+    },
+    {
+      name: "artist",
+      label: "Artists",
+    },
+    {
+      name: "genre",
+      label: "Genres",
+    },
+  ];
+  const options = subLevels
+    ? [
+        ...baseOptions,
+        ...VALID_SUB_LEVELS.map((level) => ({
+          ...level,
+          name: "sub_level",
+          value: level.value.toString(),
+        })),
+      ]
+    : baseOptions;
+
+  const [selected, setSelected] = useState(options[0]);
 
   const onSearch = (
     { name, value } = { name: undefined, value: undefined }
@@ -110,7 +122,7 @@ export default function SearchBar({ setQuery, ...rest }) {
           disabled={disabled}
         />
       </View>
-      {getButtons(selected, setSelected, setDisabled, onSearch)}
+      {getButtons(selected, setSelected, setDisabled, onSearch, options)}
     </View>
   );
 }

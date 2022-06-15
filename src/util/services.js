@@ -4,7 +4,7 @@ import { useSWRConfig } from "swr";
 import { getAuth } from "firebase/auth";
 
 const GATEWAY_URL = "https://rostov-gateway.herokuapp.com";
-const SONGS_SV_URL = `${GATEWAY_URL}/songs`;
+const SONGS_SV_URL = `${GATEWAY_URL}/devsongs`;
 const MESSAGES_SV_URL = `${GATEWAY_URL}/messages`;
 
 export const SONGS_URL = `${SONGS_SV_URL}/songs/`;
@@ -19,9 +19,12 @@ export const MY_PLAYLISTS_URL = `${SONGS_SV_URL}/my_playlists/`;
 export const USERS_URL = `${SONGS_SV_URL}/users/`;
 export const MY_USER_URL = `${SONGS_SV_URL}/my_user/`;
 
+export const SUBSCRIPTIONS_URL = `${SONGS_SV_URL}/subscriptions/`;
+
 export const STREAMINGS_URL = `${SONGS_SV_URL}/streamings/`;
 
 export const MESSAGES_URL = `${MESSAGES_SV_URL}/messages/`;
+export const BALANCE_URL = `${GATEWAY_URL}/balance/`;
 
 export const json_fetcher = async (url) => {
   return await fetch(url);

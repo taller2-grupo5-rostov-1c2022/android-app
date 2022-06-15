@@ -27,7 +27,7 @@ export default function AccountScreen() {
           navigation={navigation}
           onLogOut={onLogOut}
         />
-        <UserSettings navigation={navigation} />
+        <UserSettings navigation={navigation} role={session.role} />
         <ArtistSettings role={session.role} navigation={navigation} />
         <ThemeSwitch />
       </ScrollView>

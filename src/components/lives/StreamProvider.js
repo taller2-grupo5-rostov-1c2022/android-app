@@ -11,7 +11,7 @@ try {
   ChannelProfile = module.ChannelProfile;
   LIVE_SUPPORTED = true;
 } catch {
-  console.log("Live streams not supported on this platform");
+  console.warn("Live streams not supported on this platform");
 }
 
 const APP_ID = "22d869523131488794257a1ec8d9eb2b";
@@ -41,11 +41,11 @@ function Provider({ children }) {
     await eng.setChannelProfile(ChannelProfile.LiveBroadcasting);
 
     const sub_warn = eng.addListener("Warning", (warn) => {
-      console.log("Warning: ", warn);
+      console.warn("Warning: ", warn);
     });
 
     const sub_err = eng.addListener("Error", (err) => {
-      console.log("Error: ", err);
+      console.error("Error: ", err);
     });
 
     const sub_list = eng.addListener("JoinChannelSuccess", () => {

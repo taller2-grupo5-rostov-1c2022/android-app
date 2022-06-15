@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../general/Modal";
 import PropTypes from "prop-types";
 import { View } from "react-native";
@@ -8,11 +8,11 @@ import DropDown from "react-native-paper-dropdown";
 
 const Review = ({ visible, setVisible, initialReview, albumId }) => {
   const currentReview = initialReview;
-  const [text, setText] = React.useState(initialReview?.text ?? "");
+  const [text, setText] = useState(initialReview?.text ?? "");
   const { saveReview, deleteReview } = useReview();
 
-  const [showDropDown, setShowDropDown] = React.useState(false);
-  const [score, setScore] = React.useState(initialReview?.score ?? 7);
+  const [showDropDown, setShowDropDown] = useState(false);
+  const [score, setScore] = useState(initialReview?.score ?? 7);
   const scoreList = [
     {
       label: "0",
@@ -63,7 +63,6 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
   const onCancel = () => {
     setText(initialReview?.text);
     setVisible(false);
-    console.log(currentReview);
   };
 
   const onDeleteReview = () => {
@@ -76,19 +75,10 @@ const Review = ({ visible, setVisible, initialReview, albumId }) => {
     toast.show("Deleted Review :)", { duration: 2000 });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setText(initialReview?.text);
     setScore(initialReview?.score);
-    console.log("currentReview: " + currentReview?.text);
-    console.log("text: " + text);
-    console.log("album id: " + albumId);
   }, [initialReview]);
-
-  React.useEffect(() => {
-    console.log("currentReview: " + currentReview?.text);
-    console.log("text: " + text);
-    console.log("album id: " + albumId);
-  }, [visible]);
 
   const onSaveReview = () => {
     const newReview = {
