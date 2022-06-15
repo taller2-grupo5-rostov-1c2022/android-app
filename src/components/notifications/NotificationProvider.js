@@ -4,7 +4,7 @@ import {
   json_fetcher,
   NOTIFICATIONS_URL,
   fetch,
-  useSWRImmutable,
+  useSWR,
 } from "../../util/services";
 import { addNotificationReceivedListener } from "expo-notifications";
 import { setNotificationHandler } from "expo-notifications";
@@ -18,9 +18,14 @@ export const NotificationContext = createContext({
 });
 
 export default function NotificationProvider({ children }) {
-  const { data, mutate, error, isValidating } = useSWRImmutable(
+  const { data, mutate, error, isValidating } = useSWR(
     NOTIFICATIONS_URL,
-    json_fetcher
+    json_fetcher,
+    {
+      revalidateIfStale: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
   const [notifications, setNotifications] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
