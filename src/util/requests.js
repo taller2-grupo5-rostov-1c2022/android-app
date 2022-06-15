@@ -1,12 +1,17 @@
-import { useSWRConfig } from "swr";
+import { useContext } from "react";
+import useSWR, { useSWRConfig } from "swr";
+import { SessionContext } from "../components/session/SessionProvider";
 
 import {
-  ALBUMS_URL,
   fetch,
-  PLAYLISTS_URL,
-  SONGS_URL,
+  json_fetcher,
   USERS_URL,
+  SONGS_URL,
+  ALBUMS_URL,
+  PLAYLISTS_URL,
+  SUBSCRIPTIONS_URL,
 } from "./services";
+
 const FormData = global.FormData;
 
 const commonHeaders = {
@@ -125,7 +130,6 @@ export async function addColabToPlaylist(playlistKey, colab_id) {
 
 // review: {text, score} -> atleast one of them is required
 export async function saveReview(albumId, comment, edit) {
-  console.log("ALBUM ID: " + albumId);
   const route = ALBUMS_URL + albumId + "/reviews/";
   const method = edit ? "PUT" : "POST";
   const body = JSON.stringify(comment);
@@ -149,7 +153,6 @@ export const useReview = () => {
   const { mutate } = useSWRConfig();
 
   const _saveReview = async (albumId, comment, edit) => {
-    console.log("save");
     saveReview(albumId, comment, edit).then((res) => {
       mutate(ALBUMS_URL + albumId + "/reviews/");
       return res;
@@ -235,6 +238,56 @@ export const useComments = () => {
   };
 };
 
+export const useSubLevels = () => {
+  const { data } = useSWR(SUBSCRIPTIONS_URL, json_fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+
+  // these should rarely change
+  const defaultSubscriptions = [
+    {
+      level: 0,
+      name: "Free",
+      price: "0",
+    },
+    {
+      level: 1,
+      name: "Premium",
+      price: "0.0000001",
+    },
+    {
+      level: 2,
+      name: "Pro",
+      price: "0.0000005",
+    },
+    {
+      level: 3,
+      name: "God",
+      price: "1000",
+    },
+  ];
+
+  return data ?? defaultSubscriptions;
+};
+
+export const useMakeArtist = () => {
+  const { updateRole } = useContext(SessionContext);
+
+  return () =>
+    fetch(USERS_URL + "/make_artist/", {
+      method: "POST",
+      headers: commonHeaders,
+    }).then(() => updateRole());
+};
+
+export const subscribe = async (sub_level) =>
+  fetch(SUBSCRIPTIONS_URL, {
+    method: "POST",
+    headers: { ...commonHeaders, "Content-Type": "application/json" },
+    body: JSON.stringify({ sub_level }),
+  });
 export async function saveFavorite(uid, id, type) {
   const route = USERS_URL + uid + "/favorites" + type;
   const method = "POST";

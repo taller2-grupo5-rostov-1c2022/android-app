@@ -230,3 +230,34 @@ export const COUNTRIES = [
   "Zambia",
   "Zimbabwe",
 ];
+
+export const errStr = (error) => {
+  try {
+    const try_parse = (json) => {
+      try {
+        return JSON.parse(json);
+      } catch {
+        return {};
+      }
+    };
+
+    const parse_obj = (obj) => {
+      try {
+        return obj?.map((e) => e.msg)?.join(", ");
+      } catch {
+        return String(obj);
+      }
+    };
+
+    let body = try_parse(error.body);
+
+    if (body.detail) return parse_obj(body.detail);
+
+    if (body.message) return parse_obj(body.message);
+
+    return error?.message ?? "Unknown Error";
+  } catch (e) {
+    console.error("Error parsing error", e);
+    return "Unknown Error (*)";
+  }
+};

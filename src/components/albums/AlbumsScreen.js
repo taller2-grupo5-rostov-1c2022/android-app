@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   ALBUMS_URL,
   USERS_URL,
@@ -18,7 +18,7 @@ import { useFavorites } from "../../util/requests";
 
 export default function AlbumsScreen() {
   const uid = getAuth()?.currentUser?.uid;
-  const [query, setQuery] = React.useState("");
+  const [query, setQuery] = useState("");
   const [songList, setSongList] = useState([]);
   const { saveFavorite, deleteFavorite } = useFavorites();
   const songs = useSWR(`${ALBUMS_URL}${query}`, json_fetcher);

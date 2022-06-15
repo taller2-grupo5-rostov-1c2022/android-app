@@ -24,7 +24,6 @@ const AlbumReviews = ({ albumId }) => {
 
   const onReview = () => {
     setReviewing(true);
-    console.log(comments)
   };
 
   return (

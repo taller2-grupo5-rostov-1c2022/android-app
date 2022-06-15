@@ -17,6 +17,7 @@ import ListeningLiveScreen from "./streamings/ListeningLiveScreen";
 import HostingLiveScreen from "./streamings/HostingLiveScreen";
 import NotificationListScreen from "./notifications/NotificationListScreen";
 import NotificationProvider from "./notifications/NotificationProvider";
+import ManageSubscription from "./account/subscriptions/ManageSubscription";
 const StackNavigator = createNativeStackNavigator();
 
 export default function Stack() {
@@ -64,6 +65,11 @@ export default function Stack() {
               name="ManageMyPlaylists"
               component={ManageMyPlaylists}
               options={{ title: "Manage my Playlists" }}
+            />
+            <StackNavigator.Screen
+              name="ManageSubscription"
+              component={ManageSubscription}
+              options={{ title: "Manage Subscription" }}
             />
             <StackNavigator.Screen
               name="UserListScreen"

@@ -4,6 +4,7 @@ import { AudioContext } from "../general/AudioProvider";
 import { fetch, SONGS_URL } from "../../util/services";
 import SongItem from "./SongItem";
 import { ActivityIndicator } from "react-native-paper";
+import { errStr } from "../../util/general";
 
 export default function PlayableSongItem({ data, right }) {
   const context = React.useContext(AudioContext);
@@ -17,8 +18,8 @@ export default function PlayableSongItem({ data, right }) {
       context.setSong(song);
       context.setPaused(false);
     } catch (e) {
-      console.error(e);
-      toast.show("Could not play song :(");
+      const detail = errStr(e);
+      toast.show(`Could not play song ${song?.name}\n${detail}`);
     } finally {
       setLoading(false);
     }
