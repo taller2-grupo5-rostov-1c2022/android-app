@@ -8,8 +8,7 @@ const styles = StyleSheet.create({
   },
   chatBubble: {
     borderRadius: 30,
-    paddingTop: 10,
-    paddingBottom: 5,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     width: "70%",
   },
@@ -134,6 +133,13 @@ const styles = StyleSheet.create({
   listScreen: {
     flex: 1,
     width: "100%",
+  },
+  notificationBadge: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    fontSize: 12,
+    fontWeight: "bold",
   },
 });
 

@@ -6,6 +6,7 @@ import { getAuth } from "firebase/auth";
 const GATEWAY_URL = "https://rostov-gateway.herokuapp.com";
 const SONGS_SV_URL = `${GATEWAY_URL}/devsongs`;
 const MESSAGES_SV_URL = `${GATEWAY_URL}/messages`;
+const NOTIFICATIONS_SV_URL = `${GATEWAY_URL}/notifications`;
 
 export const SONGS_URL = `${SONGS_SV_URL}/songs/`;
 export const MY_SONGS_URL = `${SONGS_SV_URL}/my_songs/`;
@@ -25,6 +26,11 @@ export const STREAMINGS_URL = `${SONGS_SV_URL}/streamings/`;
 
 export const MESSAGES_URL = `${MESSAGES_SV_URL}/messages/`;
 export const BALANCE_URL = `${GATEWAY_URL}/balance/`;
+
+export const NOTIFICATIONS_TOKEN_URL = `${NOTIFICATIONS_SV_URL}/tokens/`;
+export const NOTIFICATIONS_URL = `${NOTIFICATIONS_SV_URL}/notifications/`;
+
+export const HTTP_NOT_FOUND = 404;
 
 export const json_fetcher = async (url) => {
   return await fetch(url);

@@ -38,7 +38,7 @@ export default function UserListScreen({ navigation }) {
           style={{ marginRight: "2%" }}
         />
       )}
-      onPress={() => navigation.push("ChatScreen", { user: data })}
+      onPress={() => navigation.push("ChatScreen", { id: data?.id })}
       right={(props) => (
         <IconButton
           {...props}

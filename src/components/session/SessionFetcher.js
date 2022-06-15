@@ -5,15 +5,15 @@ import {
   fetch,
   MY_USER_URL,
   USERS_URL,
+  HTTP_NOT_FOUND,
 } from "../../util/services";
 import LoadingScreen from "../account/login/LoadingScreen";
 import Stack from "../Stack";
 import UserCreationMenu from "../session/UserCreationMenu";
-import { getAuth, signOut as _signOut } from "firebase/auth";
 import SessionProvider from "./SessionProvider";
-const HTTP_NOT_FOUND = 404;
+import PropTypes from "prop-types";
 
-export default function SessionFetcher() {
+export default function SessionFetcher({ signOut }) {
   const [status, setStatus] = useState({
     loading: true,
     paused: false,
@@ -26,8 +26,10 @@ export default function SessionFetcher() {
 
   useEffect(() => {
     async function onNewLogin() {
-      // invalidate previous user data
-      let data = await response.mutate(null, { optimisticData: null });
+      let data = await response.mutate();
+
+      if (response?.error && response.error.status != HTTP_NOT_FOUND) return;
+
       setStatus((prev) => ({ ...prev, loading: false }));
       if (!data?.id) return;
 
@@ -38,15 +40,18 @@ export default function SessionFetcher() {
     if (status.loading && !status.paused) onNewLogin();
   }, [status]);
 
-  const signOut = () => {
-    _signOut(getAuth()).catch();
-  };
-
   useEffect(() => {
+    if (!response?.error) return;
+
     if (response?.error?.status == HTTP_NOT_FOUND) {
       setStatus((prev) => ({ ...prev, paused: true }));
+      return;
     }
-  }, [response?.error]);
+
+    console.error(response?.error);
+    toast.show("Error signing you in, please try again later");
+    signOut();
+  }, [response?.error?.status]);
 
   if (
     !status.loading &&
@@ -95,3 +100,7 @@ async function onCreationSubmit(data, signOut, mutate, setStatus) {
     toast.show("Error creating your account, please try again later :(");
   }
 }
+
+SessionFetcher.propTypes = {
+  signOut: PropTypes.func.isRequired,
+};

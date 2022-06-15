@@ -8,6 +8,8 @@ import { getReactNativePersistence } from "firebase/auth/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-notifications";
 import ThemeProvider from "./components/ThemeProvider";
+import { setNotificationHandler } from "expo-notifications";
+import { defaultHandleNotification } from "./components/notifications/NotificationProvider";
 
 export default function App() {
   React.useEffect(() => {
@@ -18,6 +20,10 @@ export default function App() {
       });
     }
     initializeFirebase();
+
+    setNotificationHandler({
+      handleNotification: defaultHandleNotification,
+    });
   }, []);
 
   return (

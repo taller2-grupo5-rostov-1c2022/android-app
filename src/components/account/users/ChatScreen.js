@@ -1,82 +1,54 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { View } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
 import styles from "../../styles";
 import ChatBubble from "./ChatBubble";
-import {
-  useSWR,
-  json_fetcher,
-  MESSAGES_URL,
-  fetch,
-} from "../../../util/services";
+import { MESSAGES_URL, fetch } from "../../../util/services";
 import FetchedList from "../../general/FetchedList";
-import { ShapedImage } from "../../general/ShapedImage";
+import useChatHeader from "./useChatHeader";
 import { toLocalDate } from "../../../util/general";
+import useMessages from "./useMessages";
+import useLocalMessages from "./useLocalMessages";
+import { NotificationContext } from "../../notifications/NotificationProvider";
 
 const RECEIVER_QUERY_PARAM = "receiver_id";
 
 export default function ChatScreen({ navigation, route }) {
-  const { user: otherUser } = route.params;
+  const { id } = route.params;
+  useChatHeader(navigation, id);
   const [text, setText] = useState("");
-  const [messages, setMessages] = useState({});
+  const { mutate, data, ...rest } = useMessages(id);
+  const { addMessage, localMessages } = useLocalMessages(mutate);
   const [content, setContent] = useState(null);
-  const {
-    mutate,
-    data: fetchedMessages,
-    ...rest
-  } = useSWR(`${MESSAGES_URL}${encodeURI(otherUser.id)}/`, json_fetcher, {
-    // FIXME: actualizar mensajes a mano y no cada 10s
-    refreshInterval: 10000,
-  });
+  const { setActiveChat, activeChat } = useContext(NotificationContext);
 
   useEffect(() => {
-    navigation.setOptions({
-      title: otherUser.name,
-      headerShown: true,
-      left: (
-        <ShapedImage
-          shape="circle"
-          size={40}
-          icon="account"
-          imageUri={otherUser.pfp}
-          style={{ backgroundColor: "#F8F8FF" }}
-        />
-      ),
-    });
-  }, []);
+    if (!id) return;
+    const prev = activeChat;
+    setActiveChat(id);
+    return () => setActiveChat(prev);
+  }, [id]);
 
   useEffect(() => {
-    if (!fetchedMessages) return;
-    let msgs = [];
-
-    const keys = Object.keys(messages);
-    if (keys)
-      keys.forEach((key) => {
-        if (!key.startsWith("_")) msgs.concat(messages[key]);
-      });
-    fetchedMessages.forEach((m) => (msgs[`_${m.id}`] = m));
-
-    setMessages(msgs);
-  }, [fetchedMessages]);
-
-  useEffect(() => {
-    if (!fetchedMessages) setContent(null);
-    else setContent(Object.values(messages));
-  }, [messages]);
+    if (!data) return setContent(null);
+    setContent(
+      localMessages
+        .concat(data ?? [])
+        .sort((x, y) => (x.created_at > y.created_at ? 1 : -1))
+    );
+  }, [localMessages, data]);
 
   const bubble = ({ data: m }) => {
-    const right = m.sender.id != otherUser.id;
-    let date_str = undefined;
-    if (right) {
-      let utc = new Date(m.created_at + "Z");
-      let local = toLocalDate(utc);
+    const right = m?.sender?.id != id;
 
-      let now = toLocalDate(new Date());
-      date_str = `${local.toISOString().slice(11, 16)}`;
-      if (now.toISOString().slice(0, 10) != local.toISOString().slice(0, 10)) {
-        date_str = `${local.toISOString().slice(0, 10)} ${date_str}`;
-      }
+    let utc = new Date(m?.created_at + "Z");
+    let local = toLocalDate(utc);
+
+    let now = toLocalDate(new Date());
+    let date_str = `${local.toISOString().slice(11, 16)}`;
+    if (now.toISOString().slice(0, 10) != local.toISOString().slice(0, 10)) {
+      date_str = `${local.toISOString().slice(0, 10)} ${date_str}`;
     }
 
     return (
@@ -92,39 +64,12 @@ export default function ChatScreen({ navigation, route }) {
   const onSend = async () => {
     if (!text) return;
 
-    const date = new Date();
-    const optimistic_msg = {
-      text: text,
-      sender: {
-        id: null,
-      },
-      created_at: date.toISOString().slice(0, -1),
-      status: "pending",
-    };
-
-    setMessages((prev) => {
-      prev[date.getTime()] = optimistic_msg;
-      return { ...prev };
-    });
-    setText("");
-
-    try {
-      await sendMsg(text, otherUser.id);
-    } catch (err) {
+    const promise = sendMsg(text, id).catch((err) => {
       toast.show("Failed to send message");
       console.error(err);
-      setMessages((prev) => {
-        prev[date.getTime()].status = "error";
-        return { ...prev };
-      });
-      return;
-    }
-
-    await mutate();
-    setMessages((prev) => {
-      delete prev[date.getTime()];
-      return prev;
     });
+    addMessage(text, promise);
+    setText("");
   };
 
   return (
@@ -151,7 +96,7 @@ export default function ChatScreen({ navigation, route }) {
           icon="send"
           style={{ alignSelf: "center" }}
           onPress={onSend}
-          disabled={!content}
+          disabled={rest.error || (!data && rest.isValidating)}
         ></IconButton>
       </View>
     </View>
@@ -177,13 +122,7 @@ async function sendMsg(msg, receiver_id) {
 ChatScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
-      user: PropTypes.shape({
-        id: PropTypes.string,
-        name: PropTypes.string,
-        pfp: PropTypes.string,
-        location: PropTypes.string,
-        interests: PropTypes.string,
-      }).isRequired,
+      id: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
   navigation: PropTypes.shape({

@@ -5,6 +5,7 @@ import AccountScreen from "./account/AccountScreen.js";
 import PropTypes from "prop-types";
 import AlbumsScreen from "./albums/AlbumsScreen";
 import PlayListScreen from "./playlists/PlayListScreen";
+import Bell from "./notifications/Bell";
 
 export default function HomeScreen({ navigation }) {
   const [index, setIndex] = useState(0);
@@ -19,12 +20,14 @@ export default function HomeScreen({ navigation }) {
     navigation.setOptions({
       headerShown: true,
       title: routes[index].title,
-      right: (
+      right: [
         <Appbar.Action
           icon="antenna"
           onPress={() => navigation.push("LivesListScreen")}
-        />
-      ),
+          key={1}
+        />,
+        <Bell navigation={navigation} key={2} />,
+      ],
     });
   }, [index]);
 
