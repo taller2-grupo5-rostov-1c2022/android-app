@@ -30,6 +30,9 @@ export const BALANCE_URL = `${GATEWAY_URL}/payments/balances/`;
 export const NOTIFICATIONS_TOKEN_URL = `${NOTIFICATIONS_SV_URL}/tokens/`;
 export const NOTIFICATIONS_URL = `${NOTIFICATIONS_SV_URL}/notifications/`;
 
+export const TRIGGER_METRICS_URL =
+  "https://4ukt2at75fozsu5fjdzmjgy2yy0qfzch.lambda-url.us-east-2.on.aws/";
+
 export const HTTP_NOT_FOUND = 404;
 
 export const json_fetcher = async (url) => {

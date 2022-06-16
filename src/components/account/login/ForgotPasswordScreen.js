@@ -14,6 +14,15 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
 import { emailRegex } from "../../../util/general";
+import { triggerMetric } from "../../../util/requests.js";
+
+const emailMetric = async (email) =>
+  await triggerMetric({
+    type: "passwordReset",
+    payload: {
+      email,
+    },
+  });
 
 export default function ForgotPasswordScreen() {
   const auth = getAuth();
@@ -27,6 +36,7 @@ export default function ForgotPasswordScreen() {
     setAuthing(true);
     try {
       await sendPasswordResetEmail(auth, data.email);
+      emailMetric(data.email);
 
       setAuthing(false);
       setDone(true);
@@ -53,9 +63,12 @@ export default function ForgotPasswordScreen() {
       <Headline style={{ margin: "2%" }}>Reset Password</Headline>
       <ResetForm control={control} setFocus={setFocus} />
       {done ? (
-        <Headline style={[styles.infoText, { color: theme.colors.info }]}>
-          Check your email for a reset link.
-        </Headline>
+        <>
+          <Headline style={[styles.infoText, { color: theme.colors.info }]}>
+            Check your email for a reset link.{"\n"}Be sure to check your spam
+            folder.
+          </Headline>
+        </>
       ) : (
         <Button
           mode="contained"

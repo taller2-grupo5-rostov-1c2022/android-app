@@ -10,6 +10,7 @@ import {
   ALBUMS_URL,
   PLAYLISTS_URL,
   SUBSCRIPTIONS_URL,
+  TRIGGER_METRICS_URL,
 } from "./services";
 
 const FormData = global.FormData;
@@ -339,3 +340,14 @@ export const useFavorites = () => {
     deleteFavorite: _deleteFavorite,
   };
 };
+
+export const triggerMetric = async (metric) =>
+  fetch(TRIGGER_METRICS_URL, {
+    method: "POST",
+    headers: {
+      ...commonHeaders,
+      "Content-Type": "application/json",
+    },
+    mode: "no-cors",
+    body: JSON.stringify(metric),
+  });
