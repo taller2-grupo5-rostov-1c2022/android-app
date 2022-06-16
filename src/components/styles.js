@@ -69,6 +69,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flex: 1,
   },
+  spacedActivityIndicator: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    margin: "2em",
+  },
   disabled: {
     opacity: 0.5,
   },
