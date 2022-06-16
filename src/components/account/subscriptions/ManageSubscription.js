@@ -27,7 +27,7 @@ export default function ManageSubscription() {
   const subLevels = useSubLevels();
   const [selectedLevel, setSelectedLevel] = useState();
 
-  const { user, balance } = useContext(SessionContext);
+  const { user, balance, updateBalance } = useContext(SessionContext);
 
   const remainingDays = getRemainingDays(user?.sub_expires);
   const level =
@@ -83,10 +83,19 @@ export default function ManageSubscription() {
           style={{ marginVertical: 0 }}
         />
       </View>
-      <Caption style={[styles.bold, { fontSize: 13 }]}>
-        Current balance: {"\t"}
-        {balance} ETH
-      </Caption>
+      <View style={[styles.row, { justifyContent: "space-between" }]}>
+        <Caption style={[styles.bold, { fontSize: 13 }]}>
+          Current balance: {"\t"}
+          {balance} ETH
+        </Caption>
+        <IconButton
+          icon="refresh"
+          onPress={updateBalance}
+          color="gray"
+          style={{ marginVertical: 0 }}
+        />
+      </View>
+
       <Headline style={{ marginTop: "10%", marginBottom: "5%" }}>
         Change Subscription
       </Headline>

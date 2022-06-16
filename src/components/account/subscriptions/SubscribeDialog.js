@@ -67,7 +67,7 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
             <Subheading>Duration: {"\t"}30 days</Subheading>
             <Subheading>
               Price: {"\t\t"}
-              {newSub?.price ? `${newSub?.price} ETH + Gas` : "0 ETH"}
+              {newSub?.price > 0 ? `${newSub?.price} ETH + Gas` : "0 ETH"}
             </Subheading>
             <Text>{"\n"}</Text>
             <Subheading>
