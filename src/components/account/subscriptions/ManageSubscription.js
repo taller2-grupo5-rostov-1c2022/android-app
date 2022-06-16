@@ -1,10 +1,20 @@
 import { useContext, useState } from "react";
 import { SessionContext } from "../../session/SessionProvider";
 import PropTypes from "prop-types";
-import { Button, Headline, Portal, Subheading, Text } from "react-native-paper";
+import {
+  Button,
+  Headline,
+  Portal,
+  Subheading,
+  Text,
+  Caption,
+  IconButton,
+} from "react-native-paper";
 import { View } from "react-native";
+import { setStringAsync } from "expo-clipboard";
 import { useSubLevels } from "../../../util/requests";
 import SubscribeDialog from "./SubscribeDialog";
+import styles from "../../styles";
 
 const getRemainingDays = (str_date) => {
   if (!str_date) return null;
@@ -24,6 +34,16 @@ export default function ManageSubscription() {
     subLevels?.find((sub) => sub.level === user?.sub_level)?.name ?? "- -";
 
   const subscribeTo = (level) => () => setSelectedLevel(level);
+
+  const copyWallet = async () => {
+    try {
+      await setStringAsync(user?.wallet ?? "");
+      toast.show("Wallet copied");
+    } catch (e) {
+      toast.show("Error copying wallet");
+      console.error(e);
+    }
+  };
 
   return (
     <View
@@ -47,16 +67,40 @@ export default function ManageSubscription() {
           <Text>{remainingDays} days remaining</Text>
         ) : null}
       </View>
-      <Subheading>
+      <Headline style={{ marginTop: "10%" }}>Your wallet</Headline>
+      <View style={[styles.row, { justifyContent: "space-between" }]}>
+        <Caption
+          numberOfLines={1}
+          ellipsizeMode="middle"
+          style={{ textAlignVertical: "center", flex: 1 }}
+        >
+          {user?.wallet ?? ""}
+        </Caption>
+        <IconButton
+          icon="content-copy"
+          onPress={copyWallet}
+          color="gray"
+          style={{ marginVertical: 0 }}
+        />
+      </View>
+      <Caption style={[styles.bold, { fontSize: 13 }]}>
         Current balance: {"\t"}
         {balance} ETH
-      </Subheading>
-      <Headline>Change Subscription</Headline>
+      </Caption>
+      <Headline style={{ marginTop: "10%", marginBottom: "5%" }}>
+        Change Subscription
+      </Headline>
       {subLevels?.map((sub, i) => (
-        <Button key={i} mode={"outlined"} onPress={subscribeTo(sub?.level)}>
+        <Button
+          key={i}
+          mode={"outlined"}
+          onPress={subscribeTo(sub?.level)}
+          style={{ marginVertical: "2%" }}
+        >
           <Text>{sub?.name}</Text>
         </Button>
       ))}
+
       <Portal>
         <SubscribeDialog
           selectedLevel={selectedLevel}

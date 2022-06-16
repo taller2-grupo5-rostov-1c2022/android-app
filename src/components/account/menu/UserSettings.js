@@ -32,7 +32,7 @@ export default function UserSettings({ navigation, role }) {
         />
       ) : null}
       <List.Item
-        title="Other users..."
+        title="Other users"
         left={(props) => (
           <List.Icon {...props} icon="account-search"></List.Icon>
         )}

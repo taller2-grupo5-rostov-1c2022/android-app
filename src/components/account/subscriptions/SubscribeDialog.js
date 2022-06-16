@@ -1,9 +1,8 @@
 import { useContext, useState } from "react";
-import { SessionContext } from "../../session/SessionProvider";
 import PropTypes from "prop-types";
 import { Dialog, Button, Subheading, Text, Caption } from "react-native-paper";
 import { ScrollView, View, Dimensions } from "react-native";
-import { setStringAsync } from "expo-clipboard";
+import { SessionContext } from "../../session/SessionProvider";
 import styles from "../../styles";
 import { subscribe, useSubLevels } from "../../../util/requests";
 
@@ -75,8 +74,6 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
           ) : (
             <>
               <Subheading>Insufficient Balance</Subheading>
-              <Text>Please Transfer more money to your wallet</Text>
-              <Caption>{user?.wallet ?? ""}</Caption>
             </>
           )}
         </ScrollView>
