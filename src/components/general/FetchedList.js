@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ActivityIndicator, Subheading, Text } from "react-native-paper";
-import { ScrollView, View, RefreshControl } from "react-native";
+import { FlatList, View, RefreshControl } from "react-native";
 import styles from "../styles.js";
 import PropTypes from "prop-types";
 import { useTheme } from "react-native-paper";
@@ -13,22 +13,10 @@ export default function FetchedList({
   response,
   itemComponent,
   emptyMessage,
-  ...viewProps
+  ...listProps
 }) {
   let theme = useTheme();
   let [refreshing, setRefreshing] = useState(false);
-  let [content, setContent] = useState(null);
-
-  useEffect(() => {
-    if (!response.data) return;
-    if (response.data.length === 0)
-      setContent(
-        <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
-          {emptyMessage}
-        </Subheading>
-      );
-    else setContent(mapData(response.data, itemComponent));
-  }, [response.data]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -41,8 +29,17 @@ export default function FetchedList({
 
   if (response.error) return <ErrorMessage error={response.error} />;
 
+  if (!response.data || response.data.length === 0)
+    return (
+      <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
+        {emptyMessage}
+      </Subheading>
+    );
+
   return (
-    <ScrollView
+    <FlatList
+      renderItem={(i) => renderItem(itemComponent, i)}
+      data={response.data}
       refreshControl={
         response.mutate ? (
           <RefreshControl
@@ -53,20 +50,13 @@ export default function FetchedList({
           />
         ) : undefined
       }
-      {...viewProps}
-    >
-      {content}
-    </ScrollView>
+      {...listProps}
+    />
   );
 }
 
-function mapData(data, itemComponent) {
-  let i = 0;
-  const Item = itemComponent;
-
-  return data?.map((element) => {
-    return <Item key={i++} data={element} />;
-  });
+function renderItem(Item, { item, index }) {
+  return <Item data={item} key={index} />;
 }
 
 function ErrorMessage({ error }) {
@@ -93,7 +83,7 @@ FetchedList.propTypes = {
   }).isRequired,
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
-  ...ScrollView.propTypes,
+  ...FlatList.propTypes,
 };
 
 ErrorMessage.propTypes = {
