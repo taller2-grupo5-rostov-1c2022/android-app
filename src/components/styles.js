@@ -147,6 +147,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
   },
+  favoritesTitle: {
+    fontWeight: 600, 
+    fontSize: 20},
 });
 
 export default styles;
