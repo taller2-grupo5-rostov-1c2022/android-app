@@ -17,6 +17,7 @@ import { getAuth } from "firebase/auth";
 import { useFavorites } from "../../util/requests";
 
 export default function SongsScreen() {
+  
   const uid = getAuth()?.currentUser?.uid;
   const [visible, setVisible] = useState(false);
   const [songId, setSongId] = useState("");

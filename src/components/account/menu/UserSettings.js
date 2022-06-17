@@ -40,6 +40,15 @@ export default function UserSettings({ navigation, role }) {
           navigation.push("UserListScreen");
         }}
       />
+      <List.Item
+        title="Favorites"
+        left={(props) => (
+          <List.Icon {...props} icon="heart"></List.Icon>
+        )}
+        onPress={() => {
+          navigation.push("FavoritesScreen");
+        }}
+      />
     </List.Section>
   );
 }

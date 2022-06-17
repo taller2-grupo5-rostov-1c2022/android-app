@@ -18,6 +18,8 @@ import HostingLiveScreen from "./streamings/HostingLiveScreen";
 import NotificationListScreen from "./notifications/NotificationListScreen";
 import NotificationProvider from "./notifications/NotificationProvider";
 import ManageSubscription from "./account/subscriptions/ManageSubscription";
+import FavoritesScreen from "./favorites/FavoritesScreen";
+
 const StackNavigator = createNativeStackNavigator();
 
 export default function Stack() {
@@ -96,6 +98,11 @@ export default function Stack() {
               name="NotificationListScreen"
               component={NotificationListScreen}
               options={{ title: "Notifications" }}
+            />
+            <StackNavigator.Screen
+              name="FavoritesScreen"
+              component={FavoritesScreen}
+              options={{ title: "Favorites" }}
             />
           </StackNavigator.Navigator>
         </Portal.Host>
