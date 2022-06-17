@@ -1,20 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { View } from "react-native";
+import { IconButton, Portal } from "react-native-paper";
+import { getAuth } from "firebase/auth";
 import {
+  useSWRInfinite,
   useSWR,
   json_fetcher,
   SONGS_URL,
   USERS_URL,
 } from "../../util/services";
-import { IconButton, Portal } from "react-native-paper";
 import styles from "../styles.js";
-import { View } from "react-native";
 import Player from "../Player";
 import FetchedList from "../general/FetchedList";
 import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import SearchBar from "../general/SearchBar";
 import PlayableSongItem from "./PlayableSongItem";
-import { getAuth } from "firebase/auth";
 import { useFavorites } from "../../util/requests";
+import { PAGE_SIZE } from "../../util/general";
+
+async function fetcher_mock(url) {
+  let arr = url.split("|");
+  let page = parseInt(arr[1]);
+  return (await json_fetcher(arr[0])).slice(
+    page * PAGE_SIZE,
+    (page + 1) * PAGE_SIZE
+  );
+}
 
 export default function SongsScreen() {
   const uid = getAuth()?.currentUser?.uid;
@@ -22,31 +33,27 @@ export default function SongsScreen() {
   const [songId, setSongId] = useState("");
   const [query, setQuery] = useState("");
   const { saveFavorite, deleteFavorite } = useFavorites();
-  const songs = useSWR(`${SONGS_URL}${query}`, json_fetcher);
-  const [songList, setSongList] = useState(null);
+  const songs = useSWRInfinite(
+    (index) => `${SONGS_URL}${query}|${index}`,
+    fetcher_mock
+  );
   const { data: favorites } = useSWR(
     `${USERS_URL}${uid}/favorites/songs/`,
     json_fetcher
   );
 
-  useEffect(() => {
-    if (!songs.data) {
-      setSongList(null);
-      return;
-    }
-
+  const customData = (data) => {
     let favoritesFilted = favorites;
     if (query) {
-      const songsIds = getFavoritesIds(songs?.data);
+      const songsIds = getFavoritesIds(data);
       favoritesFilted = favorites.filter((song) => songsIds?.includes(song.id));
     }
-    const sortedSongs = favoritesFilted?.concat(
-      songs?.data?.filter(
+    return favoritesFilted?.concat(
+      data?.filter(
         (song) => !getFavoritesIds(favoritesFilted)?.includes(song?.id)
       )
     );
-    setSongList(sortedSongs);
-  }, [songs?.data, favorites]);
+  };
 
   const onLike = (id) => {
     if (getFavoritesIds(favorites)?.includes(id)) {
@@ -89,10 +96,11 @@ export default function SongsScreen() {
       <View style={styles.container}>
         <SearchBar setQuery={setQuery} />
         <FetchedList
-          response={{ ...songs, data: songList }}
+          response={songs}
           itemComponent={song}
           emptyMessage={query ? "No results" : "There is nothing here..."}
           style={styles.listScreen}
+          customData={customData}
         />
         <Portal>
           <PlaylistMenuAdd

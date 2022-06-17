@@ -1,5 +1,6 @@
 export { default as useSWR } from "swr";
 export { default as useSWRImmutable } from "swr/immutable";
+export { default as useSWRInfinite } from "swr/infinite";
 import { useSWRConfig } from "swr";
 import { getAuth } from "firebase/auth";
 

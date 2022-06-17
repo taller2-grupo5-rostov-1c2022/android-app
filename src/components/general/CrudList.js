@@ -4,7 +4,7 @@ import styles from "../styles.js";
 import { View } from "react-native";
 import PropTypes from "prop-types";
 import FetchedList from "./FetchedList";
-import { json_fetcher, useSWR, useMatchMutate } from "../../util/services";
+import { json_fetcher, useMatchMutate, useSWR } from "../../util/services";
 import CrudDialog from "./CrudDialog";
 
 // itemComponent es el componente para cada item que recibe la prop data de cada item
