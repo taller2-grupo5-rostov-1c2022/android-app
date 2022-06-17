@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
-    margin: "2em",
+    marginVertical: "8%",
   },
   disabled: {
     opacity: 0.5,

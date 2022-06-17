@@ -45,6 +45,16 @@ export default function ManageSubscription() {
     }
   };
 
+  const _updateBalance = async () => {
+    try {
+      await updateBalance();
+      toast.show("Balance updated");
+    } catch (e) {
+      toast.show("Error updating balance");
+      console.error(e);
+    }
+  };
+
   return (
     <View
       style={{
@@ -84,13 +94,20 @@ export default function ManageSubscription() {
         />
       </View>
       <View style={[styles.row, { justifyContent: "space-between" }]}>
-        <Caption style={[styles.bold, { fontSize: 13 }]}>
-          Current balance: {"\t"}
-          {balance} ETH
+        <Caption style={[styles.bold, { textAlignVertical: "center" }]}>
+          Current balance:
         </Caption>
+        <Caption
+          numberOfLines={1}
+          style={{ flex: 1, textAlignVertical: "center" }}
+          ellipsizeMode="tail"
+        >
+          {` ${balance} `}
+        </Caption>
+        <Caption style={{ textAlignVertical: "center" }}>ETH</Caption>
         <IconButton
           icon="refresh"
-          onPress={updateBalance}
+          onPress={_updateBalance}
           color="gray"
           style={{ marginVertical: 0 }}
         />

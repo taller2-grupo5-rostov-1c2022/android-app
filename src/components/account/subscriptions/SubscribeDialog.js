@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Dialog,
@@ -24,13 +24,16 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
       await subscribe(selectedLevel);
       toast.show("Successfully Subscribed");
       update();
-      const newBalance = await updateBalance();
-      toast.show(`Balance: ${newBalance}`);
-      hide();
+      await updateBalance();
     } catch (e) {
       toast.show("Error Subscribing");
     }
+    hide();
   };
+
+  useEffect(() => {
+    if (selectedLevel !== undefined) setProcessing(false);
+  }, [selectedLevel]);
 
   const subLevels = useSubLevels();
   const userSub = subLevels?.find((sub) => sub.level === user?.sub_level);
@@ -45,7 +48,6 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
   return (
     <Dialog
       visible={selectedLevel !== undefined}
-      hideDialog={_hide}
       onDismiss={_hide}
       style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
     >
