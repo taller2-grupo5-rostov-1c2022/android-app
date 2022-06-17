@@ -17,20 +17,24 @@ import { getAuth } from "firebase/auth";
 import { useFavorites } from "../../util/requests";
 
 export default function SongsScreen() {
-  
   const uid = getAuth()?.currentUser?.uid;
   const [visible, setVisible] = useState(false);
   const [songId, setSongId] = useState("");
   const [query, setQuery] = useState("");
   const { saveFavorite, deleteFavorite } = useFavorites();
   const songs = useSWR(`${SONGS_URL}${query}`, json_fetcher);
-  const [songList, setSongList] = useState([]);
+  const [songList, setSongList] = useState(null);
   const { data: favorites } = useSWR(
     `${USERS_URL}${uid}/favorites/songs/`,
     json_fetcher
   );
 
   useEffect(() => {
+    if (!songs.data) {
+      setSongList(null);
+      return;
+    }
+
     let favoritesFilted = favorites;
     if (query) {
       const songsIds = getFavoritesIds(songs?.data);

@@ -1,5 +1,10 @@
 import React from "react";
-import { useSWR, json_fetcher, PLAYLISTS_URL, USERS_URL } from "../../util/services";
+import {
+  useSWR,
+  json_fetcher,
+  PLAYLISTS_URL,
+  USERS_URL,
+} from "../../util/services";
 import { Portal, List, IconButton } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
@@ -13,7 +18,7 @@ export default function PlayListScreen() {
   const uid = getAuth()?.currentUser?.uid;
   const [visible, setVisible] = React.useState(false);
   const [playlistId, setPlaylistId] = React.useState("");
-  const [songList, setSongList] = React.useState([]);
+  const [playlistList, setPlaylistList] = React.useState([]);
   const { saveFavorite, deleteFavorite } = useFavorites();
   const playlists = useSWR(PLAYLISTS_URL, json_fetcher);
   const { data: favorites } = useSWR(
@@ -22,12 +27,16 @@ export default function PlayListScreen() {
   );
 
   React.useEffect(() => {
+    if (!playlists.data) {
+      setPlaylistList(null);
+      return;
+    }
     const sortedSongs = favorites?.concat(
       playlists?.data?.filter(
         (song) => !getFavoritesIds(favorites)?.includes(song?.id)
       )
     );
-    setSongList(sortedSongs);
+    setPlaylistList(sortedSongs);
   }, [playlists?.data, favorites]);
 
   const onPress = (id) => {
@@ -36,7 +45,7 @@ export default function PlayListScreen() {
   };
 
   const onLike = (id) => {
-    console.log(id)
+    console.log(id);
     if (getFavoritesIds(favorites)?.includes(id)) {
       deleteFavorite(uid, id, "/playlists/");
     } else {
@@ -49,17 +58,19 @@ export default function PlayListScreen() {
       title={data?.name}
       description={data?.description}
       onPress={() => onPress(data.id)}
-      right={() => <IconButton
-        onPress={() => {
-          onLike(data?.id);
-        }}
-        icon={
-          getFavoritesIds(favorites)?.includes(data?.id)
-            ? "heart"
-            : "heart-outline"
-        }
-        color={"#808080"}
-      />}
+      right={() => (
+        <IconButton
+          onPress={() => {
+            onLike(data?.id);
+          }}
+          icon={
+            getFavoritesIds(favorites)?.includes(data?.id)
+              ? "heart"
+              : "heart-outline"
+          }
+          color={"#808080"}
+        />
+      )}
     />
   );
 
@@ -67,7 +78,7 @@ export default function PlayListScreen() {
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <FetchedList
-          response={{ ...playlists, data: songList }}
+          response={{ ...playlists, data: playlistList }}
           itemComponent={playlist}
           emptyMessage={"There is nothing here..."}
           style={styles.listScreen}

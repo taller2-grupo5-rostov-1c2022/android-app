@@ -19,9 +19,9 @@ import { useFavorites } from "../../util/requests";
 export default function AlbumsScreen() {
   const uid = getAuth()?.currentUser?.uid;
   const [query, setQuery] = useState("");
-  const [songList, setSongList] = useState([]);
+  const [albumList, setAlbumList] = useState(null);
   const { saveFavorite, deleteFavorite } = useFavorites();
-  const songs = useSWR(`${ALBUMS_URL}${query}`, json_fetcher);
+  const albums = useSWR(`${ALBUMS_URL}${query}`, json_fetcher);
   const [modalStatus, setModalStatus] = useState({
     visible: false,
     album: null,
@@ -32,18 +32,24 @@ export default function AlbumsScreen() {
   );
 
   useEffect(() => {
+    if (!albums.data) {
+      setAlbumList(null);
+      return;
+    }
     let favoritesFilted = favorites;
     if (query) {
-      const songsIds = getFavoritesIds(songs?.data);
-      favoritesFilted = favorites.filter((song) => songsIds?.includes(song.id));
+      const albumsIds = getFavoritesIds(albums?.data);
+      favoritesFilted = favorites.filter((song) =>
+        albumsIds?.includes(song.id)
+      );
     }
-    const sortedSongs = favoritesFilted?.concat(
-      songs?.data?.filter(
+    const sortedalbums = favoritesFilted?.concat(
+      albums?.data?.filter(
         (song) => !getFavoritesIds(favoritesFilted)?.includes(song?.id)
       )
     );
-    setSongList(sortedSongs);
-  }, [songs?.data, favorites]);
+    setAlbumList(sortedalbums);
+  }, [albums?.data, favorites]);
 
   const onPress = (album) => setModalStatus({ album: album, visible: true });
 
@@ -81,7 +87,7 @@ export default function AlbumsScreen() {
       <View style={[styles.container]}>
         <SearchBar setQuery={setQuery} />
         <FetchedList
-          response={{ ...songs, data: songList }}
+          response={{ ...albums, data: albumList }}
           itemComponent={album}
           emptyMessage={query ? "No results" : "There is nothing here..."}
           style={styles.listScreen}
