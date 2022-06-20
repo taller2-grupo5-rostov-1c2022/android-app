@@ -46,7 +46,7 @@ export default function LivesListScreen({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <FetchedList
-        response={response}
+        {...response}
         itemComponent={item}
         emptyMessage={"There are no active live streams"}
         style={styles.listScreen}

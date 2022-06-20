@@ -58,7 +58,6 @@ const AlbumReviews = ({ albumId }) => {
               key={index}
               style={{
                 margin: 10,
-                borderBottom: "1px solid black",
               }}
             >
               <Text style={{ fontWeight: "bold" }}>

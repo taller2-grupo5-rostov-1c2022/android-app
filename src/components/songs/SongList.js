@@ -56,7 +56,8 @@ export default function SongList({
       {title ? <Title>{title}</Title> : undefined}
       <View style={{ marginBottom: "5%", flex: 1 }}>
         <FetchedList
-          response={{ data: songs, isValidating: isValidating }}
+          data={songs}
+          isValidating={isValidating}
           itemComponent={song}
           viewProps={{ style: { width: "100%" } }}
           emptyMessage={emptyMessage}

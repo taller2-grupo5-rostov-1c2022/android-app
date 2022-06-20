@@ -14,8 +14,6 @@ export const VALID_GENRES = [
 
 export const emailRegex = /^\S+@\S+\.\w+$/;
 
-export const PAGE_SIZE = 10;
-
 export function inputValidator(msg) {
   return (v) => !!v?.trim() || msg;
 }

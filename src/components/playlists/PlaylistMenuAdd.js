@@ -50,7 +50,7 @@ export const PlaylistMenuAdd = ({ visible, setVisible, songId, colabId }) => {
       onDismiss={() => setVisible(false)}
     >
       <FetchedList
-        response={my_playlists}
+        {...my_playlists}
         itemComponent={playlist}
         emptyMessage={"You don't have any playlists"}
       />

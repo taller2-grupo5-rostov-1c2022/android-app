@@ -53,7 +53,7 @@ export default function UserListScreen({ navigation }) {
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <FetchedList
-          response={users}
+          {...users}
           itemComponent={item}
           emptyMessage={"There is nothing here..."}
           style={styles.listScreen}

@@ -175,7 +175,6 @@ const AlbumComments = ({ albumId }) => {
               style={{
                 margin: 10,
                 color: theme.colors.text,
-                borderBottom: "1px solid black",
                 fontSize: 16,
                 fontWeight: "bold",
                 paddingBottom: 5,
@@ -191,7 +190,6 @@ const AlbumComments = ({ albumId }) => {
                 key={index}
                 style={{
                   margin: 10,
-                  borderBottom: "1px solid black",
                 }}
               >
                 <Text style={{}}>{comment?.commenter?.name}</Text>

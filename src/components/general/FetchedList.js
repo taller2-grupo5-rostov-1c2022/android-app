@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, memo, useMemo, useCallback } from "react";
 import { ActivityIndicator, Subheading, Text } from "react-native-paper";
 import { FlatList, View, RefreshControl } from "react-native";
 import styles from "../styles.js";
 import PropTypes from "prop-types";
 import { useTheme } from "react-native-paper";
-import { PAGE_SIZE } from "../../util/general";
+import { PAGE_SIZE } from "../../util/services";
 
 // itemComponent es el componente para cada item que recibe la prop data de cada item
-// response tiene la respuesta de SWR
+// data, mutate, isValidating, error, size and setSize son de la respuesta de SWR
 // emptyMessage (opcional): mensaje a mostrar si la lista esta vacía
 // customData (opcional): una función que recibe la data de la respuesta y devuelve
 // la que hay que visualizar
 // el resto de los props se pasan a la view
-export default function FetchedList({
-  response,
+function FetchedList({
+  data,
+  mutate,
+  isValidating,
+  error,
+  size,
+  setSize,
   itemComponent,
   emptyMessage,
   customData,
@@ -21,29 +26,35 @@ export default function FetchedList({
 }) {
   const theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const [data, setData] = useState(null);
 
-  useEffect(() => {
-    if (!response.data) return;
-    let data =
-      response.size !== undefined ? response.data.flat() : response.data;
+  const listData = useMemo(() => {
+    let list = size !== undefined ? data?.flat() : data;
+    if (customData) list = customData(list);
+    return list;
+  }, [data, customData]);
 
-    if (customData) data = customData(data);
-    setData(data);
-  }, [response.data, customData]);
+  const renderItem = useCallback(
+    ({ item, index }) => {
+      const Item = itemComponent;
+      return (
+        <Item data={item} key={listProps.keyExtractor ? undefined : index} />
+      );
+    },
+    [itemComponent, listProps.keyExtractor]
+  );
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await response.mutate();
+    await mutate();
     setRefreshing(false);
-  };
+  }, [mutate]);
 
-  if ((!response.data && response.isValidating) || (response.data && !data))
+  if (!listData && isValidating)
     return <ActivityIndicator style={styles.activityIndicator} />;
 
-  if (response.error) return <ErrorMessage error={response.error} />;
+  if (error) return <ErrorMessage error={error} />;
 
-  if (!response.data || response.data.length === 0)
+  if (!listData || listData.length === 0)
     return (
       <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
         {emptyMessage}
@@ -52,10 +63,10 @@ export default function FetchedList({
 
   return (
     <FlatList
-      renderItem={(i) => renderItem(itemComponent, i)}
-      data={data}
+      renderItem={renderItem}
+      data={listData}
       refreshControl={
-        response.mutate ? (
+        mutate ? (
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
@@ -65,27 +76,22 @@ export default function FetchedList({
         ) : undefined
       }
       onEndReached={
-        response.size &&
-        response.data.length == response.size &&
-        response.data[response.data.length - 1].length == PAGE_SIZE
-          ? () => response.setSize((prev) => prev + 1)
+        size &&
+        data?.length == size &&
+        data[data.length - 1].length == PAGE_SIZE
+          ? () => setSize((prev) => prev + 1)
           : undefined
       }
       onEndReachedThreshold={0.2}
       indicatorStyle="white"
       ListFooterComponent={
-        response.size &&
-        response.data[response.data.length - 1].length == PAGE_SIZE ? (
+        size && data[data.length - 1].length == PAGE_SIZE ? (
           <ActivityIndicator />
         ) : undefined
       }
       {...listProps}
     />
   );
-}
-
-function renderItem(Item, { item, index }) {
-  return <Item data={item} key={index} />;
 }
 
 function ErrorMessage({ error }) {
@@ -103,16 +109,19 @@ function ErrorMessage({ error }) {
   );
 }
 
+export default memo(FetchedList);
+
 FetchedList.propTypes = {
-  response: PropTypes.shape({
-    data: PropTypes.array,
-    isValidating: PropTypes.bool,
-    error: PropTypes.any,
-    mutate: PropTypes.func,
-  }).isRequired,
+  data: PropTypes.array,
+  isValidating: PropTypes.bool,
+  error: PropTypes.any,
+  mutate: PropTypes.func,
+  size: PropTypes.number,
+  setSize: PropTypes.func,
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
   customData: PropTypes.func,
+  forceCustom: PropTypes.bool,
   ...FlatList.propTypes,
 };
 

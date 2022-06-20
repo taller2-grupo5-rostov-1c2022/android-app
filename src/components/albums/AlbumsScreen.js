@@ -1,111 +1,48 @@
-import { useState, useEffect } from "react";
-import {
-  ALBUMS_URL,
-  USERS_URL,
-  useSWR,
-  json_fetcher,
-} from "../../util/services";
+import { useState, useCallback } from "react";
 import { Portal, IconButton } from "react-native-paper";
-import styles from "../styles.js";
-import { View } from "react-native";
-import Player from "../Player";
-import FetchedList from "../general/FetchedList";
 import AlbumItem from "./AlbumItem";
 import AlbumInfo from "./AlbumInfo";
-import SearchBar from "../general/SearchBar";
-import { getAuth } from "firebase/auth";
-import { useFavorites } from "../../util/requests";
+import { ALBUMS_URL } from "../../util/services";
+import ContentScreen from "../general/ContentScreen.js";
 
 export default function AlbumsScreen() {
-  const uid = getAuth()?.currentUser?.uid;
-  const [query, setQuery] = useState("");
-  const [albumList, setAlbumList] = useState(null);
-  const { saveFavorite, deleteFavorite } = useFavorites();
-  const albums = useSWR(`${ALBUMS_URL}${query}`, json_fetcher);
   const [modalStatus, setModalStatus] = useState({
     visible: false,
     album: null,
   });
-  const { data: favorites } = useSWR(
-    `${USERS_URL}${uid}/favorites/albums/`,
-    json_fetcher
-  );
-
-  useEffect(() => {
-    if (!albums.data) {
-      setAlbumList(null);
-      return;
-    }
-    let favoritesFilted = favorites;
-    if (query) {
-      const albumsIds = getFavoritesIds(albums?.data);
-      favoritesFilted = favorites.filter((song) =>
-        albumsIds?.includes(song.id)
-      );
-    }
-    const sortedalbums = favoritesFilted?.concat(
-      albums?.data?.filter(
-        (song) => !getFavoritesIds(favoritesFilted)?.includes(song?.id)
-      )
-    );
-    setAlbumList(sortedalbums);
-  }, [albums?.data, favorites]);
 
   const onPress = (album) => setModalStatus({ album: album, visible: true });
 
-  const onLike = (id) => {
-    console.log(id);
-    if (getFavoritesIds(favorites)?.includes(id)) {
-      deleteFavorite(uid, id, "/albums/");
-    } else {
-      saveFavorite(uid, id, "/albums/");
-    }
-  };
-
-  const album = ({ data }) => (
-    <AlbumItem
-      onPress={onPress}
-      data={data}
-      right={
-        <IconButton
-          onPress={() => {
-            onLike(data?.id);
-          }}
-          icon={
-            getFavoritesIds(favorites)?.includes(data?.id)
-              ? "heart"
-              : "heart-outline"
-          }
-          color={"#808080"}
-        />
-      }
-    />
+  const album = useCallback(
+    ({ data, onLike, liked }) => (
+      <AlbumItem
+        onPress={onPress}
+        data={data}
+        right={
+          <IconButton
+            onPress={() => {
+              onLike(data?.id);
+            }}
+            icon={liked ? "heart" : "heart-outline"}
+            color={"#808080"}
+          />
+        }
+      />
+    ),
+    []
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={[styles.container]}>
-        <SearchBar setQuery={setQuery} />
-        <FetchedList
-          response={{ ...albums, data: albumList }}
-          itemComponent={album}
-          emptyMessage={query ? "No results" : "There is nothing here..."}
-          style={styles.listScreen}
-        />
-        <Portal>
-          <AlbumInfo
-            modalStatus={modalStatus}
-            setModalStatus={setModalStatus}
-          />
-        </Portal>
-      </View>
-      <Player />
-    </View>
+    <>
+      <ContentScreen
+        url={ALBUMS_URL}
+        withSearchBar={true}
+        itemComponent={album}
+        type="/albums/"
+      />
+      <Portal>
+        <AlbumInfo modalStatus={modalStatus} setModalStatus={setModalStatus} />
+      </Portal>
+    </>
   );
-}
-
-function getFavoritesIds(favorites) {
-  return favorites?.map(function (favorite) {
-    return favorite.id;
-  });
 }

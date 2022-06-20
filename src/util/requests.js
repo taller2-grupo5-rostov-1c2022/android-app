@@ -1,5 +1,6 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import useSWR, { useSWRConfig } from "swr";
+import { getAuth } from "firebase/auth";
 import { SessionContext } from "../components/session/SessionProvider";
 
 import {
@@ -318,19 +319,28 @@ export async function deleteFavorite(uid, id, type) {
   });
 }
 
-export const useFavorites = () => {
-  const { mutate } = useSWRConfig();
+export const useFavorites = (type) => {
+  const uid = getAuth()?.currentUser?.uid;
+  const response = useSWR(`${USERS_URL}${uid}/favorites${type}`, json_fetcher);
 
-  const _saveFavorite = async (uid, id, type) => {
-    saveFavorite(uid, id, type).then((res) => {
-      mutate(USERS_URL + uid + "/favorites" + type);
+  useEffect(() => {
+    if (!response.error) return;
+    toast.show("Error fetching favorites");
+    console.error(response.error);
+  }, [response.error]);
+
+  const _saveFavorite = async (uid, data, type) => {
+    saveFavorite(uid, data.id, type).then((res) => {
+      const optimistic = [...response.data, data];
+      response.mutate(response.mutate, { optimisticData: optimistic });
       return res;
     });
   };
 
-  const _deleteFavorite = async (uid, id, type) => {
-    deleteFavorite(uid, id, type).then((res) => {
-      mutate(USERS_URL + uid + "/favorites" + type);
+  const _deleteFavorite = async (uid, data, type) => {
+    const optimistic = response.data.filter((d) => d.id != data.id);
+    deleteFavorite(uid, data.id, type).then((res) => {
+      response.mutate(response.mutate, { optimisticData: optimistic });
       return res;
     });
   };
@@ -338,6 +348,7 @@ export const useFavorites = () => {
   return {
     saveFavorite: _saveFavorite,
     deleteFavorite: _deleteFavorite,
+    response,
   };
 };
 

@@ -5,7 +5,7 @@ import { useSWRConfig } from "swr";
 import { getAuth } from "firebase/auth";
 
 const GATEWAY_URL = "https://rostov-gateway.herokuapp.com";
-const SONGS_SV_URL = `${GATEWAY_URL}/songs`;
+const SONGS_SV_URL = `${GATEWAY_URL}/devsongs`;
 const MESSAGES_SV_URL = `${GATEWAY_URL}/messages`;
 const NOTIFICATIONS_SV_URL = `${GATEWAY_URL}/notifications`;
 
@@ -35,6 +35,14 @@ export const TRIGGER_METRICS_URL =
   "https://4ukt2at75fozsu5fjdzmjgy2yy0qfzch.lambda-url.us-east-2.on.aws/";
 
 export const HTTP_NOT_FOUND = 404;
+
+export const PAGE_SIZE = 10;
+
+export function getUrl(baseUrl, page, other_params) {
+  return `${baseUrl}?page=${page}&size=${PAGE_SIZE}&${
+    other_params?.join("&") ?? ""
+  }`;
+}
 
 export const json_fetcher = async (url) => {
   return await fetch(url);

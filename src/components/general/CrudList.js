@@ -42,7 +42,7 @@ export default function CrudList({
   return (
     <View style={styles.container}>
       <FetchedList
-        response={response}
+        {...response}
         itemComponent={item}
         style={styles.listScreen}
         {...rest}
