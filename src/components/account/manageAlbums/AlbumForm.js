@@ -20,7 +20,7 @@ export function defaultGen(data) {
   };
 }
 
-export async function getMySongs(album, setExtra, setStatus) {
+export async function getMySongs(album) {
   try {
     let songs = await fetch(MY_SONGS_URL, {
       method: "GET",
@@ -35,22 +35,14 @@ export async function getMySongs(album, setExtra, setStatus) {
       },
       out: id,
     }));
-    setExtra({ validSongs: songs, initialImageUri: album?.cover });
-    setStatus((prev) => ({ ...prev, loading: false }));
+    return { validSongs: songs, initialImageUri: album?.cover };
   } catch (e) {
     console.error(e);
-    setStatus({
-      error: { message: "Could not get songs to edit album" },
-      loading: false,
-    });
+    throw new Error("Could not get available songs list");
   }
 }
 
-export default function FormDefinition({
-  data,
-  extra: { validSongs, initialImageUri },
-  ...rest
-}) {
+export default function FormDefinition({ data, extra, ...rest }) {
   return (
     <FormBuilder
       {...rest}
@@ -63,7 +55,7 @@ export default function FormDefinition({
             shape: "square",
             icon: "album",
             size: 200,
-            initialImageUri,
+            initialImageUri: extra?.initialImageUri,
             style: { alignSelf: "center" },
           },
           rules: {
@@ -118,7 +110,7 @@ export default function FormDefinition({
           type: "custom",
           JSX: Checklist,
           customProps: {
-            allOptions: validSongs ?? [],
+            allOptions: extra?.validSongs ?? [],
             title: "Songs",
             emptyMessage: "No songs to add",
           },

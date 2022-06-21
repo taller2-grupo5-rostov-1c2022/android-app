@@ -31,13 +31,14 @@ export default function FormDefinition({ data, ...rest }) {
       out: id,
     })) ?? [];
 
-  const validColabs = data?.colabs?.map(({ name, id }) => ({
-    listProps: {
-      title: name,
-      description: "",
-    },
-    out: id,
-  }));
+  const validColabs =
+    data?.colabs?.map(({ name, id }) => ({
+      listProps: {
+        title: name,
+        description: "",
+      },
+      out: id,
+    })) ?? [];
 
   const formConfigArray = [
     {
