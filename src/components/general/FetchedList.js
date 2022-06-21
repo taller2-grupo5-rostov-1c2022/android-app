@@ -33,12 +33,10 @@ function FetchedList({
     return list;
   }, [data, customData]);
 
+  const Item = getRenderItem(itemComponent, listProps.keyExtractor);
   const renderItem = useCallback(
     ({ item, index }) => {
-      const Item = itemComponent;
-      return (
-        <Item data={item} key={listProps.keyExtractor ? undefined : index} />
-      );
+      return <Item item={item} index={index} />;
     },
     [itemComponent, listProps.keyExtractor]
   );
@@ -75,7 +73,7 @@ function FetchedList({
           ? () => setSize((prev) => prev + 1)
           : undefined
       }
-      onEndReachedThreshold={0.2}
+      onEndReachedThreshold={0.005}
       indicatorStyle="white"
       ListEmptyComponent={
         <Subheading
@@ -110,6 +108,27 @@ function ErrorMessage({ error }) {
 }
 
 export default memo(FetchedList);
+
+function getRenderItem(itemComponent, keyExtractor) {
+  const Item = ({ item, index }) => {
+    const Item = itemComponent;
+    return <Item data={item} key={keyExtractor ? keyExtractor(item) : index} />;
+  };
+
+  Item.propTypes = {
+    item: PropTypes.any.isRequired,
+    index: PropTypes.number.isRequired,
+  };
+
+  const comparison = (prevProps, nextProps) => {
+    if (JSON.stringify(prevProps.item) != JSON.stringify(nextProps.item))
+      return false;
+
+    return keyExtractor ? true : prevProps.index === nextProps.index;
+  };
+
+  return memo(Item, comparison);
+}
 
 FetchedList.propTypes = {
   data: PropTypes.array,

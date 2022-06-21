@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { View } from "react-native";
 import { getAuth } from "firebase/auth";
 import PropTypes from "prop-types";
@@ -31,50 +31,51 @@ export default function ContentScreen({
     (index) => getUrl(url, index, queries),
     json_fetcher
   );
+  const onLike = useRef(null);
+
+  useEffect(() => {
+    if (!favorites) return;
+
+    const favoritesIds = new Set(favorites.map((i) => i.id));
+    onLike.current = (item) =>
+      favoritesIds.has(item.id)
+        ? deleteFavorite(uid, item, type)
+        : saveFavorite(uid, item, type);
+  }, [favorites]);
 
   const customData = useCallback(
     (data) => {
       if (!data) return null;
 
       let favoritesFilted = favorites ?? [];
+      const dataIds = new Set(data.map((i) => i.id));
       if (queries) {
-        const ids = getFavoritesIds(data);
         favoritesFilted = favoritesFilted.filter((item) =>
-          ids?.includes(item.id)
+          dataIds.has(item.id)
         );
       }
-      return favoritesFilted?.concat(
-        data.filter(
-          (item) => !getFavoritesIds(favoritesFilted)?.includes(item?.id)
-        )
-      );
-    },
-    [favorites, queries]
-  );
+      const favoritesIds = new Set(favoritesFilted.map((i) => i.id));
 
-  const onLike = useCallback(
-    (data) => {
-      if (getFavoritesIds(favorites)?.includes(data?.id)) {
-        deleteFavorite(uid, data, type);
-      } else {
-        saveFavorite(uid, data, type);
-      }
+      const addLikeInfo = (item) => ({
+        ...item,
+        liked: favoritesIds.has(item.id),
+        onLike: () => onLike.current && onLike.current(item),
+      });
+
+      return favoritesFilted
+        .concat(data.filter((item) => !favoritesIds.has(item.id)))
+        .map(addLikeInfo);
     },
-    [favorites]
+    [favorites, queries, uid, type]
   );
 
   const item = useCallback(
     ({ data }) => {
       const ItemComponent = itemComponent;
-      return (
-        <ItemComponent
-          onLike={() => onLike(data)}
-          data={data}
-          liked={getFavoritesIds(favorites)?.includes(data?.id)}
-        />
-      );
+      const { onLike, liked, ...rest } = data;
+      return <ItemComponent onLike={onLike} data={rest} liked={liked} />;
     },
-    [onLike, itemComponent]
+    [itemComponent]
   );
 
   return (
@@ -97,12 +98,6 @@ export default function ContentScreen({
       <Player />
     </View>
   );
-}
-
-function getFavoritesIds(favorites) {
-  return favorites?.map(function (favorite) {
-    return favorite.id;
-  });
 }
 
 ContentScreen.propTypes = {
