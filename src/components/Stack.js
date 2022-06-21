@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTheme } from "react-native-paper";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
@@ -25,6 +26,7 @@ const StackNavigator = createNativeStackNavigator();
 export default function Stack() {
   const notification = Notifications.useLastNotificationResponse();
   const navigation = useNavigation();
+  const theme = useTheme();
 
   useEffect(() => {
     const type = notification?.notification?.request?.content?.data?.type;
@@ -45,6 +47,9 @@ export default function Stack() {
             screenOptions={{
               headerShown: true,
               header: (props) => <NavigationAppbar {...props} />,
+              contentStyle: {
+                backgroundColor: theme.colors.background,
+              },
             }}
           >
             <StackNavigator.Screen name="Home" component={HomeScreen} />
