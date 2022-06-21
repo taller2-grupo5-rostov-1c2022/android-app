@@ -44,6 +44,10 @@ export function getUrl(baseUrl, page, other_params) {
   }`;
 }
 
+export function keyExtractor(item) {
+  return item.id;
+}
+
 export const json_fetcher = async (url) => {
   return await fetch(url);
 };

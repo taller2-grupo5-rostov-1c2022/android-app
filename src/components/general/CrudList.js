@@ -9,6 +9,7 @@ import {
   useMatchMutate,
   useSWRInfinite,
   getUrl,
+  keyExtractor,
 } from "../../util/services";
 import CrudDialog from "./CrudDialog";
 
@@ -53,6 +54,7 @@ export default function CrudList({
         {...response}
         itemComponent={item}
         style={styles.listScreen}
+        keyExtractor={keyExtractor}
         {...rest}
       />
       <Portal>

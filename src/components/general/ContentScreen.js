@@ -8,7 +8,11 @@ import FetchedList from "../general/FetchedList";
 import SearchBar from "../general/SearchBar";
 import { useFavorites } from "../../util/requests";
 import { getUrl } from "../../util/services";
-import { useSWRInfinite, json_fetcher } from "../../util/services";
+import {
+  useSWRInfinite,
+  json_fetcher,
+  keyExtractor,
+} from "../../util/services";
 
 export default function ContentScreen({
   withSearchBar,
@@ -99,10 +103,6 @@ function getFavoritesIds(favorites) {
   return favorites?.map(function (favorite) {
     return favorite.id;
   });
-}
-
-function keyExtractor(item) {
-  return item.id;
 }
 
 ContentScreen.propTypes = {
