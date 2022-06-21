@@ -10,8 +10,8 @@ export default function SongsScreen() {
   const [visible, setVisible] = useState(false);
   const [songId, setSongId] = useState("");
 
-  const onPress = useCallback((songId) => {
-    setSongId(songId);
+  const onPress = useCallback((data) => {
+    setSongId(data?.id);
     setVisible(true);
   }, []);
 

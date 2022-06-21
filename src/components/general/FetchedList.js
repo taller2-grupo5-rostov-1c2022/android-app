@@ -54,17 +54,10 @@ function FetchedList({
 
   if (error) return <ErrorMessage error={error} />;
 
-  if (!listData || listData.length === 0)
-    return (
-      <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
-        {emptyMessage}
-      </Subheading>
-    );
-
   return (
     <FlatList
       renderItem={renderItem}
-      data={listData}
+      data={listData ?? []}
       refreshControl={
         mutate ? (
           <RefreshControl
@@ -84,6 +77,13 @@ function FetchedList({
       }
       onEndReachedThreshold={0.2}
       indicatorStyle="white"
+      ListEmptyComponent={
+        <Subheading
+          style={[styles.infoText, { color: theme.colors.info, width: "100%" }]}
+        >
+          {emptyMessage}
+        </Subheading>
+      }
       ListFooterComponent={
         size && data[data.length - 1].length == PAGE_SIZE ? (
           <ActivityIndicator />
@@ -121,7 +121,6 @@ FetchedList.propTypes = {
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
   customData: PropTypes.func,
-  forceCustom: PropTypes.bool,
   ...FlatList.propTypes,
 };
 
