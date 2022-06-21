@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 import { View } from "react-native";
-import { getAuth } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../styles.js";
 import Player from "../Player";
@@ -20,7 +19,6 @@ export default function ContentScreen({
   type,
   itemComponent,
 }) {
-  const uid = getAuth()?.currentUser?.uid;
   const [queries, setQueries] = useState(null);
   const {
     saveFavorite,
@@ -38,9 +36,7 @@ export default function ContentScreen({
 
     const favoritesIds = new Set(favorites.map((i) => i.id));
     onLike.current = (item) =>
-      favoritesIds.has(item.id)
-        ? deleteFavorite(uid, item, type)
-        : saveFavorite(uid, item, type);
+      favoritesIds.has(item.id) ? deleteFavorite(item) : saveFavorite(item);
   }, [favorites]);
 
   const customData = useCallback(
@@ -66,7 +62,7 @@ export default function ContentScreen({
         .concat(data.filter((item) => !favoritesIds.has(item.id)))
         .map(addLikeInfo);
     },
-    [favorites, queries, uid, type]
+    [favorites, queries, type]
   );
 
   const item = useCallback(

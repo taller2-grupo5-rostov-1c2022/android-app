@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton, Button, Title } from "react-native-paper";
-import { View, ScrollView } from "react-native";
+import { View } from "react-native";
 import FetchedList from "./../general/FetchedList";
 import PlayableSongItem from "./PlayableSongItem";
 import styles from "../styles";
@@ -54,20 +54,15 @@ export default function SongList({
     <View style={{ width: "100%" }}>
       <View>{playAllButton}</View>
       {title ? <Title>{title}</Title> : undefined}
-      <ScrollView
-        horizontal={true}
-        style={{ width: "100%", height: "100%", flex: 1 }}
-        contentContainerStyle={{ marginBottom: "5%", flex: 1 }}
-      >
-        <FetchedList
-          data={songs}
-          isValidating={isValidating}
-          itemComponent={song}
-          contentContainerStyle={{ flex: 1 }}
-          style={{ flex: 1 }}
-          emptyMessage={emptyMessage}
-        />
-      </ScrollView>
+      <FetchedList
+        data={songs}
+        isValidating={isValidating}
+        itemComponent={song}
+        contentContainerStyle={{ flex: 1 }}
+        style={{ flex: 1 }}
+        emptyMessage={emptyMessage}
+        noScroll={true}
+      />
     </View>
   );
 }

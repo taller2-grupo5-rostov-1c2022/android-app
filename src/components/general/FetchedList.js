@@ -1,6 +1,6 @@
 import React, { useState, memo, useMemo, useCallback } from "react";
 import { ActivityIndicator, Subheading, Text } from "react-native-paper";
-import { FlatList, View, RefreshControl } from "react-native";
+import { FlatList, View, RefreshControl, ScrollView } from "react-native";
 import styles from "../styles.js";
 import PropTypes from "prop-types";
 import { useTheme } from "react-native-paper";
@@ -22,6 +22,7 @@ function FetchedList({
   itemComponent,
   emptyMessage,
   customData,
+  noScroll,
   ...listProps
 }) {
   const theme = useTheme();
@@ -52,10 +53,18 @@ function FetchedList({
 
   if (error) return <ErrorMessage error={error} />;
 
-  return (
+  if (!listData || listData.length == 0) {
+    return (
+      <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
+        {emptyMessage}
+      </Subheading>
+    );
+  }
+
+  const content = (
     <FlatList
       renderItem={renderItem}
-      data={listData ?? []}
+      data={listData}
       refreshControl={
         mutate ? (
           <RefreshControl
@@ -75,13 +84,6 @@ function FetchedList({
       }
       onEndReachedThreshold={0.005}
       indicatorStyle="white"
-      ListEmptyComponent={
-        <Subheading
-          style={[styles.infoText, { color: theme.colors.info, width: "100%" }]}
-        >
-          {emptyMessage}
-        </Subheading>
-      }
       ListFooterComponent={
         size && data[data.length - 1].length == PAGE_SIZE ? (
           <ActivityIndicator />
@@ -90,6 +92,19 @@ function FetchedList({
       {...listProps}
     />
   );
+
+  if (noScroll)
+    return (
+      <ScrollView
+        horizontal={true}
+        style={{ width: "100%", height: "100%", flex: 1 }}
+        contentContainerStyle={{ marginBottom: "5%", flex: 1 }}
+      >
+        {content}
+      </ScrollView>
+    );
+
+  return content;
 }
 
 function ErrorMessage({ error }) {
@@ -140,6 +155,7 @@ FetchedList.propTypes = {
   itemComponent: PropTypes.any.isRequired,
   emptyMessage: PropTypes.string,
   customData: PropTypes.func,
+  noScroll: PropTypes.bool,
   ...FlatList.propTypes,
 };
 

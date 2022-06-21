@@ -329,7 +329,7 @@ export const useFavorites = (type) => {
     console.error(response.error);
   }, [response.error]);
 
-  const _saveFavorite = async (uid, data, type) => {
+  const _saveFavorite = async (data) => {
     saveFavorite(uid, data.id, type).then((res) => {
       const optimistic = [...response.data, data];
       response.mutate(response.mutate, { optimisticData: optimistic });
@@ -337,7 +337,7 @@ export const useFavorites = (type) => {
     });
   };
 
-  const _deleteFavorite = async (uid, data, type) => {
+  const _deleteFavorite = async (data) => {
     const optimistic = response.data.filter((d) => d.id != data.id);
     deleteFavorite(uid, data.id, type).then((res) => {
       response.mutate(response.mutate, { optimisticData: optimistic });

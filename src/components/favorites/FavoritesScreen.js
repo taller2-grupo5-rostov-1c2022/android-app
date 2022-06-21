@@ -1,7 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useSWR, json_fetcher, USERS_URL } from "../../util/services";
-import { getAuth } from "firebase/auth";
 import FetchedList from "../general/FetchedList";
 import styles from "../styles.js";
 import PlayableSongItem from "../songs/PlayableSongItem";
@@ -14,44 +12,18 @@ import AlbumInfo from "../albums/AlbumInfo";
 import PlaylistMenuPlay from "../playlists/PlaylistMenuPlay";
 
 export default function FavoritesScreen() {
-  const uid = getAuth()?.currentUser?.uid;
-  const { deleteFavorite } = useFavorites();
+  const { response: favoritesSongs, deleteFavorite: deleteSong } =
+    useFavorites("/songs/");
+  const { response: favoritesAlbums, deleteFavorite: deleteAlbum } =
+    useFavorites("/albums/");
+  const { response: favoritesPlaylists, deleteFavorite: deletePlaylist } =
+    useFavorites("/playlists/");
   const [visiblePlaylist, setVisiblePlaylist] = React.useState(false);
   const [playlistId, setPlaylistId] = React.useState("");
   const [modalStatus, setModalStatus] = React.useState({
     visible: false,
     album: null,
   });
-
-  const favoritesSongs = useSWR(
-    `${USERS_URL}${uid}/favorites/songs/`,
-    json_fetcher
-  );
-  const favoritesAlbums = useSWR(
-    `${USERS_URL}${uid}/favorites/albums/`,
-    json_fetcher
-  );
-
-  const favoritesPlaylists = useSWR(
-    `${USERS_URL}${uid}/favorites/playlists/`,
-    json_fetcher
-  );
-
-  const onDelete = (id, path) => {
-    deleteFavorite(uid, id, path);
-  };
-
-  const onDeleteSongs = (id) => {
-    onDelete(id, "/songs/");
-  };
-
-  const onDeleteAlbums = (id) => {
-    onDelete(id, "/albums/");
-  };
-
-  const onDeletePlaylists = (id) => {
-    onDelete(id, "/playlists/");
-  };
 
   const onPressAlbum = (album) =>
     setModalStatus({ album: album, visible: true });
@@ -68,7 +40,7 @@ export default function FavoritesScreen() {
         <IconButton
           {...props}
           onPress={() => {
-            onDeleteSongs(data?.id);
+            deleteSong(data);
           }}
           icon={"heart"}
           key={1}
@@ -84,7 +56,7 @@ export default function FavoritesScreen() {
       right={
         <IconButton
           onPress={() => {
-            onDeleteAlbums(data?.id);
+            deleteAlbum(data);
           }}
           icon="heart"
           color={"#808080"}
@@ -101,7 +73,7 @@ export default function FavoritesScreen() {
       right={() => (
         <IconButton
           onPress={() => {
-            onDeletePlaylists(data?.id);
+            deletePlaylist(data);
           }}
           icon="heart"
           color={"#808080"}
@@ -117,16 +89,18 @@ export default function FavoritesScreen() {
           <FetchedList
             {...favoritesSongs}
             itemComponent={song}
-            emptyMessage={"No Favorites"}
+            emptyMessage="No Favorites"
             style={styles.listScreen}
+            noScroll={true}
           />
         </List.Section>
         <List.Section title="Albums" titleStyle={styles.favoritesTitle}>
           <FetchedList
             {...favoritesAlbums}
             itemComponent={album}
-            emptyMessage={"No Favorites"}
+            emptyMessage="No Favorites"
             style={styles.listScreen}
+            noScroll={true}
           />
           <Portal>
             <AlbumInfo
@@ -139,8 +113,9 @@ export default function FavoritesScreen() {
           <FetchedList
             {...favoritesPlaylists}
             itemComponent={playlist}
-            emptyMessage={"No Favorites"}
+            emptyMessage="No Favorites"
             style={styles.listScreen}
+            noScroll={true}
           />
           <Portal>
             <PlaylistMenuPlay
