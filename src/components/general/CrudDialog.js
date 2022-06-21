@@ -14,7 +14,8 @@ import { ErrorDialog } from "./ErrorDialog";
 // form: form definition to use
 // onSave: function to call when the save button is pressed
 // onDelete: function to call when the delete button is pressed
-// extraFetcher: optional function to fetch extra data before showing the form
+// extraFetcher: optional async function to fetch extra data before showing the form
+// async (data) => extra
 export default function CrudDialog({
   data,
   visible,
@@ -30,32 +31,42 @@ export default function CrudDialog({
     defaultValues: defaultGen(data),
     mode: "onChange",
   });
-
   const [status, setStatus] = useState({
     error: null,
     loading: !!extraFetcher,
+    extra: null,
   });
 
-  const [extra, setExtra] = useState(null);
-
-  useEffect(() => {
+  const reset = async () => {
     rest.reset(defaultGen(data));
     setStatus({ error: null, loading: !!extraFetcher });
-    if (extraFetcher) extraFetcher(data, setExtra, setStatus);
-  }, [extraFetcher, data]);
+    if (extraFetcher) {
+      try {
+        const extra = await extraFetcher(data);
+        setStatus({ error: null, loading: false, extra });
+      } catch (e) {
+        setStatus({ error: e, loading: true, extra: null });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (visible) reset();
+  }, [visible]);
+
+  const _onDismiss = () => {
+    setStatus({ loading: !!extraFetcher, error: null, extra: null });
+    onDismiss(false);
+  };
 
   if (status.error)
     return (
       <ErrorDialog
         error={status.error}
-        hideDialog={() => onDismiss(false)}
+        hideDialog={() => _onDismiss()}
         visible={visible}
       />
     );
-
-  if (status.loading && visible) {
-    return <ActivityIndicator size="large" style={styles.activityIndicator} />;
-  }
 
   const FormDefinition = form;
 
@@ -65,49 +76,53 @@ export default function CrudDialog({
     try {
       await requestSender();
       toast.show(`${name} ${saving ? "saved" : "deleted"}`);
-      onDismiss(true);
-      setStatus({ loading: false, error: null });
+      _onDismiss();
     } catch (err) {
       console.error(err);
       toast.show(`${name} could not be ${saving ? "saved" : "deleted"}`);
-      setStatus({ loading: false, error: err });
+      setStatus({ loading: !!extraFetcher, error: err, extra: null });
     }
   };
 
   return (
-    <Dialog
-      onDismiss={() => onDismiss(false)}
-      style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
-      visible={visible}
-    >
-      <Dialog.Title>{`${data?.id ? "Edit" : "Add"} ${name}`}</Dialog.Title>
-      <Dialog.ScrollArea>
-        <ScrollView style={{ marginVertical: 5 }}>
-          <FormDefinition data={data} extra={extra} {...rest} />
-        </ScrollView>
-      </Dialog.ScrollArea>
-      <Dialog.Actions>
-        <View style={styles.row}>
-          <Button onPress={() => onDismiss(false)}>Cancel</Button>
-          {data?.id ? (
+    <>
+      {status.loading && visible ? (
+        <ActivityIndicator size="large" style={styles.activityIndicator} />
+      ) : undefined}
+      <Dialog
+        onDismiss={_onDismiss}
+        style={{ maxHeight: Dimensions.get("window").height * 0.8 }}
+        visible={visible && !status.loading}
+      >
+        <Dialog.Title>{`${data?.id ? "Edit" : "Add"} ${name}`}</Dialog.Title>
+        <Dialog.ScrollArea>
+          <ScrollView style={{ marginVertical: 5 }}>
+            <FormDefinition data={data} extra={status.extra} {...rest} />
+          </ScrollView>
+        </Dialog.ScrollArea>
+        <Dialog.Actions>
+          <View style={styles.row}>
+            <Button onPress={_onDismiss}>Cancel</Button>
+            {data?.id ? (
+              <Button
+                onPress={() =>
+                  sendRequest(async () => await onDelete(data?.id), false)
+                }
+              >
+                Delete
+              </Button>
+            ) : undefined}
             <Button
-              onPress={() =>
-                sendRequest(async () => await onDelete(data?.id), false)
-              }
+              onPress={handleSubmit((formData) =>
+                sendRequest(async () => await onSave(data?.id, formData), true)
+              )}
             >
-              Delete
+              Save
             </Button>
-          ) : undefined}
-          <Button
-            onPress={handleSubmit((formData) =>
-              sendRequest(async () => await onSave(data?.id, formData), true)
-            )}
-          >
-            Save
-          </Button>
-        </View>
-      </Dialog.Actions>
-    </Dialog>
+          </View>
+        </Dialog.Actions>
+      </Dialog>
+    </>
   );
 }
 

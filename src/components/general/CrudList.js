@@ -4,7 +4,12 @@ import styles from "../styles.js";
 import { View } from "react-native";
 import PropTypes from "prop-types";
 import FetchedList from "./FetchedList";
-import { json_fetcher, useMatchMutate, useSWR } from "../../util/services";
+import {
+  json_fetcher,
+  useMatchMutate,
+  useSWRInfinite,
+  getUrl,
+} from "../../util/services";
 import CrudDialog from "./CrudDialog";
 
 // itemComponent es el componente para cada item que recibe la prop data de cada item
@@ -18,7 +23,7 @@ export default function CrudList({
 }) {
   const [data, setData] = useState({});
   const [visible, setVisible] = useState(false);
-  const response = useSWR(url, json_fetcher);
+  const response = useSWRInfinite((index) => getUrl(url, index), json_fetcher);
   const matchMutate = useMatchMutate();
 
   const onPress = useCallback((data) => {
@@ -37,7 +42,10 @@ export default function CrudList({
   );
 
   const Item = itemComponent;
-  const item = (props) => <Item onPress={(data) => onPress(data)} {...props} />;
+  const item = useCallback(
+    (props) => <Item onPress={(data) => onPress(data)} {...props} />,
+    []
+  );
 
   return (
     <View style={styles.container}>
