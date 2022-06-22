@@ -1,5 +1,6 @@
 export { default as useSWR } from "swr";
 export { default as useSWRImmutable } from "swr/immutable";
+export { default as useSWRInfinite } from "swr/infinite";
 import { useSWRConfig } from "swr";
 import { getAuth } from "firebase/auth";
 
@@ -34,6 +35,18 @@ export const TRIGGER_METRICS_URL =
   "https://4ukt2at75fozsu5fjdzmjgy2yy0qfzch.lambda-url.us-east-2.on.aws/";
 
 export const HTTP_NOT_FOUND = 404;
+
+export const PAGE_SIZE = 10;
+
+export function getUrl(baseUrl, page, other_params) {
+  return `${baseUrl}?page=${page}&size=${PAGE_SIZE}${
+    other_params ? `&${other_params.join("&")}` : ""
+  }`;
+}
+
+export function keyExtractor(item) {
+  return item.id;
+}
 
 export const json_fetcher = async (url) => {
   return await fetch(url);

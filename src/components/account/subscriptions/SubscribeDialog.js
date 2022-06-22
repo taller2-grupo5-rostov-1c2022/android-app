@@ -44,6 +44,7 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
   const remainingBalance = parseFloat(balance) - parseFloat(newSub?.price) ?? 0;
 
   const sufficientBalance = remainingBalance > 0;
+  const upgrading = userSub?.level < newSub?.level;
 
   return (
     <Dialog
@@ -64,7 +65,7 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
             size="large"
             style={styles.spacedActivityIndicator}
           />
-        ) : (
+        ) : upgrading ? (
           <ScrollView>
             <Subheading>Duration: {"\t"}30 days</Subheading>
             <Subheading>
@@ -93,11 +94,20 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
               </>
             )}
           </ScrollView>
+        ) : (
+          <ScrollView>
+            <Subheading>
+              You have an active {userSub?.name} subscription
+            </Subheading>
+            <Subheading>
+              Wait until it expires to downgrade or refresh it
+            </Subheading>
+          </ScrollView>
         )}
       </Dialog.ScrollArea>
       <Dialog.Actions>
         <View style={styles.row}>
-          {sufficientBalance ? (
+          {sufficientBalance && upgrading ? (
             <>
               <Button onPress={_hide} disabled={processing}>
                 Cancel

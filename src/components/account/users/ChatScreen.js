@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import PropTypes from "prop-types";
 import { View } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
@@ -18,9 +18,8 @@ export default function ChatScreen({ navigation, route }) {
   const { id } = route.params;
   useChatHeader(navigation, id);
   const [text, setText] = useState("");
-  const { mutate, data, ...rest } = useMessages(id);
+  const { mutate, ...rest } = useMessages(id);
   const { addMessage, localMessages } = useLocalMessages(mutate);
-  const [content, setContent] = useState(null);
   const { setActiveChat, activeChat } = useContext(NotificationContext);
 
   useEffect(() => {
@@ -30,16 +29,18 @@ export default function ChatScreen({ navigation, route }) {
     return () => setActiveChat(prev);
   }, [id]);
 
-  useEffect(() => {
-    if (!data) return setContent(null);
-    setContent(
-      localMessages
-        .concat(data ?? [])
-        .sort((x, y) => (x.created_at > y.created_at ? 1 : -1))
-    );
-  }, [localMessages, data]);
+  const customData = useCallback(
+    (data) => {
+      if (!data) return;
 
-  const bubble = ({ data: m }) => {
+      return localMessages
+        .concat(data ?? [])
+        .sort((x, y) => (x.created_at > y.created_at ? -1 : 1));
+    },
+    [localMessages]
+  );
+
+  const bubble = useCallback(({ data: m }) => {
     const right = m?.sender?.id != id;
 
     let utc = new Date(m?.created_at + "Z");
@@ -59,7 +60,7 @@ export default function ChatScreen({ navigation, route }) {
         icon={right ? m.status ?? "sent" : undefined}
       />
     );
-  };
+  }, []);
 
   const onSend = async () => {
     if (!text) return;
@@ -75,12 +76,12 @@ export default function ChatScreen({ navigation, route }) {
   return (
     <View style={[styles.container]}>
       <FetchedList
-        response={{ ...rest, data: content }}
+        {...rest}
+        customData={customData}
         itemComponent={bubble}
         emptyMessage={"No messsages"}
-        scrollToBottom={true}
-        style={{ transform: [{ scaleY: -1 }] }}
-        contentContainerStyle={{ transform: [{ scaleY: -1 }] }}
+        inverted={true}
+        keyExtractor={keyExtractor}
       />
       <View style={[styles.row]}>
         <TextInput
@@ -96,7 +97,7 @@ export default function ChatScreen({ navigation, route }) {
           icon="send"
           style={{ alignSelf: "center" }}
           onPress={onSend}
-          disabled={rest.error || (!data && rest.isValidating)}
+          disabled={rest.error || (!rest.data && rest.isValidating)}
         ></IconButton>
       </View>
     </View>
@@ -117,6 +118,12 @@ async function sendMsg(msg, receiver_id) {
       }),
     }
   );
+}
+
+function keyExtractor(m) {
+  if (m.id) return m.id;
+
+  return `_${m.created_at}`;
 }
 
 ChatScreen.propTypes = {

@@ -12,7 +12,6 @@ import { setNotificationHandler } from "expo-notifications";
 export const NotificationContext = createContext({
   notifications: [],
   clear: async () => {},
-  mutate: async () => {},
   setActiveChat: () => {},
   activeChat: null,
 });
