@@ -1,4 +1,10 @@
-import React from "react";
+import React, {
+  useEffect,
+  createContext,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import {
   NavigationContainer,
   DarkTheme as NavigationDarkTheme,
@@ -13,10 +19,11 @@ import PropTypes from "prop-types";
 import { Appearance, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "react-native";
+import { setBackgroundColorAsync } from "expo-system-ui";
 
 const THEME_KEY = "@theme";
 
-export const ThemeContext = React.createContext({
+export const ThemeContext = createContext({
   toggleTheme: () => {},
   isThemeDark: false,
 });
@@ -46,9 +53,9 @@ async function setStoragedTheme(value) {
 }
 
 export default function ThemeProvider({ children }) {
-  const [isThemeDark, setIsThemeDark] = React.useState(true);
+  const [isThemeDark, setIsThemeDark] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function initialTheme() {
       const value = await getStoredTheme();
       setIsThemeDark(value);
@@ -57,12 +64,17 @@ export default function ThemeProvider({ children }) {
   }, []);
 
   let theme = isThemeDark ? DarkTheme : LightTheme;
-  const toggleTheme = React.useCallback(() => {
+  const toggleTheme = useCallback(() => {
     setStoragedTheme(!isThemeDark);
     setIsThemeDark(!isThemeDark);
   }, [isThemeDark]);
 
-  const preferences = React.useMemo(
+  useEffect(() => {
+    let theme = isThemeDark ? DarkTheme : LightTheme;
+    setBackgroundColorAsync(theme.colors.background).catch(console.log);
+  }, [isThemeDark]);
+
+  const preferences = useMemo(
     () => ({
       toggleTheme,
       isThemeDark,

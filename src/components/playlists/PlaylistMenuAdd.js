@@ -9,24 +9,24 @@ import { addSongToPlaylist, addColabToPlaylist } from "../../util/requests";
 export const PlaylistMenuAdd = ({ visible, setVisible, songId, colabId }) => {
   const my_playlists = useSWR(MY_PLAYLISTS_URL, json_fetcher);
 
-  const addSong = (playlistId) => {
+  const addSong = async (playlistId) => {
     try {
-      addSongToPlaylist(playlistId, songId);
+      await addSongToPlaylist(playlistId, songId);
+      toast.show("Added song to playlist :)");
     } catch (e) {
       toast.show("Failed to add song :(");
-      return;
+      console.error(e);
     }
-    toast.show("Added song to playlist :)", { duration: 2000 });
   };
 
-  const addColab = (playlistId) => {
+  const addColab = async (playlistId) => {
     try {
-      addColabToPlaylist(playlistId, colabId);
+      await addColabToPlaylist(playlistId, colabId);
+      toast.show("Added colab to playlist :)");
     } catch (e) {
       toast.show("Failed to add colab :(");
-      return;
+      console.error(e);
     }
-    toast.show("Added colab to playlist :)", { duration: 2000 });
   };
 
   const onPress = (playlistId) => {
@@ -48,9 +48,10 @@ export const PlaylistMenuAdd = ({ visible, setVisible, songId, colabId }) => {
       title="Add to playlist"
       visible={visible}
       onDismiss={() => setVisible(false)}
+      scroll={false}
     >
       <FetchedList
-        response={my_playlists}
+        {...my_playlists}
         itemComponent={playlist}
         emptyMessage={"You don't have any playlists"}
       />

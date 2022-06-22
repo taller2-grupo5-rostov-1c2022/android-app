@@ -105,7 +105,7 @@ export default function NotificationListScreen({ navigation }) {
   return (
     <>
       <FetchedList
-        response={{ data: notifications }}
+        data={notifications}
         emptyMessage="No notifications"
         style={styles.container}
         itemComponent={item}

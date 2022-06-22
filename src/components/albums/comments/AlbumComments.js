@@ -93,12 +93,14 @@ const AlbumComments = ({ albumId }) => {
       isUser(commenterId) ? (
         <IconButton
           icon="pencil-outline"
+          style={{ alignSelf: "center" }}
           key={2}
           onPress={() => onEditComment(comment)}
         ></IconButton>
       ) : null,
       <IconButton
         icon="reply"
+        style={{ alignSelf: "center" }}
         key={1}
         onPress={() => onReply(comment)}
       ></IconButton>,
@@ -126,7 +128,7 @@ const AlbumComments = ({ albumId }) => {
           disabled={!inComment}
           style={{ flexDirection: "row", paddingBottom: 8 }}
         >
-          <View style={{ flex: 1, flexWrap: "wrap" }}>
+          <View style={{ flex: 1, flexWrap: "wrap", marginLeft: 5 }}>
             <Text style={{ fontSize: 16 }}>
               {inComment
                 ? currentComment[currentComment.length - 1].commenter.name
@@ -134,13 +136,25 @@ const AlbumComments = ({ albumId }) => {
             </Text>
             {inComment ? (
               <Text
-                style={{ fontWeight: "bold", fontSize: 18, paddingLeft: 0 }}
+                numberOfLines={10}
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 18,
+                  paddingLeft: 0,
+                  width: "100%",
+                }}
               >
                 {currentComment[currentComment.length - 1].text}
               </Text>
             ) : null}
           </View>
-          <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
+          <View
+            style={{
+              flexWrap: "wrap",
+              flexDirection: "row",
+              alignContent: "center",
+            }}
+          >
             {inComment
               ? [
                   <IconButton
@@ -175,7 +189,6 @@ const AlbumComments = ({ albumId }) => {
               style={{
                 margin: 10,
                 color: theme.colors.text,
-                borderBottom: "1px solid black",
                 fontSize: 16,
                 fontWeight: "bold",
                 paddingBottom: 5,
@@ -191,7 +204,6 @@ const AlbumComments = ({ albumId }) => {
                 key={index}
                 style={{
                   margin: 10,
-                  borderBottom: "1px solid black",
                 }}
               >
                 <Text style={{}}>{comment?.commenter?.name}</Text>
@@ -199,6 +211,7 @@ const AlbumComments = ({ albumId }) => {
                   onPress={() => onComment(comment)}
                   description={comment.text ? comment.text : "[Deleted]"}
                   right={() => replyButton(comment.commenter?.id, comment)}
+                  style={{ padding: 0 }}
                   descriptionStyle={{
                     fontWeight: "bold",
                     fontSize: 16,

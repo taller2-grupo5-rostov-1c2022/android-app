@@ -39,7 +39,7 @@ function getButtons(selected, setSelected, setDisabled, onSearch, options) {
   );
 }
 
-export default function SearchBar({ setQuery, ...rest }) {
+export default function SearchBar({ setQueries, ...rest }) {
   const [text, setText] = useState("");
   const [disabled, setDisabled] = useState(false);
 
@@ -81,8 +81,8 @@ export default function SearchBar({ setQuery, ...rest }) {
     name = name ?? selected.name;
     value = value ?? selected.value ?? text;
 
-    if (value) setQuery(`?${name}=${encodeURI(value)}`);
-    else setQuery("");
+    if (value) setQueries([`${name}=${encodeURI(value)}`]);
+    else setQueries(null);
   };
 
   const rightButton = () => {
@@ -127,6 +127,6 @@ export default function SearchBar({ setQuery, ...rest }) {
 }
 
 SearchBar.propTypes = {
-  setQuery: PropTypes.func.isRequired,
+  setQueries: PropTypes.func.isRequired,
   ...View.propTypes,
 };
