@@ -1,9 +1,10 @@
 import { useState, useCallback } from "react";
-import { Portal, IconButton } from "react-native-paper";
+import { Portal } from "react-native-paper";
 import AlbumItem from "./AlbumItem";
 import AlbumInfo from "./AlbumInfo";
 import { ALBUMS_URL } from "../../util/services";
 import ContentScreen from "../general/ContentScreen.js";
+import LikeIcon from "../general/LikeIcon";
 
 export default function AlbumsScreen() {
   const [modalStatus, setModalStatus] = useState({
@@ -18,15 +19,15 @@ export default function AlbumsScreen() {
       <AlbumItem
         onPress={onPress}
         data={data}
-        right={
-          <IconButton
+        right={(props) => (
+          <LikeIcon
             onPress={() => {
               onLike(data?.id);
             }}
-            icon={liked ? "heart" : "heart-outline"}
-            color={"#808080"}
+            liked={liked}
+            {...props}
           />
-        }
+        )}
       />
     ),
     []

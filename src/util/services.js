@@ -5,7 +5,7 @@ import { useSWRConfig } from "swr";
 import { getAuth } from "firebase/auth";
 
 const GATEWAY_URL = "https://rostov-gateway.herokuapp.com";
-const SONGS_SV_URL = `${GATEWAY_URL}/devsongs`;
+const SONGS_SV_URL = `${GATEWAY_URL}/songs`;
 const MESSAGES_SV_URL = `${GATEWAY_URL}/messages`;
 const NOTIFICATIONS_SV_URL = `${GATEWAY_URL}/notifications`;
 

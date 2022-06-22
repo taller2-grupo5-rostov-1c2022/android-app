@@ -5,6 +5,7 @@ import { SONGS_URL } from "../../util/services";
 import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import PlayableSongItem from "./PlayableSongItem";
 import ContentScreen from "../general/ContentScreen.js";
+import LikeIcon from "../general/LikeIcon";
 
 export default function SongsScreen() {
   const [visible, setVisible] = useState(false);
@@ -20,12 +21,12 @@ export default function SongsScreen() {
       <PlayableSongItem
         data={data}
         right={(props) => [
-          <IconButton
+          <LikeIcon
             {...props}
             onPress={() => {
               onLike(data?.id);
             }}
-            icon={liked ? "heart" : "heart-outline"}
+            liked={liked}
             key={1}
           />,
           <IconButton

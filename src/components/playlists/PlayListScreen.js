@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
 import { PLAYLISTS_URL } from "../../util/services";
-import { Portal, List, IconButton } from "react-native-paper";
+import { Portal, List } from "react-native-paper";
 import PlaylistMenuPlay from "./PlaylistMenuPlay";
 import ContentScreen from "../general/ContentScreen";
+import LikeIcon from "../general/LikeIcon";
 
 export default function PlayListScreen() {
   const [visible, setVisible] = React.useState(false);
@@ -17,13 +18,13 @@ export default function PlayListScreen() {
           setPlaylistId(data?.id);
           setVisible(true);
         }}
-        right={() => (
-          <IconButton
+        right={(props) => (
+          <LikeIcon
             onPress={() => {
               onLike(data?.id);
             }}
-            icon={liked ? "heart" : "heart-outline"}
-            color={"#808080"}
+            liked={liked}
+            {...props}
           />
         )}
       />

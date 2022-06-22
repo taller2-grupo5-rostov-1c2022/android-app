@@ -3,13 +3,14 @@ import PropTypes from "prop-types";
 import FetchedList from "../general/FetchedList";
 import styles from "../styles.js";
 import PlayableSongItem from "../songs/PlayableSongItem";
-import { Portal, IconButton, List } from "react-native-paper";
+import { Portal, List } from "react-native-paper";
 import { useFavorites } from "../../util/requests";
 import { View, ScrollView } from "react-native";
 import Player from "../Player";
 import AlbumItem from "../albums/AlbumItem";
 import AlbumInfo from "../albums/AlbumInfo";
 import PlaylistMenuPlay from "../playlists/PlaylistMenuPlay";
+import LikeIcon from "../general/LikeIcon";
 
 export default function FavoritesScreen() {
   const { response: favoritesSongs, deleteFavorite: deleteSong } =
@@ -36,16 +37,15 @@ export default function FavoritesScreen() {
   const song = ({ data }) => (
     <PlayableSongItem
       data={data}
-      right={(props) => [
-        <IconButton
+      right={(props) => (
+        <LikeIcon
           {...props}
           onPress={() => {
             deleteSong(data);
           }}
-          icon={"heart"}
-          key={1}
-        />,
-      ]}
+          liked={true}
+        />
+      )}
     />
   );
 
@@ -53,15 +53,15 @@ export default function FavoritesScreen() {
     <AlbumItem
       onPress={onPressAlbum}
       data={data}
-      right={
-        <IconButton
+      right={(props) => (
+        <LikeIcon
+          {...props}
           onPress={() => {
             deleteAlbum(data);
           }}
-          icon="heart"
-          color={"#808080"}
+          liked={true}
         />
-      }
+      )}
     />
   );
 
@@ -70,20 +70,20 @@ export default function FavoritesScreen() {
       title={data?.name}
       description={data?.description}
       onPress={() => onPressPlaylist(data.id)}
-      right={() => (
-        <IconButton
+      right={(props) => (
+        <LikeIcon
+          {...props}
           onPress={() => {
             deletePlaylist(data);
           }}
-          icon="heart"
-          color={"#808080"}
+          liked={true}
         />
       )}
     />
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <ScrollView style={{ flex: 1 }}>
         <List.Section title="Songs" titleStyle={styles.favoritesTitle}>
           <FetchedList

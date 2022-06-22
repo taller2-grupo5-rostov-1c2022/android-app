@@ -18,7 +18,7 @@ export default function AlbumItem({ data, onPress, right }) {
           style={{ marginRight: 10 }}
         />
       )}
-      right={() => right}
+      right={right}
     />
   );
 }
@@ -30,5 +30,5 @@ AlbumItem.propTypes = {
     cover: PropTypes.string,
   }),
   onPress: PropTypes.func,
-  right: PropTypes.element
+  right: PropTypes.any,
 };
