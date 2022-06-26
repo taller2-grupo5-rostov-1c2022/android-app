@@ -1,29 +1,29 @@
-import React from "react";
-import { USERS_URL, useSWR } from "../../../util/services";
+import React, { useCallback } from "react";
+import { USERS_URL, useSWRInfinite, getUrl } from "../../../util/services";
 import { Portal, List, IconButton } from "react-native-paper";
 import styles from "../../styles.js";
 import { View } from "react-native";
 import FetchedList from "../../general/FetchedList";
-import { fetch } from "../../../util/services";
+import { json_fetcher } from "../../../util/services";
 import { getAuth } from "firebase/auth";
 import UserInfo from "./UserInfo";
 import PropTypes from "prop-types";
 import { ShapedImage } from "../../general/ShapedImage";
-
-// Removes the current user from the list
-async function customFetcher(url) {
-  let current_uid = getAuth()?.currentUser?.uid;
-  let data = await fetch(url);
-
-  return data.filter((user) => user.id !== current_uid);
-}
 
 export default function UserListScreen({ navigation }) {
   const [modalStatus, setModalStatus] = React.useState({
     visible: false,
     user: null,
   });
-  const users = useSWR(USERS_URL, customFetcher);
+  const users = useSWRInfinite(
+    (index, prev) => getUrl(USERS_URL, index, prev),
+    json_fetcher
+  );
+  const current_uid = getAuth()?.currentUser?.uid;
+
+  const customData = useCallback((users) => {
+    return users?.filter((user) => user.id !== current_uid);
+  });
 
   const item = ({ data }) => (
     <List.Item
@@ -57,6 +57,7 @@ export default function UserListScreen({ navigation }) {
           itemComponent={item}
           emptyMessage={"There is nothing here..."}
           style={styles.listScreen}
+          customData={customData}
         />
         <Portal>
           <UserInfo modalStatus={modalStatus} setModalStatus={setModalStatus} />

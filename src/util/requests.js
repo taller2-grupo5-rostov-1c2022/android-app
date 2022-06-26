@@ -319,9 +319,22 @@ export async function deleteFavorite(uid, id, type) {
   });
 }
 
+function compareFavorites(data1, data2) {
+  return (
+    new Set(data1?.items.map((i) => i.id)) ==
+    new Set(data2?.items.map((i) => i.id))
+  );
+}
+
+function sortCmpFavorites(fav1, fav2) {
+  return fav1.id > fav2.id;
+}
+
 export const useFavorites = (type) => {
   const uid = getAuth()?.currentUser?.uid;
-  const response = useSWR(`${USERS_URL}${uid}/favorites${type}`, json_fetcher);
+  const response = useSWR(`${USERS_URL}${uid}/favorites${type}`, json_fetcher, {
+    compare: compareFavorites,
+  });
 
   useEffect(() => {
     if (!response.error) return;
@@ -330,15 +343,19 @@ export const useFavorites = (type) => {
   }, [response.error]);
 
   const _saveFavorite = async (data) => {
+    let optimistic = response.data ?? { items: [] };
+    optimistic.items.push(data);
+    optimistic.items = optimistic.items.sort(sortCmpFavorites);
     saveFavorite(uid, data.id, type).then((res) => {
-      const optimistic = [...response.data, data];
       response.mutate(response.mutate, { optimisticData: optimistic });
       return res;
     });
   };
 
   const _deleteFavorite = async (data) => {
-    const optimistic = response.data.filter((d) => d.id != data.id);
+    let optimistic = response.data ?? { items: [] };
+    optimistic.items = optimistic.items.filter((item) => item.id != data.id);
+    optimistic.items = optimistic.items.sort(sortCmpFavorites);
     deleteFavorite(uid, data.id, type).then((res) => {
       response.mutate(response.mutate, { optimisticData: optimistic });
       return res;

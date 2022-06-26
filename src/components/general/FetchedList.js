@@ -4,7 +4,6 @@ import { FlatList, View, RefreshControl, ScrollView } from "react-native";
 import styles from "../styles.js";
 import PropTypes from "prop-types";
 import { useTheme } from "react-native-paper";
-import { PAGE_SIZE } from "../../util/services";
 
 // itemComponent es el componente para cada item que recibe la prop data de cada item
 // data, mutate, isValidating, error, size and setSize son de la respuesta de SWR
@@ -15,7 +14,6 @@ import { PAGE_SIZE } from "../../util/services";
 function FetchedList({
   data,
   mutate,
-  isValidating,
   error,
   size,
   setSize,
@@ -28,10 +26,10 @@ function FetchedList({
   const theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
 
+  const items =
+    size !== undefined ? data?.map((i) => i.items).flat() : data?.items ?? data;
   const listData = useMemo(() => {
-    let list = size !== undefined ? data?.flat() : data;
-    if (customData) list = customData(list);
-    return list;
+    return customData ? customData(items) : items;
   }, [data, customData]);
 
   const Item = getRenderItem(itemComponent, listProps.keyExtractor);
@@ -48,23 +46,14 @@ function FetchedList({
     setRefreshing(false);
   }, [mutate]);
 
-  if (!listData && isValidating)
-    return <ActivityIndicator style={styles.activityIndicator} />;
+  if (!listData) return <ActivityIndicator style={styles.activityIndicator} />;
 
   if (error) return <ErrorMessage error={error} />;
-
-  if (!listData || listData.length == 0) {
-    return (
-      <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
-        {emptyMessage}
-      </Subheading>
-    );
-  }
 
   const content = (
     <FlatList
       renderItem={renderItem}
-      data={listData}
+      data={listData ?? []}
       refreshControl={
         mutate ? (
           <RefreshControl
@@ -75,17 +64,23 @@ function FetchedList({
           />
         ) : undefined
       }
+      ListEmptyComponent={
+        <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
+          {emptyMessage}
+        </Subheading>
+      }
       onEndReached={
         size &&
+        items &&
         data?.length == size &&
-        data[data.length - 1].length == PAGE_SIZE
+        data[data.length - 1].total != items.length
           ? () => setSize((prev) => prev + 1)
           : undefined
       }
       onEndReachedThreshold={0.005}
       indicatorStyle="white"
       ListFooterComponent={
-        size && data[data.length - 1].length == PAGE_SIZE ? (
+        size && items && data[data.length - 1].total != items.length ? (
           <ActivityIndicator />
         ) : undefined
       }
@@ -145,8 +140,13 @@ function getRenderItem(itemComponent, keyExtractor) {
   return memo(Item, comparison);
 }
 
+const dataPropTypes = PropTypes.shape({
+  items: PropTypes.array,
+  total: PropTypes.number,
+}).isRequired;
+
 FetchedList.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.oneOfType([dataPropTypes, PropTypes.arrayOf(dataPropTypes)]),
   isValidating: PropTypes.bool,
   error: PropTypes.any,
   mutate: PropTypes.func,

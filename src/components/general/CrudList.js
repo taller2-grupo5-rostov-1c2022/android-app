@@ -24,7 +24,10 @@ export default function CrudList({
 }) {
   const [data, setData] = useState({});
   const [visible, setVisible] = useState(false);
-  const response = useSWRInfinite((index) => getUrl(url, index), json_fetcher);
+  const response = useSWRInfinite(
+    (index, prev) => getUrl(url, index, prev),
+    json_fetcher
+  );
   const matchMutate = useMatchMutate();
 
   const onPress = useCallback((data) => {

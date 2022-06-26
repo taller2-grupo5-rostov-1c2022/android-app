@@ -11,11 +11,11 @@ import Review from "./Review";
 const AlbumReviews = ({ albumId }) => {
   const theme = useTheme();
   const { user } = useContext(SessionContext);
-  const {
-    data: comments,
-    error,
-    isValidating,
-  } = useSWR(`${ALBUMS_URL}${albumId}/reviews/`, json_fetcher);
+  const { data, error, isValidating } = useSWR(
+    `${ALBUMS_URL}${albumId}/reviews/`,
+    json_fetcher
+  );
+  const comments = data?.items;
 
   const [reviewing, setReviewing] = useState("");
   const userReview = comments?.find(

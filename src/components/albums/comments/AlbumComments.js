@@ -11,11 +11,11 @@ import { getAuth } from "firebase/auth";
 const AlbumComments = ({ albumId }) => {
   const userId = getAuth()?.currentUser?.uid;
   const theme = useTheme();
-  let {
-    data: initComments,
-    error,
-    isValidating,
-  } = useSWR(`${ALBUMS_URL}${albumId}/comments/`, json_fetcher);
+  let { data, error, isValidating } = useSWR(
+    `${ALBUMS_URL}${albumId}/comments/`,
+    json_fetcher
+  );
+  const initComments = data?.items;
 
   const [comments, setComments] = useState([]);
   const [inComment, setInComment] = useState(false);
