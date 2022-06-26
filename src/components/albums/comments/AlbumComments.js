@@ -4,9 +4,9 @@ import { View } from "react-native";
 import { Text, List } from "react-native-paper";
 import { IconButton, Button, Title, useTheme } from "react-native-paper";
 import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
-import { Portal } from "react-native-paper";
 import Comment from "./Comment";
 import { getAuth } from "firebase/auth";
+import Portal from "../../general/NavigationAwarePortal";
 
 const AlbumComments = ({ albumId }) => {
   const userId = getAuth()?.currentUser?.uid;

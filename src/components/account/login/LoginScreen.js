@@ -4,7 +4,6 @@ import {
   Subheading,
   Headline,
   Button,
-  Portal,
   ActivityIndicator,
 } from "react-native-paper";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -16,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
 import { emailRegex } from "../../../util/general";
 import { GoogleSignIn } from "./GoogleSignIn.js";
+import Portal from "../../general/NavigationAwarePortal";
 
 export default function LoginScreen({ navigation }) {
   const auth = getAuth();

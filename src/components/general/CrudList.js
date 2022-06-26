@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Portal, FAB } from "react-native-paper";
+import { FAB } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
 import PropTypes from "prop-types";
@@ -12,6 +12,7 @@ import {
   keyExtractor,
 } from "../../util/services";
 import CrudDialog from "./CrudDialog";
+import Portal from "../general/NavigationAwarePortal";
 
 // itemComponent es el componente para cada item que recibe la prop data de cada item
 // editDialog es el componente a mostrar al editar. recibe la data del elemento a editar

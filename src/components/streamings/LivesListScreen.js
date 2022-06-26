@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { STREAMINGS_URL, json_fetcher, useSWR } from "../../util/services";
-import { List, FAB, Portal } from "react-native-paper";
+import { List, FAB } from "react-native-paper";
 import styles from "../styles.js";
 import { View } from "react-native";
 import FetchedList from "../general/FetchedList";
@@ -9,6 +9,7 @@ import { SessionContext } from "../session/SessionProvider";
 import { ARTIST_ROLES } from "../../util/general";
 import { ShapedImage } from "../general/ShapedImage";
 import HostDialog from "./HostDialog";
+import Portal from "../general/NavigationAwarePortal";
 
 export default function LivesListScreen({ navigation }) {
   const response = useSWR(STREAMINGS_URL, json_fetcher);

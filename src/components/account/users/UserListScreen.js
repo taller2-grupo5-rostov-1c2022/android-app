@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { USERS_URL, useSWRInfinite, getUrl } from "../../../util/services";
-import { Portal, List, IconButton } from "react-native-paper";
+import { List, IconButton } from "react-native-paper";
 import styles from "../../styles.js";
 import { View } from "react-native";
 import FetchedList from "../../general/FetchedList";
@@ -9,6 +9,7 @@ import { getAuth } from "firebase/auth";
 import UserInfo from "./UserInfo";
 import PropTypes from "prop-types";
 import { ShapedImage } from "../../general/ShapedImage";
+import Portal from "../../general/NavigationAwarePortal";
 
 export default function UserListScreen({ navigation }) {
   const [modalStatus, setModalStatus] = React.useState({

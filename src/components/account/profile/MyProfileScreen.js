@@ -1,11 +1,12 @@
 import React, { useState, useContext } from "react";
 import styles from "../../styles.js";
-import { Portal, ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
 import PropTypes from "prop-types";
 import { SessionContext } from "../../session/SessionProvider";
 import { UserForm } from "./UserForm";
 import { ScrollView, View } from "react-native";
 import { fetch, USERS_URL } from "../../../util/services.js";
+import Portal from "../../general/NavigationAwarePortal";
 const FormData = global.FormData;
 
 export default function MyProfileScreen() {
