@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Button,
-  Portal,
   ActivityIndicator,
   Headline,
   useTheme,
@@ -15,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
 import { emailRegex } from "../../../util/general";
 import { triggerMetric } from "../../../util/requests.js";
+import Portal from "../../general/NavigationAwarePortal";
 
 const emailMetric = async (email) =>
   await triggerMetric({

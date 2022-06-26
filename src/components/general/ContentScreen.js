@@ -23,14 +23,15 @@ export default function ContentScreen({
   const {
     saveFavorite,
     deleteFavorite,
-    response: { data: favorites },
+    response: { data },
   } = useFavorites(type);
   const response = useSWRInfinite(
-    (index) => getUrl(url, index, queries),
+    (index, prev) => getUrl(url, index, prev, queries),
     json_fetcher
   );
   const onLike = useRef(null);
 
+  let favorites = data?.items ?? [];
   useEffect(() => {
     if (!favorites) return;
 
@@ -43,7 +44,7 @@ export default function ContentScreen({
     (data) => {
       if (!data) return null;
 
-      let favoritesFilted = favorites ?? [];
+      let favoritesFilted = favorites;
       const dataIds = new Set(data.map((i) => i.id));
       if (queries) {
         favoritesFilted = favoritesFilted.filter((item) =>

@@ -65,12 +65,18 @@ export default function NotificationProvider({ children }) {
   };
 
   useEffect(() => {
-    setNotificationHandler(
-      {
-        handleNotification: (n) => handleNotification(n, activeChat),
-      },
-      [activeChat]
-    );
+    if (activeChat) {
+      setNotifications((notif) =>
+        notif?.map((n) => ({
+          ...n,
+          read: n.read || isFromSameChat(n.value.body, activeChat),
+        }))
+      );
+    }
+
+    setNotificationHandler({
+      handleNotification: (n) => handleNotification(n, activeChat),
+    });
   }, [activeChat]);
 
   useEffect(() => {
@@ -90,7 +96,7 @@ export default function NotificationProvider({ children }) {
 }
 
 export function isFromSameChat(body, id) {
-  return body?.type === "message" && body?.sender_uid === id;
+  return body?.type == "message" && body?.sender_uid == id;
 }
 
 NotificationProvider.propTypes = {
