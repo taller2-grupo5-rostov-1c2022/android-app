@@ -51,7 +51,7 @@ export default function SongList({
     );
 
   return (
-    <View style={{ width: "100%" }}>
+    <View style={{ width: "100%", flex: 1 }}>
       <View>{playAllButton}</View>
       {title ? <Title>{title}</Title> : undefined}
       <FetchedList
