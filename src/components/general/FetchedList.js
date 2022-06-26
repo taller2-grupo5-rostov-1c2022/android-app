@@ -77,7 +77,7 @@ function FetchedList({
           ? () => setSize((prev) => prev + 1)
           : undefined
       }
-      onEndReachedThreshold={0.005}
+      onEndReachedThreshold={1}
       indicatorStyle="white"
       ListFooterComponent={
         size && items && data[data.length - 1].total != items.length ? (
