@@ -36,7 +36,7 @@ export const TRIGGER_METRICS_URL =
 
 export const HTTP_NOT_FOUND = 404;
 
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = 20;
 
 export function getUrl(baseUrl, index, prev, other_params) {
   const offset = index !== 0 ? `&offset=${prev.offset}` : "";
