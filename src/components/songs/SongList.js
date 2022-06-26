@@ -70,8 +70,16 @@ export default function SongList({
 export async function playSongList(songs, context, setLoading) {
   setLoading && setLoading(true);
   try {
+    const firstSong = await fetch(SONGS_URL + songs[0].id).catch((e) => {
+      const detail = errStr(e);
+      const error_message = `Cannot play ${songs[0].name}\n${detail}`;
+      toast.show(error_message);
+    })
+    songs[0].url = firstSong.file;
+    context.setSong(songs[0]);
+    context.setPaused(false);
     const songsWithUrl = await Promise.all(
-      songs.map((song) =>
+      songs.slice(1).map((song) =>
         fetch(SONGS_URL + song.id).catch((e) => {
           const detail = errStr(e);
           const error_message = `Cannot play ${song.name}\n${detail}`;
@@ -86,9 +94,7 @@ export async function playSongList(songs, context, setLoading) {
       song.url = song.file;
       return song;
     });
-    context.setSong(queue[0]);
-    context.setQueue(queue.slice(1));
-    context.setPaused(false);
+    context.setQueue(queue);
   } catch (e) {
     const detail = errStr(e);
     toast.show(`Could not play list\n${detail}`);
