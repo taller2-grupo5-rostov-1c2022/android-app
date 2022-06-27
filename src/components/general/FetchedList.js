@@ -64,11 +64,7 @@ function FetchedList({
           />
         ) : undefined
       }
-      ListEmptyComponent={
-        <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
-          {emptyMessage}
-        </Subheading>
-      }
+      ListEmptyComponent={() => <EmptyMessage text={emptyMessage} />}
       onEndReached={
         size &&
         items &&
@@ -145,6 +141,15 @@ const dataPropTypes = PropTypes.shape({
   total: PropTypes.number,
 }).isRequired;
 
+const EmptyMessage = ({ text }) => {
+  const theme = useTheme();
+  return (
+    <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
+      {text}
+    </Subheading>
+  );
+};
+
 FetchedList.propTypes = {
   data: PropTypes.oneOfType([dataPropTypes, PropTypes.arrayOf(dataPropTypes)]),
   isValidating: PropTypes.bool,
@@ -157,6 +162,10 @@ FetchedList.propTypes = {
   customData: PropTypes.func,
   noScroll: PropTypes.bool,
   ...FlatList.propTypes,
+};
+
+EmptyMessage.propTypes = {
+  text: PropTypes.string,
 };
 
 ErrorMessage.propTypes = {
