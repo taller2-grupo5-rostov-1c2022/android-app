@@ -22,7 +22,7 @@
     "expo-dev-client": "~1.0.0",
     "expo-document-picker": "~10.2.1",
     "expo-file-system": "~14.0.0",
-    "expo-notifications": "~0.15.3",
+    "expo-notifications": "~0.15.4",
     "expo-random": "~12.2.0",
     "firebase": "^9.7.0",
     "prop-types": "^15.8.1",
