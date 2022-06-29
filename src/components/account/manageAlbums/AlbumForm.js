@@ -22,9 +22,10 @@ export function defaultGen(data) {
 
 export async function getMySongs(album) {
   try {
-    let songs = await fetch(MY_SONGS_URL, {
+    let {items: songs} = await fetch(MY_SONGS_URL, {
       method: "GET",
     });
+    //TODO: agregar paginacion aca
     songs = songs.filter(
       (song) => !song.album || (album && song.album?.id == album.id)
     );
