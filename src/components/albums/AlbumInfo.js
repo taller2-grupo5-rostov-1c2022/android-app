@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "../general/Modal";
 import PropTypes from "prop-types";
 import { ShapedImage } from "../general/ShapedImage";
@@ -10,18 +10,28 @@ import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import SongList from "../songs/SongList";
 import AlbumReviews from "./Reviews/AlbumReviews";
 import AlbumComments from "./comments/AlbumComments.js";
+import { useSWR, ALBUMS_URL, json_fetcher } from "../../util/services";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
   const artists = getArtistsAsString(
     album?.songs?.map((song) => song?.artists).flat()
   );
-  const [playlistAdd, setPlaylistAdd] = React.useState({
+  const [playlistAdd, setPlaylistAdd] = useState({
     visible: false,
     id: null,
   });
+  const response = useSWR(
+    `${ALBUMS_URL}${modalStatus?.album?.id}`,
+    json_fetcher,
+    { isPaused: () => !modalStatus.visible }
+  );
 
-  let songs = album?.songs;
+  useEffect(() => {
+    if (!response.error) return;
+    console.error(response.error);
+    toast.show("Error loading album songs");
+  }, [response.error]);
 
   return (
     <>
@@ -47,7 +57,7 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
             onPlaylistAdd={(data) =>
               setPlaylistAdd({ visible: true, id: data.id })
             }
-            songs={songs}
+            songs={response?.data?.songs}
             title="Songs"
             emptyMessage="This album has no songs"
           />

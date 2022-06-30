@@ -1,9 +1,10 @@
 import React, { useCallback } from "react";
 import { PLAYLISTS_URL } from "../../util/services";
-import { Portal, List } from "react-native-paper";
+import { List } from "react-native-paper";
 import PlaylistMenuPlay from "./PlaylistMenuPlay";
 import ContentScreen from "../general/ContentScreen";
 import LikeIcon from "../general/LikeIcon";
+import Portal from "../general/NavigationAwarePortal";
 
 export default function PlayListScreen() {
   const [visible, setVisible] = React.useState(false);

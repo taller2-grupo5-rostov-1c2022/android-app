@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import {
   Button,
   Headline,
-  Portal,
   Subheading,
   Text,
   Caption,
@@ -15,6 +14,7 @@ import { setStringAsync } from "expo-clipboard";
 import { useSubLevels } from "../../../util/requests";
 import SubscribeDialog from "./SubscribeDialog";
 import styles from "../../styles";
+import Portal from "../../general/NavigationAwarePortal";
 
 const getRemainingDays = (str_date) => {
   if (!str_date) return null;

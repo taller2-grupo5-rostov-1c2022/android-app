@@ -5,17 +5,17 @@ import { Text } from "react-native-paper";
 import { Button, Title, useTheme } from "react-native-paper";
 import { ALBUMS_URL, useSWR, json_fetcher } from "../../../util/services";
 import { SessionContext } from "../../session/SessionProvider";
-import { Portal } from "react-native-paper";
 import Review from "./Review";
+import Portal from "../../general/NavigationAwarePortal";
 
 const AlbumReviews = ({ albumId }) => {
   const theme = useTheme();
   const { user } = useContext(SessionContext);
-  const {
-    data: comments,
-    error,
-    isValidating,
-  } = useSWR(`${ALBUMS_URL}${albumId}/reviews/`, json_fetcher);
+  const { data, error, isValidating } = useSWR(
+    `${ALBUMS_URL}${albumId}/reviews/`,
+    json_fetcher
+  );
+  const comments = data?.items;
 
   const [reviewing, setReviewing] = useState("");
   const userReview = comments?.find(

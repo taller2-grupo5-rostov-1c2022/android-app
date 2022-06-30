@@ -6,6 +6,7 @@ import { View } from "react-native";
 import styles from "../../styles";
 import { Title, Text, Button } from "react-native-paper";
 import PlaylistMenuAdd from "../../playlists/PlaylistMenuAdd";
+import { try_parse } from "../../../util/general";
 
 export default function UserInfo({ modalStatus, setModalStatus }) {
   const user = modalStatus?.user;
@@ -38,7 +39,7 @@ export default function UserInfo({ modalStatus, setModalStatus }) {
           <Text style={styles.userInfo}>
             <Text style={styles.bold}>Interests: </Text>
             <Text>
-              {user?.interests && JSON.parse(user.interests).join(", ")}
+              {user?.interests && try_parse(user.interests)?.join(", ")}
             </Text>
           </Text>
           <Button

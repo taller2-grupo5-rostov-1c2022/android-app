@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Portal,
-  ActivityIndicator,
-  Headline,
-} from "react-native-paper";
+import { Button, ActivityIndicator, Headline } from "react-native-paper";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import PropTypes from "prop-types";
 import styles from "../../styles.js";
@@ -13,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { FirebaseError } from "./FirebaseError";
 import { emailRegex } from "../../../util/general";
 import { View } from "react-native";
+import Portal from "../../general/NavigationAwarePortal";
 
 export default function RegisterScreen() {
   const auth = getAuth();

@@ -9,6 +9,12 @@ export default function useChatHeader(navigation, user_id) {
   useEffect(() => {
     navigation.setOptions(getHeaderOptions(userResponse));
   }, [userResponse]);
+
+  useEffect(() => {
+    if (!userResponse.error) return;
+    toast.show("Error loading user data");
+    console.error(userResponse.error);
+  }, [userResponse.error]);
 }
 
 function getHeaderOptions(userResponse) {

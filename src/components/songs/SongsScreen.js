@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from "react";
 import { View } from "react-native";
-import { IconButton, Portal } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 import { SONGS_URL } from "../../util/services";
 import { PlaylistMenuAdd } from "../playlists/PlaylistMenuAdd";
 import PlayableSongItem from "./PlayableSongItem";
 import ContentScreen from "../general/ContentScreen.js";
 import LikeIcon from "../general/LikeIcon";
+import Portal from "../general/NavigationAwarePortal";
 
 export default function SongsScreen() {
   const [visible, setVisible] = useState(false);

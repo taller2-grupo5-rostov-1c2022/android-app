@@ -1,11 +1,12 @@
 import React from "react";
 import Checklist from "../../formUtil/Checklist";
 import { getAuth } from "firebase/auth";
-
+import { PLAYLISTS_URL } from "../../../util/services";
 import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import styles from "../../styles";
 import { inputValidator } from "../../../util/general";
+import { useSWR, json_fetcher } from "../../../util/services";
 
 export function defaultGen(data) {
   const songs_ids = data?.songs?.map((song) => song.id) ?? [];
@@ -21,9 +22,10 @@ export function defaultGen(data) {
 export default function FormDefinition({ data, ...rest }) {
   const isCreator = data?.creator_id === getAuth()?.currentUser?.uid;
   const creating = !data?.id;
-
+  const { data: playlist } = useSWR(`${PLAYLISTS_URL}${data?.id}`, json_fetcher);
+  //TODO: ver si falta paginacion aca
   const validSongs =
-    data?.songs?.map(({ name, id, artists }) => ({
+  playlist?.songs?.map(({ name, id, artists }) => ({
       listProps: {
         title: name,
         description: artists?.map((artist) => artist.name).join(", "),
@@ -32,7 +34,7 @@ export default function FormDefinition({ data, ...rest }) {
     })) ?? [];
 
   const validColabs =
-    data?.colabs?.map(({ name, id }) => ({
+  playlist?.colabs?.map(({ name, id }) => ({
       listProps: {
         title: name,
         description: "",
@@ -82,8 +84,8 @@ export default function FormDefinition({ data, ...rest }) {
         JSX: Checklist,
         customProps: {
           allOptions: validColabs,
-          title: "Colaborators",
-          emptyMessage: "No colabs",
+          title: "Collaborators",
+          emptyMessage: "No collabs",
         },
       },
   ].filter((item) => item);

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import FetchedList from "../general/FetchedList";
 import styles from "../styles.js";
 import PlayableSongItem from "../songs/PlayableSongItem";
-import { Portal, List } from "react-native-paper";
+import { List } from "react-native-paper";
 import { useFavorites } from "../../util/requests";
 import { View, ScrollView } from "react-native";
 import Player from "../Player";
@@ -11,6 +11,7 @@ import AlbumItem from "../albums/AlbumItem";
 import AlbumInfo from "../albums/AlbumInfo";
 import PlaylistMenuPlay from "../playlists/PlaylistMenuPlay";
 import LikeIcon from "../general/LikeIcon";
+import Portal from "../general/NavigationAwarePortal";
 
 export default function FavoritesScreen() {
   const { response: favoritesSongs, deleteFavorite: deleteSong } =

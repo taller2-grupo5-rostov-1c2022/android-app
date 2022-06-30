@@ -36,12 +36,13 @@ export const TRIGGER_METRICS_URL =
 
 export const HTTP_NOT_FOUND = 404;
 
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = 20;
 
-export function getUrl(baseUrl, page, other_params) {
-  return `${baseUrl}?page=${page}&size=${PAGE_SIZE}${
-    other_params ? `&${other_params.join("&")}` : ""
-  }`;
+export function getUrl(baseUrl, index, prev, other_params) {
+  const offset = index !== 0 ? `&offset=${prev.offset}` : "";
+  const params = other_params ? `&${other_params.join("&")}` : "";
+
+  return `${baseUrl}?limit=${PAGE_SIZE}${offset}${params}`;
 }
 
 export function keyExtractor(item) {

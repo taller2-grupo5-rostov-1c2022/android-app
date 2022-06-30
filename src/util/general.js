@@ -255,3 +255,11 @@ export const errStr = (error) => {
     return "Unknown Error (*)";
   }
 };
+
+export const try_parse = (json) => {
+  try {
+    return JSON.parse(json);
+  } catch {
+    return undefined;
+  }
+};
