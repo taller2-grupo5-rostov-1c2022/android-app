@@ -64,7 +64,7 @@ function FetchedList({
           />
         ) : undefined
       }
-      ListEmptyComponent={() => <EmptyMessage text={emptyMessage} />}
+      ListEmptyComponent={() => <EmptyMessage text={emptyMessage} extraStyle={listProps.inverted ? {transform: [{ rotateX: '180deg' }]} : null} />}
       onEndReached={
         size &&
         items &&
@@ -141,10 +141,10 @@ const dataPropTypes = PropTypes.shape({
   total: PropTypes.number,
 }).isRequired;
 
-const EmptyMessage = ({ text }) => {
+const EmptyMessage = ({ text, extraStyle }) => {
   const theme = useTheme();
   return (
-    <Subheading style={[styles.infoText, { color: theme.colors.info }]}>
+    <Subheading style={[styles.infoText, { color: theme.colors.info }, extraStyle]}>
       {text}
     </Subheading>
   );
@@ -166,6 +166,7 @@ FetchedList.propTypes = {
 
 EmptyMessage.propTypes = {
   text: PropTypes.string,
+  extraStyle: PropTypes.any,
 };
 
 ErrorMessage.propTypes = {

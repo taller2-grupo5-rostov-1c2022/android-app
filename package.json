@@ -4,8 +4,10 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start --dev-client",
+    "startTunnel": "expo start --tunnel --dev-client",
     "cache": "expo start -c",
     "android": "expo run:android",
+    "android -d": "expo run:android -d",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "customWeb": "expo customize:web",
