@@ -27,6 +27,11 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
     { isPaused: () => !modalStatus.visible }
   );
 
+  const getAvgScore = () => {
+    if (!album?.score) return "-";
+    return Math.round(album?.score * 100) / 100;
+  }
+
   useEffect(() => {
     if (!response.error) return;
     console.error(response.error);
@@ -53,6 +58,7 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
 
           <Text>{artists}</Text>
           <Caption>{album?.description}</Caption>
+          <Caption>{"avg. Score: " + getAvgScore()}</Caption>
           <SongList
             onPlaylistAdd={(data) =>
               setPlaylistAdd({ visible: true, id: data.id })
