@@ -39,7 +39,7 @@ function getButtons(selected, setSelected, setDisabled, onSearch, options) {
   );
 }
 
-export default function SearchBar({ setQueries, ...rest }) {
+export default function SearchBar({ setQueries, withSubLevels, ...rest }) {
   const [text, setText] = useState("");
   const [disabled, setDisabled] = useState(false);
 
@@ -62,16 +62,17 @@ export default function SearchBar({ setQueries, ...rest }) {
       label: "Genres",
     },
   ];
-  const options = subLevels
-    ? [
-        ...baseOptions,
-        ...subLevels.map((level) => ({
-          ...level,
-          name: "sub_level",
-          value: level.value.toString(),
-        })),
-      ]
-    : baseOptions;
+  const options =
+    subLevels && withSubLevels
+      ? [
+          ...baseOptions,
+          ...subLevels.map((level) => ({
+            ...level,
+            name: "sub_level",
+            value: level.value.toString(),
+          })),
+        ]
+      : baseOptions;
 
   const [selected, setSelected] = useState(options[0]);
 
@@ -128,5 +129,6 @@ export default function SearchBar({ setQueries, ...rest }) {
 
 SearchBar.propTypes = {
   setQueries: PropTypes.func.isRequired,
+  withSubLevels: PropTypes.bool.isRequired,
   ...View.propTypes,
 };
