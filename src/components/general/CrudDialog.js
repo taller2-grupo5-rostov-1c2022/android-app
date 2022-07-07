@@ -25,7 +25,7 @@ export default function CrudDialog({
   onDelete,
   form,
 }) {
-  const { handleSubmit, ...rest } = useForm({
+  const { handleSubmit, formState, ...rest } = useForm({
     defaultValues: defaultGen(data),
     mode: "onChange",
   });
@@ -93,7 +93,12 @@ export default function CrudDialog({
         <Dialog.Title>{`${data?.id ? "Edit" : "Add"} ${name}`}</Dialog.Title>
         <Dialog.ScrollArea>
           <ScrollView style={{ marginVertical: 5 }}>
-            <FormDefinition data={data} extra={status.extra} {...rest} />
+            <FormDefinition
+              data={data}
+              extra={status.extra}
+              formState={formState}
+              {...rest}
+            />
           </ScrollView>
         </Dialog.ScrollArea>
         <Dialog.Actions>

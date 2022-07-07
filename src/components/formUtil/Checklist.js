@@ -17,7 +17,7 @@ export default function Checklist(props) {
     rules,
     control,
     defaultValue,
-    customProps: { allOptions, viewStyle, title, emptyMessage },
+    customProps: { allOptions, viewStyle, title, emptyMessage, error },
   } = props;
 
   const { field } = useController({
@@ -26,7 +26,7 @@ export default function Checklist(props) {
     control,
     defaultValue,
   });
-  const err = control.getFieldState(name).error?.message;
+  const err = error?.message || control.getFieldState(name).error?.message;
 
   const [values, setValues] = useState(field?.value ?? []);
 
@@ -109,5 +109,6 @@ Checklist.propTypes = {
     viewStyle: PropTypes.shape(View.propTypes),
     title: PropTypes.string,
     emptyMessage: PropTypes.string,
+    error: PropTypes.any,
   }).isRequired,
 };

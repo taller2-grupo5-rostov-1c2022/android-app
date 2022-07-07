@@ -23,7 +23,7 @@ export function defaultGen(data) {
   };
 }
 
-export default function FormDefinition({ data, ...rest }) {
+export default function FormDefinition({ data, formState, ...rest }) {
   const subLevels = useSubLevels()?.map(({ level, name }) => ({
     value: level,
     label: name,
@@ -61,6 +61,7 @@ export default function FormDefinition({ data, ...rest }) {
               label: "Author",
               style: styles.textInput,
             },
+            error: formState?.errors.artists,
             addIndex: true,
           },
         },
@@ -121,6 +122,9 @@ export default function FormDefinition({ data, ...rest }) {
               message: "File is required",
             },
           },
+          customProps: {
+            error: formState?.errors.file,
+          },
         },
       ]}
     />
@@ -131,4 +135,5 @@ FormDefinition.propTypes = {
   data: PropTypes.shape({
     id: PropTypes.number,
   }),
+  formState: PropTypes.any,
 };

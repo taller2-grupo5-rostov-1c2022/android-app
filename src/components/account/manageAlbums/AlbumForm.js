@@ -48,7 +48,7 @@ async function getMySongs(album) {
   }
 }
 
-export default function FormDefinition({ data, extra, ...rest }) {
+export default function FormDefinition({ data, extra, formState, ...rest }) {
   return (
     <FormBuilder
       {...rest}
@@ -63,6 +63,7 @@ export default function FormDefinition({ data, extra, ...rest }) {
             size: 200,
             initialImageUri: extra?.initialImageUri,
             style: { alignSelf: "center" },
+            error: formState.errors.cover,
           },
           rules: {
             required: {
@@ -105,6 +106,7 @@ export default function FormDefinition({ data, extra, ...rest }) {
             mode: "flat",
             label: "Album genre",
             style: styles.textInput,
+            error: formState.errors.genre,
           },
           options: VALID_GENRES.map((genre) => ({
             value: genre,
@@ -119,6 +121,7 @@ export default function FormDefinition({ data, extra, ...rest }) {
             allOptions: extra?.validSongs ?? [],
             title: "Songs",
             emptyMessage: "No songs to add",
+            error: formState.errors.songs_ids,
           },
         },
       ]}
@@ -142,4 +145,5 @@ FormDefinition.propTypes = {
   data: PropTypes.shape({
     id: PropTypes.number,
   }),
+  formState: PropTypes.any,
 };

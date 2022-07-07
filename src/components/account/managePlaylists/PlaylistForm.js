@@ -48,7 +48,7 @@ function getMySongs(playlist) {
   };
 }
 
-export default function FormDefinition({ data, extra, ...rest }) {
+export default function FormDefinition({ data, extra, formState, ...rest }) {
   const isCreator = data?.creator_id === getAuth()?.currentUser?.uid;
   const creating = !data?.id;
 
@@ -85,6 +85,7 @@ export default function FormDefinition({ data, extra, ...rest }) {
         allOptions: extra?.validSongs ?? [],
         title: "Songs",
         emptyMessage: "No songs",
+        error: formState?.errors?.songs_ids,
       },
     },
     !creating &&
@@ -96,6 +97,7 @@ export default function FormDefinition({ data, extra, ...rest }) {
           allOptions: extra?.validColabs ?? [],
           title: "Collaborators",
           emptyMessage: "No collabs",
+          error: formState?.errors?.colabs_ids,
         },
       },
   ].filter((item) => item);
@@ -131,4 +133,5 @@ FormDefinition.propTypes = {
     validSongs: PropTypes.array,
     validColabs: PropTypes.array,
   }),
+  formState: PropTypes.any,
 };

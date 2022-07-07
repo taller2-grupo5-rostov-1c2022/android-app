@@ -7,7 +7,7 @@ import { ShapedImage } from "../general/ShapedImage";
 import { useTheme } from "react-native-paper";
 
 export default function ImagePicker({ customProps, ...rest }) {
-  const { initialImageUri, ...customRest } = customProps;
+  const { initialImageUri, error, ...customRest } = customProps;
   const [status, setStatus] = useState(null);
   let theme = useTheme();
 
@@ -24,6 +24,7 @@ export default function ImagePicker({ customProps, ...rest }) {
               {...customRest}
             />
           ),
+          error,
         }}
       />
       <Text style={{ textAlign: "center", color: theme.colors.error }}>
@@ -40,5 +41,6 @@ ImagePicker.propTypes = {
     icon: PropTypes.string.isRequired,
     size: PropTypes.number.isRequired,
     styles: PropTypes.any,
+    error: PropTypes.any,
   }).isRequired,
 };

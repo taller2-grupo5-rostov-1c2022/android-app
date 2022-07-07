@@ -10,7 +10,7 @@ export default function Table(props) {
     rules,
     control,
     defaultValue,
-    customProps: { textInputProps, addIndex },
+    customProps: { textInputProps, addIndex, error },
   } = props;
 
   const { field } = useController({
@@ -19,7 +19,7 @@ export default function Table(props) {
     control,
     defaultValue,
   });
-  const err = control.getFieldState(name).error?.message;
+  const err = error?.message || control.getFieldState(name).error?.message;
 
   const [values, setValues] = useState(field.value ?? [""]);
   const onAdd = () => setValues((prev) => prev.concat([""]));
@@ -115,5 +115,6 @@ Table.propTypes = {
   customProps: PropTypes.shape({
     textInputProps: PropTypes.any,
     addIndex: PropTypes.bool,
+    error: PropTypes.any,
   }).isRequired,
 };
