@@ -6,41 +6,51 @@ import PropTypes from "prop-types";
 import { FormBuilder } from "react-native-paper-form-builder";
 import styles from "../../styles";
 import { inputValidator } from "../../../util/general";
-import { useSWR, json_fetcher } from "../../../util/services";
+import { fetch } from "../../../util/services";
 
-export function defaultGen(data) {
-  const songs_ids = data?.songs?.map((song) => song.id) ?? [];
-  const colabs_ids = data?.colabs?.map(({ id }) => id) ?? [];
+export async function defaultGen(data) {
+  const playlist = data?.id
+    ? await fetch(PLAYLISTS_URL + data?.id, { method: "GET" })
+    : null;
+  const songs_ids = playlist?.songs?.map((song) => song.id) ?? [];
+  const colabs_ids = playlist?.colabs?.map(({ id }) => id) ?? [];
   return {
-    name: data?.name ?? "",
-    description: data?.description ?? "",
-    songs_ids,
-    colabs_ids,
+    defaultValues: {
+      name: data?.name ?? "",
+      description: data?.description ?? "",
+      songs_ids,
+      colabs_ids,
+    },
+    extra: getMySongs(playlist),
   };
 }
 
-export default function FormDefinition({ data, ...rest }) {
+function getMySongs(playlist) {
+  const validSongs = playlist?.songs?.map(({ name, id, artists }) => ({
+    listProps: {
+      title: name,
+      description: artists?.map((artist) => artist.name).join(", "),
+    },
+    out: id,
+  }));
+
+  const validColabs = playlist?.colabs?.map(({ name, id }) => ({
+    listProps: {
+      title: name,
+      description: "",
+    },
+    out: id,
+  }));
+
+  return {
+    validSongs,
+    validColabs,
+  };
+}
+
+export default function FormDefinition({ data, extra, ...rest }) {
   const isCreator = data?.creator_id === getAuth()?.currentUser?.uid;
   const creating = !data?.id;
-  const { data: playlist } = useSWR(`${PLAYLISTS_URL}${data?.id}`, json_fetcher);
-  //TODO: ver si falta paginacion aca
-  const validSongs =
-  playlist?.songs?.map(({ name, id, artists }) => ({
-      listProps: {
-        title: name,
-        description: artists?.map((artist) => artist.name).join(", "),
-      },
-      out: id,
-    })) ?? [];
-
-  const validColabs =
-  playlist?.colabs?.map(({ name, id }) => ({
-      listProps: {
-        title: name,
-        description: "",
-      },
-      out: id,
-    })) ?? [];
 
   const formConfigArray = [
     {
@@ -72,7 +82,7 @@ export default function FormDefinition({ data, ...rest }) {
       type: "custom",
       JSX: Checklist,
       customProps: {
-        allOptions: validSongs,
+        allOptions: extra?.validSongs ?? [],
         title: "Songs",
         emptyMessage: "No songs",
       },
@@ -83,7 +93,7 @@ export default function FormDefinition({ data, ...rest }) {
         type: "custom",
         JSX: Checklist,
         customProps: {
-          allOptions: validColabs,
+          allOptions: extra?.validColabs ?? [],
           title: "Collaborators",
           emptyMessage: "No collabs",
         },
@@ -116,5 +126,9 @@ FormDefinition.propTypes = {
     ),
     genre: PropTypes.string,
     sub_level: PropTypes.number,
+  }),
+  extra: PropTypes.shape({
+    validSongs: PropTypes.array,
+    validColabs: PropTypes.array,
   }),
 };

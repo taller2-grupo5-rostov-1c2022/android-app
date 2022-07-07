@@ -4,6 +4,7 @@
     "slug": "Spotifiuby",
     "version": "0.7.0",
     "icon": "src/img/icon.png",
+    "userInterfaceStyle": "automatic",
     "android": {
       "icon": "src/img/icon.png",
       "adaptiveIcon": {
@@ -16,7 +17,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "scheme": "spotifiuby",
-    "userInterfaceStyle": "automatic"
+    "scheme": "spotifiuby"
   }
 }

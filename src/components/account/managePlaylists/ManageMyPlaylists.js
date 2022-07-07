@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import CrudList from "../../general/CrudList.js";
-import PlaylistForm, { defaultGen } from "./PlaylistForm";
+import PlaylistForm, { defaultGen, getMySongs } from "./PlaylistForm";
 import PlaylistItem from "../../playlists/PlaylistItem.js";
 import { MY_PLAYLISTS_URL, PLAYLISTS_URL } from "../../../util/services.js";
 import { savePlaylist, deletePlaylist } from "../../../util/requests";
@@ -19,6 +19,7 @@ export default function ManageMyPlaylists() {
         onSave: savePlaylist,
         onDelete: deletePlaylist,
         form: PlaylistForm,
+        extraFetcher: getMySongs,
       }}
     />
   );

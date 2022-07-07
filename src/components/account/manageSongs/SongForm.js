@@ -9,15 +9,17 @@ import { useSubLevels } from "../../../util/requests";
 
 export function defaultGen(data) {
   return {
-    name: data?.name ?? "",
-    artists: data?.artists?.map((artist) => artist.name) ?? null,
-    description: data?.description ?? "",
-    genre:
-      data?.genre && VALID_GENRES.includes(data.genre)
-        ? data.genre
-        : VALID_GENRES[0],
-    sub_level: data?.sub_level ?? 0,
-    file: null,
+    defaultValues: {
+      name: data?.name ?? "",
+      artists: data?.artists?.map((artist) => artist.name) ?? null,
+      description: data?.description ?? "",
+      genre:
+        data?.genre && VALID_GENRES.includes(data.genre)
+          ? data.genre
+          : VALID_GENRES[0],
+      sub_level: data?.sub_level ?? 0,
+      file: null,
+    },
   };
 }
 

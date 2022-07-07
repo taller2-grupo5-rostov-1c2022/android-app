@@ -39,9 +39,10 @@ export default function CrudList({
   const onDismiss = useCallback(
     (revalidate = false) => {
       setVisible(false);
-      if (revalidate && revalidateUrl)
-        matchMutate((str) => str.startsWith(revalidateUrl));
-      response.mutate();
+      if (revalidate) {
+        revalidateUrl && matchMutate((str) => str.includes(revalidateUrl));
+        matchMutate((s) => s.includes(url));
+      }
     },
     [revalidateUrl]
   );

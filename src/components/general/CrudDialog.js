@@ -14,7 +14,6 @@ import { ErrorDialog } from "./ErrorDialog";
 // form: form definition to use
 // onSave: function to call when the save button is pressed
 // onDelete: function to call when the delete button is pressed
-// extraFetcher: optional async function to fetch extra data before showing the form
 // async (data) => extra
 export default function CrudDialog({
   data,
@@ -25,7 +24,6 @@ export default function CrudDialog({
   onSave,
   onDelete,
   form,
-  extraFetcher,
 }) {
   const { handleSubmit, ...rest } = useForm({
     defaultValues: defaultGen(data),
@@ -33,20 +31,18 @@ export default function CrudDialog({
   });
   const [status, setStatus] = useState({
     error: null,
-    loading: !!extraFetcher,
+    loading: true,
     extra: null,
   });
 
   const reset = async () => {
-    rest.reset(defaultGen(data));
-    setStatus({ error: null, loading: !!extraFetcher });
-    if (extraFetcher) {
-      try {
-        const extra = await extraFetcher(data);
-        setStatus({ error: null, loading: false, extra });
-      } catch (e) {
-        setStatus({ error: e, loading: true, extra: null });
-      }
+    setStatus({ error: null, loading: true });
+    try {
+      const { defaultValues, extra } = await defaultGen(data);
+      rest.reset(defaultValues);
+      setStatus({ error: null, loading: false, extra });
+    } catch (e) {
+      setStatus({ error: e, loading: true, extra: null });
     }
   };
 
@@ -55,7 +51,7 @@ export default function CrudDialog({
   }, [visible]);
 
   const _onDismiss = () => {
-    setStatus({ loading: !!extraFetcher, error: null, extra: null });
+    setStatus({ loading: true, error: null, extra: null });
     onDismiss(false);
   };
 
@@ -80,7 +76,7 @@ export default function CrudDialog({
     } catch (err) {
       console.error(err);
       toast.show(`${name} could not be ${saving ? "saved" : "deleted"}`);
-      setStatus({ loading: !!extraFetcher, error: err, extra: null });
+      setStatus({ loading: true, error: err, extra: null });
     }
   };
 

@@ -116,16 +116,18 @@ export default function ManageSubscription() {
       <Headline style={{ marginTop: "10%", marginBottom: "5%" }}>
         Change Subscription
       </Headline>
-      {subLevels?.map((sub, i) => (
-        <Button
-          key={i}
-          mode={"outlined"}
-          onPress={subscribeTo(sub?.level)}
-          style={{ marginVertical: "2%" }}
-        >
-          <Text>{sub?.name}</Text>
-        </Button>
-      ))}
+      {subLevels
+        ?.filter((sub) => sub.level != user?.sub_level)
+        .map((sub, i) => (
+          <Button
+            key={i}
+            mode={"outlined"}
+            onPress={subscribeTo(sub?.level)}
+            style={{ marginVertical: "2%" }}
+          >
+            <Text>{sub?.name}</Text>
+          </Button>
+        ))}
 
       <Portal>
         <SubscribeDialog

@@ -112,10 +112,24 @@ const styles = StyleSheet.create({
     marginHorizontal: "5%",
     maxHeight: "90%",
   },
+  progressLabel: {
+    marginHorizontal: 10,
+    textAlign: "center",
+    height: "100%",
+  },
+  progress: {
+    height: 5,
+  },
+  playerProgress: {
+    position: "relative",
+    marginHorizontal: "2%",
+    height: 20,
+  },
   player: {
     position: "relative",
     marginHorizontal: "2%",
     marginBottom: "2%",
+    paddingLeft: "3%",
   },
   modalContainer: {
     // Con esto se puede ajustar para

@@ -4,28 +4,33 @@ import { FormBuilder } from "react-native-paper-form-builder";
 import styles from "../../styles";
 import { VALID_GENRES } from "../../../util/general";
 import Checklist from "../../formUtil/Checklist";
-import { fetch, MY_SONGS_URL } from "../../../util/services";
+import { fetch, MY_SONGS_URL, ALBUMS_URL } from "../../../util/services";
 import ImagePicker from "../../formUtil/ImagePicker";
 import { inputValidator } from "../../../util/general";
 
-export function defaultGen(data) {
+export async function defaultGen(data) {
+  const album = data?.id
+    ? await fetch(ALBUMS_URL + data?.id, { method: "GET" })
+    : null;
   return {
-    name: data?.name ?? "",
-    description: data?.description ?? "",
-    genre:
-      data?.genre && VALID_GENRES.includes(data.genre)
-        ? data.genre
-        : VALID_GENRES[0],
-    songs_ids: data?.songs?.map((song) => song.id) ?? [],
+    defaultValues: {
+      name: data?.name ?? "",
+      description: data?.description ?? "",
+      genre:
+        data?.genre && VALID_GENRES.includes(data.genre)
+          ? data.genre
+          : VALID_GENRES[0],
+      songs_ids: album?.songs?.map((song) => song.id) ?? [],
+    },
+    extra: await getMySongs(album || data),
   };
 }
 
-export async function getMySongs(album) {
+async function getMySongs(album) {
   try {
-    let {items: songs} = await fetch(MY_SONGS_URL, {
+    let { items: songs } = await fetch(MY_SONGS_URL, {
       method: "GET",
     });
-    //TODO: agregar paginacion aca
     songs = songs.filter(
       (song) => !song.album || (album && song.album?.id == album.id)
     );
