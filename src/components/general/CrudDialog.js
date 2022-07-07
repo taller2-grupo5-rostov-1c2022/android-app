@@ -26,7 +26,6 @@ export default function CrudDialog({
   form,
 }) {
   const { handleSubmit, formState, ...rest } = useForm({
-    defaultValues: defaultGen(data),
     mode: "onChange",
   });
   const [status, setStatus] = useState({
@@ -72,7 +71,8 @@ export default function CrudDialog({
     try {
       await requestSender();
       toast.show(`${name} ${saving ? "saved" : "deleted"}`);
-      _onDismiss();
+      setStatus({ loading: true, error: null, extra: null });
+      onDismiss(true);
     } catch (err) {
       console.error(err);
       toast.show(`${name} could not be ${saving ? "saved" : "deleted"}`);
@@ -138,5 +138,4 @@ CrudDialog.propTypes = {
   onSave: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   form: PropTypes.any.isRequired,
-  extraFetcher: PropTypes.func,
 };

@@ -1,9 +1,17 @@
-import React, { createContext, useState, useEffect, useRef } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { Audio } from "expo-av";
 import PropTypes from "prop-types";
 import { Mutex } from "async-mutex";
 
 export const AudioContext = createContext();
+export const DurationContext = createContext();
 
 export const AudioProvider = ({ children }) => {
   const audio = useRef({
@@ -17,6 +25,10 @@ export const AudioProvider = ({ children }) => {
     name: "",
     artists: [],
     url: "",
+  });
+  const [duration, setDuration] = useState({
+    current: 0,
+    total: 0,
   });
 
   const [prevSongs, setprevSongs] = React.useState([]);
@@ -34,8 +46,14 @@ export const AudioProvider = ({ children }) => {
   };
 
   const _onPlaybackStatusUpdate = (playbackStatus) => {
-    if (playbackStatus.isLoaded) if (playbackStatus.didJustFinish) next();
-
+    if (playbackStatus.isLoaded) {
+      if (playbackStatus.didJustFinish) next();
+      else
+        setDuration({
+          current: playbackStatus.positionMillis,
+          total: playbackStatus.durationMillis,
+        });
+    }
     if (playbackStatus.error) {
       console.error(playbackStatus.error);
       errorOnPlaySong();
@@ -81,16 +99,16 @@ export const AudioProvider = ({ children }) => {
 
   const play = async (uri) => mutex.runExclusive(async () => await _play(uri));
 
-  const previous = () => {
+  const previous = useCallback(() => {
     if (prevSongs.length == 0) return;
     const prevSong = prevSongs[prevSongs.length - 1];
     setprevSongs(prevSongs.slice(0, -1));
     setIsPrevious(true);
     setQueue((queue) => [currentSong, ...queue]);
     setSong(prevSong);
-  };
+  }, [prevSongs, currentSong]);
 
-  const next = () => {
+  const next = useCallback(() => {
     if (queue.length == 0) {
       setSong("");
       return;
@@ -99,9 +117,9 @@ export const AudioProvider = ({ children }) => {
     const nextSong = queue[0];
     setQueue((queue) => queue.slice(1));
     setSong(nextSong);
-  };
+  }, [queue]);
 
-  const stop = () => {
+  const stop = useCallback(() => {
     if (audio.sound != null) {
       mutex.runExclusive(async () => {
         await audio.sound?.unloadAsync().catch();
@@ -111,7 +129,7 @@ export const AudioProvider = ({ children }) => {
         await unloadSound();
       });
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (song === "") {
@@ -144,19 +162,24 @@ export const AudioProvider = ({ children }) => {
 
   return (
     <AudioContext.Provider
-      value={{
-        next,
-        previous,
-        stop,
-        paused,
-        setPaused,
-        song,
-        setSong,
-        queue,
-        setQueue,
-      }}
+      value={useMemo(
+        () => ({
+          next,
+          previous,
+          stop,
+          paused,
+          setPaused,
+          song,
+          setSong,
+          queue,
+          setQueue,
+        }),
+        [next, previous, stop, paused, song, queue]
+      )}
     >
-      {children}
+      <DurationContext.Provider value={duration}>
+        {children}
+      </DurationContext.Provider>
     </AudioContext.Provider>
   );
 };
