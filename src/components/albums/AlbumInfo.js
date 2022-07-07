@@ -28,11 +28,6 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
     { isPaused: () => !modalStatus.visible }
   );
 
-  const hasAvgScore = () => {
-    if (album?.score !== 0 && !album?.score) return false;
-    return true;
-  };
-
   useEffect(() => {
     if (!response.error) return;
     console.error(response.error);
