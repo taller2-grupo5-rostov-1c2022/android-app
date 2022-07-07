@@ -21,10 +21,6 @@ export const AudioProvider = ({ children }) => {
   const [song, setSong] = useState("");
   const [paused, setPaused] = useState(false);
   const [queue, setQueue] = useState([]);
-  const [durationInfo, setDurationInfo] = useState({
-    current: 0,
-    total: 0,
-  });
 
   const errorOnPlaySong = () => {
     toast.show("Failed to play song :(");
@@ -36,13 +32,7 @@ export const AudioProvider = ({ children }) => {
   };
 
   const _onPlaybackStatusUpdate = (playbackStatus) => {
-    if (playbackStatus.isLoaded)
-      if (playbackStatus.didJustFinish) next();
-      else
-        setDurationInfo({
-          current: playbackStatus.positionMillis,
-          total: playbackStatus.durationMillis,
-        });
+    if (playbackStatus.isLoaded) if (playbackStatus.didJustFinish) next();
 
     if (playbackStatus.error) {
       console.error(playbackStatus.error);
@@ -125,7 +115,7 @@ export const AudioProvider = ({ children }) => {
     if (currentSong.name && !isPrevious && currentSong.name != song.name) {
       setprevSongs((prevSongs) => [...prevSongs, currentSong]);
     }
-    setDurationInfo({ current: 0, total: 0 });
+
     setIsPrevious(false);
     setCurrentSong({
       name: song.name,
@@ -157,7 +147,6 @@ export const AudioProvider = ({ children }) => {
         setSong,
         queue,
         setQueue,
-        durationInfo,
       }}
     >
       {children}
