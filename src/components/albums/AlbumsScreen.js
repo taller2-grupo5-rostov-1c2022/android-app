@@ -39,6 +39,7 @@ export default function AlbumsScreen() {
         url={ALBUMS_URL}
         withSearchBar={true}
         itemComponent={album}
+        withSubLevels={false}
         type="/albums/"
       />
       <Portal>

@@ -1,20 +1,34 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { Audio } from "expo-av";
 import PropTypes from "prop-types";
+import { Mutex } from "async-mutex";
 
 export const AudioContext = createContext();
+export const DurationContext = createContext();
 
 export const AudioProvider = ({ children }) => {
-  const [audio] = React.useState({
+  const audio = useRef({
     uri: null,
     sound: null,
     old_sound: [],
-  });
+  }).current;
+  const mutex = useRef(new Mutex()).current;
   const [isPrevious, setIsPrevious] = React.useState(false);
   const [currentSong, setCurrentSong] = React.useState({
     name: "",
     artists: [],
     url: "",
+  });
+  const [duration, setDuration] = useState({
+    current: 0,
+    total: 0,
   });
 
   const [prevSongs, setprevSongs] = React.useState([]);
@@ -32,29 +46,38 @@ export const AudioProvider = ({ children }) => {
   };
 
   const _onPlaybackStatusUpdate = (playbackStatus) => {
-    if (playbackStatus.isLoaded && playbackStatus.didJustFinish) next();
-
+    if (playbackStatus.isLoaded) {
+      if (playbackStatus.didJustFinish) next();
+      else
+        setDuration({
+          current: playbackStatus.positionMillis,
+          total: playbackStatus.durationMillis,
+        });
+    }
     if (playbackStatus.error) {
       console.error(playbackStatus.error);
       errorOnPlaySong();
     }
   };
 
-  const unloadSound = () => {
-    audio.old_sound.map(async (sound) => {
-      const status = await sound?.getStatusAsync();
-      if (!status) return false; //keeps the sound
-      if (!status.isLoaded) {
-        return false; //throws away the sound
-      }
-      sound.unloadAsync().catch(); //unload the still loaded
-      return true; //we throw them away next iter in case unload fails
-    });
+  const unloadSound = async () => {
+    const filters = await Promise.all(
+      audio.old_sound.map(async (sound) => {
+        const status = await sound?.getStatusAsync();
+        if (!status) return false; //throws away the sound
+        if (!status.isLoaded) {
+          return false; //throws away the sound
+        }
+        sound.setOnPlaybackStatusUpdate(null);
+        await sound.unloadAsync().catch(); //unload the still loaded
+        return true; //we throw them away next iter in case unload fails
+      })
+    );
+    audio.old_sound = audio.old_sound.filter((s, i) => filters[i]);
   };
 
-  const play = async (uri) => {
+  const _play = async (uri) => {
     if (uri && audio.uri !== uri) {
-      //await audio.sound?.stopAsync();
       // El catch es para que no muera si no había canción cargada
       await audio.sound?.unloadAsync().catch();
       const { sound } = await Audio.Sound.createAsync({ uri }).catch(
@@ -72,19 +95,20 @@ export const AudioProvider = ({ children }) => {
       console.warn("Error on Play Song", error);
       errorOnPlaySong();
     });
-    unloadSound();
   };
 
-  const previous = () => {
+  const play = async (uri) => mutex.runExclusive(async () => await _play(uri));
+
+  const previous = useCallback(() => {
     if (prevSongs.length == 0) return;
     const prevSong = prevSongs[prevSongs.length - 1];
     setprevSongs(prevSongs.slice(0, -1));
     setIsPrevious(true);
     setQueue((queue) => [currentSong, ...queue]);
     setSong(prevSong);
-  };
+  }, [prevSongs, currentSong]);
 
-  const next = () => {
+  const next = useCallback(() => {
     if (queue.length == 0) {
       setSong("");
       return;
@@ -93,18 +117,19 @@ export const AudioProvider = ({ children }) => {
     const nextSong = queue[0];
     setQueue((queue) => queue.slice(1));
     setSong(nextSong);
-  };
+  }, [queue]);
 
-  const stop = () => {
+  const stop = useCallback(() => {
     if (audio.sound != null) {
-      //audio.sound?.stopAsync();
-      audio.sound?.unloadAsync().catch();
-      audio.uri = null;
-      audio.old_sound.push(audio.sound);
-      audio.sound = null;
-      unloadSound();
+      mutex.runExclusive(async () => {
+        await audio.sound?.unloadAsync().catch();
+        audio.uri = null;
+        audio.old_sound.push(audio.sound);
+        audio.sound = null;
+        await unloadSound();
+      });
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (song === "") {
@@ -115,6 +140,7 @@ export const AudioProvider = ({ children }) => {
     if (currentSong.name && !isPrevious && currentSong.name != song.name) {
       setprevSongs((prevSongs) => [...prevSongs, currentSong]);
     }
+
     setIsPrevious(false);
     setCurrentSong({
       name: song.name,
@@ -136,19 +162,24 @@ export const AudioProvider = ({ children }) => {
 
   return (
     <AudioContext.Provider
-      value={{
-        next,
-        previous,
-        stop,
-        paused,
-        setPaused,
-        song,
-        setSong,
-        queue,
-        setQueue,
-      }}
+      value={useMemo(
+        () => ({
+          next,
+          previous,
+          stop,
+          paused,
+          setPaused,
+          song,
+          setSong,
+          queue,
+          setQueue,
+        }),
+        [next, previous, stop, paused, song, queue]
+      )}
     >
-      {children}
+      <DurationContext.Provider value={duration}>
+        {children}
+      </DurationContext.Provider>
     </AudioContext.Provider>
   );
 };

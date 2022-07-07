@@ -97,11 +97,9 @@ export default function SubscribeDialog({ selectedLevel, hide }) {
         ) : (
           <ScrollView>
             <Subheading>
-              You have an active {userSub?.name} subscription
+              You already have an active {userSub?.name} subscription.
             </Subheading>
-            <Subheading>
-              Wait until it expires to downgrade or refresh it
-            </Subheading>
+            <Subheading>Wait until it expires to downgrade it.</Subheading>
           </ScrollView>
         )}
       </Dialog.ScrollArea>

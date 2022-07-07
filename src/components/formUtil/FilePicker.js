@@ -16,7 +16,7 @@ export default function FilePicker(props) {
     name,
     rules,
     control,
-    customProps: { fileType, setStatus, button },
+    customProps: { fileType, setStatus, button, error },
   } = props;
 
   const { field } = useController({
@@ -25,7 +25,7 @@ export default function FilePicker(props) {
     control,
   });
 
-  const err = control.getFieldState(name).error?.message;
+  const err = error?.message || control.getFieldState(name).error?.message;
   useEffect(() => {
     setStatus &&
       setStatus((prev) =>
@@ -72,5 +72,6 @@ FilePicker.propTypes = {
     fileType: PropTypes.string.isRequired,
     setStatus: PropTypes.func,
     button: PropTypes.any.isRequired,
+    error: PropTypes.any,
   }).isRequired,
 };

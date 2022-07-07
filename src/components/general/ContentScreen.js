@@ -15,6 +15,7 @@ import {
 
 export default function ContentScreen({
   withSearchBar,
+  withSubLevels = true,
   url,
   type,
   itemComponent,
@@ -78,7 +79,9 @@ export default function ContentScreen({
   return (
     <View style={{ flex: 1 }}>
       <View style={[styles.container]}>
-        {withSearchBar ? <SearchBar setQueries={setQueries} /> : undefined}
+        {withSearchBar ? (
+          <SearchBar setQueries={setQueries} withSubLevels={withSubLevels} />
+        ) : undefined}
         <FetchedList
           {...response}
           customData={customData}
@@ -99,6 +102,7 @@ export default function ContentScreen({
 
 ContentScreen.propTypes = {
   withSearchBar: PropTypes.bool.isRequired,
+  withSubLevels: PropTypes.bool,
   url: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   itemComponent: PropTypes.any.isRequired,

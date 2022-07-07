@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import LoadingScreen from "../account/login/LoadingScreen";
 import LoginStack from "./LoginStack";
 import SessionFetcher from "./SessionFetcher";
@@ -11,6 +11,7 @@ import {
   fetch,
   HTTP_NOT_FOUND,
 } from "../../util/services";
+import { ThemeContext } from "../ThemeProvider";
 
 export default function SessionManager() {
   const [status, setStatus] = useState({
@@ -19,6 +20,7 @@ export default function SessionManager() {
     wasLoggedOut: false,
   });
   const { cache } = useSWRConfig();
+  const themeContext = useContext(ThemeContext);
 
   const onAuthStateChanged = (user) => {
     if (user?.uid) {
@@ -37,7 +39,7 @@ export default function SessionManager() {
     await deleteNotificationToken();
     await AsyncStorage.clear();
     cache.clear();
-
+    themeContext.save();
     _signOut(auth).catch();
   };
 
@@ -67,7 +69,7 @@ async function updateNotificationToken(wasLoggedOut) {
       }),
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     toast.show("Failed set up notifications");
   }
 }
@@ -79,7 +81,7 @@ async function deleteNotificationToken() {
     });
   } catch (e) {
     if (e.status == HTTP_NOT_FOUND) return;
-    console.log(e);
+    console.error(e);
     toast.show("Failed to remove notifications");
   }
 }

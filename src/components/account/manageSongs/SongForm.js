@@ -9,19 +9,21 @@ import { useSubLevels } from "../../../util/requests";
 
 export function defaultGen(data) {
   return {
-    name: data?.name ?? "",
-    artists: data?.artists?.map((artist) => artist.name) ?? null,
-    description: data?.description ?? "",
-    genre:
-      data?.genre && VALID_GENRES.includes(data.genre)
-        ? data.genre
-        : VALID_GENRES[0],
-    sub_level: data?.sub_level ?? 0,
-    file: null,
+    defaultValues: {
+      name: data?.name ?? "",
+      artists: data?.artists?.map((artist) => artist.name) ?? null,
+      description: data?.description ?? "",
+      genre:
+        data?.genre && VALID_GENRES.includes(data.genre)
+          ? data.genre
+          : VALID_GENRES[0],
+      sub_level: data?.sub_level ?? 0,
+      file: null,
+    },
   };
 }
 
-export default function FormDefinition({ data, ...rest }) {
+export default function FormDefinition({ data, formState, ...rest }) {
   const subLevels = useSubLevels()?.map(({ level, name }) => ({
     value: level,
     label: name,
@@ -59,6 +61,7 @@ export default function FormDefinition({ data, ...rest }) {
               label: "Author",
               style: styles.textInput,
             },
+            error: formState?.errors.artists,
             addIndex: true,
           },
         },
@@ -119,6 +122,9 @@ export default function FormDefinition({ data, ...rest }) {
               message: "File is required",
             },
           },
+          customProps: {
+            error: formState?.errors.file,
+          },
         },
       ]}
     />
@@ -129,4 +135,5 @@ FormDefinition.propTypes = {
   data: PropTypes.shape({
     id: PropTypes.number,
   }),
+  formState: PropTypes.any,
 };

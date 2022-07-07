@@ -26,6 +26,7 @@ const THEME_KEY = "@theme";
 export const ThemeContext = createContext({
   toggleTheme: () => {},
   isThemeDark: false,
+  save: () => {},
 });
 
 async function getStoredTheme() {
@@ -52,15 +53,16 @@ async function setStoragedTheme(value) {
   }
 }
 
+async function initialTheme(setIsThemeDark) {
+  const value = await getStoredTheme();
+  setIsThemeDark(value);
+}
+
 export default function ThemeProvider({ children }) {
   const [isThemeDark, setIsThemeDark] = useState(true);
 
   useEffect(() => {
-    async function initialTheme() {
-      const value = await getStoredTheme();
-      setIsThemeDark(value);
-    }
-    initialTheme();
+    initialTheme(setIsThemeDark);
   }, []);
 
   let theme = isThemeDark ? DarkTheme : LightTheme;
@@ -78,8 +80,11 @@ export default function ThemeProvider({ children }) {
     () => ({
       toggleTheme,
       isThemeDark,
+      save: () => {
+        setStoragedTheme(isThemeDark);
+      },
     }),
-    [toggleTheme, isThemeDark]
+    [toggleTheme, isThemeDark, setIsThemeDark]
   );
 
   return (

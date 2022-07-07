@@ -79,7 +79,7 @@ export default function ChatScreen({ navigation, route }) {
         {...rest}
         customData={customData}
         itemComponent={bubble}
-        emptyMessage={"No messsages"}
+        emptyMessage={"No messages"}
         inverted={true}
         keyExtractor={keyExtractor}
       />
