@@ -14,6 +14,7 @@ export default async function requestRecordPermission() {
     )
       return true;
   } catch (err) {
+    console.error(err);
     toast.show("Internal error");
   }
 
