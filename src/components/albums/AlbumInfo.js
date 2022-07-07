@@ -11,6 +11,7 @@ import SongList from "../songs/SongList";
 import AlbumReviews from "./Reviews/AlbumReviews";
 import AlbumComments from "./comments/AlbumComments.js";
 import { useSWR, ALBUMS_URL, json_fetcher } from "../../util/services";
+import StarRating from 'react-native-star-rating-widget';
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
@@ -27,9 +28,9 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
     { isPaused: () => !modalStatus.visible }
   );
 
-  const getAvgScore = () => {
-    if (album?.score !== 0 && !album?.score) return "-";
-    return Math.round(album?.score * 100) / 100;
+  const hasAvgScore = () => {
+    if (album?.score !== 0 && !album?.score) return false;
+    return true;
   };
 
   useEffect(() => {
@@ -58,7 +59,16 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
 
           <Text>{artists}</Text>
           <Caption>{album?.description}</Caption>
-          <Caption>{"avg. Score: " + getAvgScore()}</Caption>
+          { album?.scores_amount ? 
+            <StarRating
+              rating={album.score/2}
+              onChange={() => {}}
+              maxStars={5}
+              style={{alignSelf: "center"}}
+              animationConfig={{scale: 1}}
+            />
+            : null
+          }
           <SongList
             onPlaylistAdd={(data) =>
               setPlaylistAdd({ visible: true, id: data.id })
