@@ -42,10 +42,6 @@ function useStreamings(channelName, token, host) {
 
     await eng.setChannelProfile(ChannelProfile.LiveBroadcasting);
 
-    const sub_warn = eng.addListener("Warning", (warn) => {
-      console.warn("Warning: ", warn);
-    });
-
     const sub_err = eng.addListener("Error", (err) => {
       console.warn("Error: ", err);
     });
@@ -61,7 +57,6 @@ function useStreamings(channelName, token, host) {
 
     return () => {
       eng.leaveChannel();
-      sub_warn.remove();
       sub_err.remove();
       sub_list.remove();
       eng.destroy();

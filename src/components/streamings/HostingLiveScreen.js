@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View } from "react-native";
-import { ActivityIndicator, Button, Chip, Title } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Button,
+  Chip,
+  Title,
+  Text,
+} from "react-native-paper";
 import styles from "../styles";
 import PropTypes from "prop-types";
 import { STREAMINGS_URL, fetch } from "../../util/services";
@@ -10,6 +16,7 @@ import { StorageAccessFramework, EncodingType } from "expo-file-system";
 import { toLocalDate } from "../../util/general";
 import { ShapedImage } from "../general/ShapedImage";
 import useStreamings from "./useStreamings";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 function Loading() {
   return (
@@ -112,17 +119,43 @@ export default function HostingLiveScreen({ navigation, route }) {
 
 function Hosting({ uid, name, img, token, navigation, onError }) {
   const { engine, joined } = useStreamings(uid, token, true);
+  const [color, setColor] = useState("red");
+  const [alert, setAlert] = useState(null);
+
+  useEffect(() => {
+    const interval = global.setInterval(() => {
+      setColor((color) => (color === "red" ? "gray" : "red"));
+    }, 1000);
+    return () => global.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (!engine) return;
-    let subscription = engine.addListener("Error", () => {
+    const timeout = { t: null };
+    let subscription_err = engine.addListener("Error", () => {
       onError();
       toast.show("Live stream error");
       navigation.goBack();
     });
 
+    let subscription_warn = engine.addListener("Warning", (warn) => {
+      if (warn == 1019) {
+        if (timeout.t) global.clearTimeout(timeout.t);
+        const now = new Date().getTime();
+        setAlert(now);
+        timeout.t = global.setTimeout(() => {
+          setAlert((prev) => {
+            if (prev == now) return null;
+            return prev;
+          });
+        }, 15000);
+      }
+    });
+
     return () => {
-      subscription?.remove();
+      subscription_err?.remove();
+      subscription_warn?.remove();
+      if (timeout.t) global.clearTimeout(timeout.t);
     };
   }, [engine]);
 
@@ -141,7 +174,11 @@ function Hosting({ uid, name, img, token, navigation, onError }) {
           justifyContent: "flex-start",
         }}
       >
-        <Chip icon="record" style={{ marginVertical: "5%" }}>
+        <Chip
+          icon={() => <Icon name="record" color={color} />}
+          style={{ marginVertical: "5%" }}
+          textStyle={{ fontWeight: "bold" }}
+        >
           Broadcasting
         </Chip>
       </View>
@@ -159,6 +196,32 @@ function Hosting({ uid, name, img, token, navigation, onError }) {
       >
         stop
       </Button>
+      {alert ? (
+        <View style={styles.warnBackground}>
+          <View style={[styles.row, { alignItems: "center" }]}>
+            <Icon
+              name="alert"
+              style={[styles.warn, { marginRight: 10 }]}
+              size={30}
+            />
+            <Text style={styles.warn}>{"Can't"} detect your microphone.</Text>
+          </View>
+          <Text
+            style={[
+              styles.warn,
+              {
+                alignSelf: "center",
+                width: "100%",
+                textAlign: "justify",
+                fontSize: 12,
+                marginTop: 10,
+              },
+            ]}
+          >
+            Please check that no other application is using it.
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 }

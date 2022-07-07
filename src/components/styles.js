@@ -165,6 +165,16 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 20,
   },
+  warnBackground: {
+    width: "80%",
+    backgroundColor: "#FFF4E9",
+    borderRadius: 5,
+    margin: "5%",
+    padding: "5%",
+  },
+  warn: {
+    color: "#6f3200",
+  },
 });
 
 export default styles;
