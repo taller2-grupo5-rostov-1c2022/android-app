@@ -1,15 +1,17 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useRef } from "react";
 import { Audio } from "expo-av";
 import PropTypes from "prop-types";
+import { Mutex } from "async-mutex";
 
 export const AudioContext = createContext();
 
 export const AudioProvider = ({ children }) => {
-  const [audio] = React.useState({
+  const audio = useRef({
     uri: null,
     sound: null,
     old_sound: [],
-  });
+  }).current;
+  const mutex = useRef(new Mutex()).current;
   const [isPrevious, setIsPrevious] = React.useState(false);
   const [currentSong, setCurrentSong] = React.useState({
     name: "",
@@ -40,21 +42,24 @@ export const AudioProvider = ({ children }) => {
     }
   };
 
-  const unloadSound = () => {
-    audio.old_sound.map(async (sound) => {
-      const status = await sound?.getStatusAsync();
-      if (!status) return false; //keeps the sound
-      if (!status.isLoaded) {
-        return false; //throws away the sound
-      }
-      sound.unloadAsync().catch(); //unload the still loaded
-      return true; //we throw them away next iter in case unload fails
-    });
+  const unloadSound = async () => {
+    const filters = await Promise.all(
+      audio.old_sound.map(async (sound) => {
+        const status = await sound?.getStatusAsync();
+        if (!status) return false; //throws away the sound
+        if (!status.isLoaded) {
+          return false; //throws away the sound
+        }
+        sound.setOnPlaybackStatusUpdate(null);
+        await sound.unloadAsync().catch(); //unload the still loaded
+        return true; //we throw them away next iter in case unload fails
+      })
+    );
+    audio.old_sound = audio.old_sound.filter((s, i) => filters[i]);
   };
 
-  const play = async (uri) => {
+  const _play = async (uri) => {
     if (uri && audio.uri !== uri) {
-      //await audio.sound?.stopAsync();
       // El catch es para que no muera si no había canción cargada
       await audio.sound?.unloadAsync().catch();
       const { sound } = await Audio.Sound.createAsync({ uri }).catch(
@@ -72,8 +77,9 @@ export const AudioProvider = ({ children }) => {
       console.warn("Error on Play Song", error);
       errorOnPlaySong();
     });
-    unloadSound();
   };
+
+  const play = async (uri) => mutex.runExclusive(async () => await _play(uri));
 
   const previous = () => {
     if (prevSongs.length == 0) return;
@@ -97,12 +103,13 @@ export const AudioProvider = ({ children }) => {
 
   const stop = () => {
     if (audio.sound != null) {
-      //audio.sound?.stopAsync();
-      audio.sound?.unloadAsync().catch();
-      audio.uri = null;
-      audio.old_sound.push(audio.sound);
-      audio.sound = null;
-      unloadSound();
+      mutex.runExclusive(async () => {
+        await audio.sound?.unloadAsync().catch();
+        audio.uri = null;
+        audio.old_sound.push(audio.sound);
+        audio.sound = null;
+        await unloadSound();
+      });
     }
   };
 
