@@ -41,7 +41,7 @@ export default function HostingLiveScreen({ navigation, route }) {
         method: "POST",
         body: getBody(name, img),
       });
-      if (state.saveUri)
+      if (saveUri)
         ({ recording: state.current.recording } =
           await Audio.Recording.createAsync(
             Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
@@ -69,21 +69,26 @@ export default function HostingLiveScreen({ navigation, route }) {
       ]);
 
       if (state.current.error) return;
-
+      console.log("recording: ", recording);
       if (recording) {
-        const uri = await StorageAccessFramework.createFileAsync(
-          saveUri,
-          getFileName(),
-          "audio/mp4"
-        );
-        const content = await StorageAccessFramework.readAsStringAsync(
-          recording.getURI(),
-          { encoding: EncodingType.Base64 }
-        );
-        await StorageAccessFramework.writeAsStringAsync(uri, content, {
-          encoding: EncodingType.Base64,
-        });
-        toast.show("Live stream stopped, recording was saved");
+        try {
+          const uri = await StorageAccessFramework.createFileAsync(
+            saveUri,
+            getFileName(),
+            "audio/mp4"
+          );
+          const content = await StorageAccessFramework.readAsStringAsync(
+            recording.getURI(),
+            { encoding: EncodingType.Base64 }
+          );
+          await StorageAccessFramework.writeAsStringAsync(uri, content, {
+            encoding: EncodingType.Base64,
+          });
+          toast.show("Live stream stopped, recording was saved");
+        } catch (e) {
+          console.error(e);
+          toast.show("Live stream stopped, failed to store recording");
+        }
       } else {
         toast.show("Live stream stopped");
       }

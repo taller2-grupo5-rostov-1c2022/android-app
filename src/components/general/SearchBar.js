@@ -129,6 +129,6 @@ export default function SearchBar({ setQueries, withSubLevels, ...rest }) {
 
 SearchBar.propTypes = {
   setQueries: PropTypes.func.isRequired,
-  withSubLevels: PropTypes.bool.isRequired,
+  withSubLevels: PropTypes.bool,
   ...View.propTypes,
 };
