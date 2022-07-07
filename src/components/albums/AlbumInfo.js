@@ -28,9 +28,9 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
   );
 
   const getAvgScore = () => {
-    if (!album?.score) return "-";
+    if (album?.score !== 0 && !album?.score) return "-";
     return Math.round(album?.score * 100) / 100;
-  }
+  };
 
   useEffect(() => {
     if (!response.error) return;
