@@ -39,7 +39,7 @@ export default function SessionManager() {
     await deleteNotificationToken();
     await AsyncStorage.clear();
     cache.clear();
-    themeContext.reset();
+    themeContext.save();
     _signOut(auth).catch();
   };
 

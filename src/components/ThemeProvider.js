@@ -26,7 +26,7 @@ const THEME_KEY = "@theme";
 export const ThemeContext = createContext({
   toggleTheme: () => {},
   isThemeDark: false,
-  reset: () => {},
+  save: () => {},
 });
 
 async function getStoredTheme() {
@@ -80,8 +80,8 @@ export default function ThemeProvider({ children }) {
     () => ({
       toggleTheme,
       isThemeDark,
-      reset: () => {
-        initialTheme(setIsThemeDark).catch();
+      save: () => {
+        setStoragedTheme(isThemeDark);
       },
     }),
     [toggleTheme, isThemeDark, setIsThemeDark]
