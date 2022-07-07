@@ -43,11 +43,11 @@ function useStreamings(channelName, token, host) {
     await eng.setChannelProfile(ChannelProfile.LiveBroadcasting);
 
     const sub_warn = eng.addListener("Warning", (warn) => {
-      console.log("Warning: ", warn);
+      console.warn("Warning: ", warn);
     });
 
     const sub_err = eng.addListener("Error", (err) => {
-      console.log("Error: ", err);
+      console.warn("Error: ", err);
     });
 
     const sub_list = eng.addListener("JoinChannelSuccess", () => {

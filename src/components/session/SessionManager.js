@@ -69,7 +69,7 @@ async function updateNotificationToken(wasLoggedOut) {
       }),
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     toast.show("Failed set up notifications");
   }
 }
@@ -81,7 +81,7 @@ async function deleteNotificationToken() {
     });
   } catch (e) {
     if (e.status == HTTP_NOT_FOUND) return;
-    console.log(e);
+    console.error(e);
     toast.show("Failed to remove notifications");
   }
 }

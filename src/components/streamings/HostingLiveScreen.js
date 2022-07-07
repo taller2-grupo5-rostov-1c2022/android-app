@@ -69,7 +69,6 @@ export default function HostingLiveScreen({ navigation, route }) {
       ]);
 
       if (state.current.error) return;
-      console.log("recording: ", recording);
       if (recording) {
         try {
           const uri = await StorageAccessFramework.createFileAsync(
