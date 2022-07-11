@@ -1,19 +1,26 @@
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types";
-import { List } from "react-native-paper";
+import { List, useTheme } from "react-native-paper";
 import { getArtistsAsString } from "../../util/general";
 
-export default function SongItem({ data, right, onPress, ...rest }) {
+function SongItem({ data, right, playing, ...rest }) {
+  const theme = useTheme();
   return (
     <List.Item
       title={data?.name}
       description={getArtistsAsString(data?.artists)}
       right={right}
-      onPress={onPress ? () => onPress(data) : undefined}
+      titleStyle={
+        playing
+          ? { color: theme.colors.primary, fontWeight: "bold" }
+          : undefined
+      }
       {...rest}
     />
   );
 }
+
+export default memo(SongItem);
 
 SongItem.propTypes = {
   data: PropTypes.shape({
@@ -23,7 +30,9 @@ SongItem.propTypes = {
         name: PropTypes.string.isRequired,
       }).isRequired
     ),
+    id: PropTypes.number,
   }),
+  playing: PropTypes.bool,
   right: PropTypes.func,
   onPress: PropTypes.func,
 };

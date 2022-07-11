@@ -15,6 +15,7 @@ import { useSubLevels } from "../../../util/requests";
 import SubscribeDialog from "./SubscribeDialog";
 import styles from "../../styles";
 import Portal from "../../general/NavigationAwarePortal";
+import SubIcon from "../../general/SubIcon";
 
 const getRemainingDays = (str_date) => {
   if (!str_date) return null;
@@ -116,18 +117,19 @@ export default function ManageSubscription() {
       <Headline style={{ marginTop: "10%", marginBottom: "5%" }}>
         Change Subscription
       </Headline>
-      {subLevels
-        ?.filter((sub) => sub.level != user?.sub_level)
-        .map((sub, i) => (
+      {subLevels.map((sub, i) => (
+        <View key={i} style={[styles.row, styles.containerCenter]}>
+          <SubIcon sub_level={sub.level} style={{ marginRight: 15 }} />
           <Button
-            key={i}
             mode={"outlined"}
             onPress={subscribeTo(sub?.level)}
-            style={{ marginVertical: "2%" }}
+            style={{ marginVertical: "2%", flex: 1 }}
+            disabled={sub?.level === user?.sub_level}
           >
-            <Text>{sub?.name}</Text>
+            {sub?.name}
           </Button>
-        ))}
+        </View>
+      ))}
 
       <Portal>
         <SubscribeDialog
