@@ -119,7 +119,7 @@ export default function ManageSubscription() {
       </Headline>
       {subLevels.map((sub, i) => (
         <View key={i} style={[styles.row, styles.containerCenter]}>
-          <SubIcon sub_level={sub.level} style={{ marginRight: 15 }} />
+          <SubIcon subLevel={sub.level} style={{ marginRight: 15 }} />
           <Button
             mode={"outlined"}
             onPress={subscribeTo(sub?.level)}
