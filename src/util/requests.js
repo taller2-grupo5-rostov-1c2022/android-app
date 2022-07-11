@@ -346,8 +346,9 @@ export const useFavorites = (type) => {
     let optimistic = response.data ?? { items: [] };
     optimistic.items.push(data);
     optimistic.items = optimistic.items.sort(sortCmpFavorites);
+    response.mutate(optimistic);
     saveFavorite(uid, data.id, type).then((res) => {
-      response.mutate(response.mutate, { optimisticData: optimistic });
+      response.mutate();
       return res;
     });
   };
@@ -356,8 +357,9 @@ export const useFavorites = (type) => {
     let optimistic = response.data ?? { items: [] };
     optimistic.items = optimistic.items.filter((item) => item.id != data.id);
     optimistic.items = optimistic.items.sort(sortCmpFavorites);
+    response.mutate(optimistic);
     deleteFavorite(uid, data.id, type).then((res) => {
-      response.mutate(response.mutate, { optimisticData: optimistic });
+      response.mutate();
       return res;
     });
   };
