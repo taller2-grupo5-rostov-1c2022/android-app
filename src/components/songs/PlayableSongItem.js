@@ -44,7 +44,11 @@ export default function PlayableSongItem({ data, right }) {
       left={useCallback(
         (props) => (
           <View style={[styles.containerCenter, styles.row]}>
-            <SubIcon subLevel={data?.sub_level} {...props} />
+            <SubIcon
+              subLevel={data?.sub_level}
+              {...props}
+              style={{ marginRight: 3 }}
+            />
             {loading ? (
               <ActivityIndicator color="gray" animating={loading} />
             ) : null}

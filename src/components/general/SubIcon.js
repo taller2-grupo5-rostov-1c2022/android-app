@@ -15,7 +15,6 @@ const SubIcon = ({ subLevel, ...rest }) => {
   const theme = useTheme();
   if (subLevel >= 2) rest.color = theme.colors.primary;
   else if (!rest.color) rest.color = theme.colors.info;
-  rest.style = rest.style ?? { marginRight: 5 };
   return <Icon name={getIcon(subLevel)} size={14} {...rest} />;
 };
 
