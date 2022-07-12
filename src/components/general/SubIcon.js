@@ -1,21 +1,29 @@
 import React from "react";
+import { View } from "react-native";
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import PropTypes from "prop-types";
 
-function getIcon(subLevel) {
-  if (subLevel === 0) return "currency-usd-off";
-  if (subLevel === 1) return "star-outline";
-  if (subLevel === 2) return "star";
-  if (subLevel === 3) return "crown";
-  return "file-question-outline";
+const STARS = 3;
+
+function getIcon(i, subLevel) {
+  return i <= subLevel ? "music-note" : "music-note-outline";
 }
 
 const SubIcon = ({ subLevel, ...rest }) => {
   const theme = useTheme();
-  if (subLevel >= 2) rest.color = theme.colors.primary;
-  else if (!rest.color) rest.color = theme.colors.info;
-  return <Icon name={getIcon(subLevel)} size={14} {...rest} />;
+  if (!rest.color) rest.color = theme.colors.info;
+
+  //if (subLevel === 0) rest.style = [{ opacity: 0 }].concat(rest.style ?? []);
+
+  const icons = [];
+  for (let i = 1; i <= STARS; i++) {
+    icons.push(
+      <Icon key={i} size={16} name={getIcon(i, subLevel)} {...rest} />
+    );
+  }
+
+  return <View>{icons}</View>;
 };
 
 SubIcon.propTypes = {

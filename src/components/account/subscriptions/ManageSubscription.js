@@ -71,6 +71,7 @@ export default function ManageSubscription() {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          marginBottom: 15,
         }}
       >
         <Subheading>{level} Account</Subheading>
@@ -78,42 +79,21 @@ export default function ManageSubscription() {
           <Text>{remainingDays} days remaining</Text>
         ) : null}
       </View>
-      <Headline style={{ marginTop: "10%" }}>Your wallet</Headline>
-      <View style={[styles.row, { justifyContent: "space-between" }]}>
-        <Caption
-          numberOfLines={1}
-          ellipsizeMode="middle"
-          style={{ textAlignVertical: "center", flex: 1 }}
-        >
-          {user?.wallet ?? ""}
-        </Caption>
-        <IconButton
-          icon="content-copy"
-          onPress={copyWallet}
-          color="gray"
-          style={{ marginVertical: 0 }}
-        />
-      </View>
-      <View style={[styles.row, { justifyContent: "space-between" }]}>
-        <Caption style={[styles.bold, { textAlignVertical: "center" }]}>
-          Current balance:
-        </Caption>
-        <Caption
-          numberOfLines={1}
-          style={{ flex: 1, textAlignVertical: "center" }}
-          ellipsizeMode="tail"
-        >
-          {` ${balance} `}
-        </Caption>
-        <Caption style={{ textAlignVertical: "center" }}>ETH</Caption>
-        <IconButton
-          icon="refresh"
-          onPress={_updateBalance}
-          color="gray"
-          style={{ marginVertical: 0 }}
-        />
-      </View>
-
+      <InfoButton
+        title="Your wallet"
+        text={user?.wallet}
+        icon="content-copy"
+        onPress={copyWallet}
+        ellipsizeMode="middle"
+      />
+      <InfoButton
+        title="Current balance"
+        text={balance}
+        icon="refresh"
+        right="ETH"
+        onPress={_updateBalance}
+        ellipsizeMode="tail"
+      />
       <Headline style={{ marginTop: "10%", marginBottom: "5%" }}>
         Change Subscription
       </Headline>
@@ -123,7 +103,7 @@ export default function ManageSubscription() {
           <Button
             mode={"outlined"}
             onPress={subscribeTo(sub?.level)}
-            style={{ marginVertical: "2%", flex: 1 }}
+            style={{ marginVertical: 10, flex: 1, paddingVertical: 5 }}
             disabled={sub?.level === user?.sub_level}
           >
             {sub?.name}
@@ -141,8 +121,41 @@ export default function ManageSubscription() {
   );
 }
 
+const InfoButton = ({ title, text, icon, right, onPress, ellipsizeMode }) => (
+  <View
+    style={[styles.row, { justifyContent: "space-between", marginVertical: 2 }]}
+  >
+    <Caption style={[styles.bold, { textAlignVertical: "center" }]}>
+      {title}:
+    </Caption>
+    <Caption
+      numberOfLines={1}
+      style={{ flex: 1, textAlignVertical: "center" }}
+      ellipsizeMode={ellipsizeMode}
+    >
+      {` ${text ?? ""} `}
+    </Caption>
+    <Caption style={{ textAlignVertical: "center" }}>{right}</Caption>
+    <IconButton
+      icon={icon}
+      onPress={onPress}
+      color="gray"
+      style={{ marginVertical: 0 }}
+    />
+  </View>
+);
+
 ManageSubscription.propTypes = {
   navigation: PropTypes.shape({
     replace: PropTypes.func.isRequired,
   }).isRequired,
+};
+
+InfoButton.propTypes = {
+  title: PropTypes.string.isRequired,
+  text: PropTypes.string,
+  icon: PropTypes.string.isRequired,
+  right: PropTypes.string,
+  onPress: PropTypes.func.isRequired,
+  ellipsizeMode: PropTypes.string.isRequired,
 };
