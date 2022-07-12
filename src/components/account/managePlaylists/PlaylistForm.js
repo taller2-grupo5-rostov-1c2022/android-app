@@ -25,7 +25,7 @@ export async function defaultGen(data) {
   };
 }
 
-export function getMySongs(playlist) {
+function getMySongs(playlist) {
   const validSongs = playlist?.songs?.map(({ name, id, artists }) => ({
     listProps: {
       title: name,

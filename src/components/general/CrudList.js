@@ -83,7 +83,7 @@ export default function CrudList({
 
 CrudList.propTypes = {
   url: PropTypes.string.isRequired,
-  itemComponent: PropTypes.func.isRequired,
+  itemComponent: PropTypes.any.isRequired,
   revalidateUrl: PropTypes.string,
   dialogProps: PropTypes.shape({
     name: PropTypes.string.isRequired,

@@ -3,12 +3,13 @@ import PropTypes from "prop-types";
 import { List, useTheme } from "react-native-paper";
 import { getArtistsAsString } from "../../util/general";
 
-function SongItem({ data, right, playing, ...rest }) {
+function SongItem({ data, right, playing, onPress, ...rest }) {
   const theme = useTheme();
   return (
     <List.Item
       title={data?.name}
       description={getArtistsAsString(data?.artists)}
+      onPress={onPress ? () => onPress(data) : undefined}
       right={right}
       titleStyle={
         playing

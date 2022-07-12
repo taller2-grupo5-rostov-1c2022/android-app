@@ -14,12 +14,13 @@ export default function PlayableSongItem({ data, right }) {
   const { setSong, setPaused, song } = useContext(AudioContext);
   const { user } = useContext(SessionContext);
   const [loading, setLoading] = useState(false);
+  const playing = song?.id === data?.id;
   const onPress = useCallback(
-    loading
+    loading || playing
       ? undefined
       : async () => {
-          let song = { ...data };
           setLoading(true);
+          let song = { ...data };
           try {
             let res = await fetch(SONGS_URL + song.id);
             song.url = res.file;
@@ -32,7 +33,7 @@ export default function PlayableSongItem({ data, right }) {
             setLoading(false);
           }
         },
-    [data]
+    [data, playing, loading]
   );
 
   return (
@@ -40,7 +41,7 @@ export default function PlayableSongItem({ data, right }) {
       data={data}
       right={right}
       onPress={onPress}
-      playing={song?.id === data?.id}
+      playing={playing}
       left={useCallback(
         (props) => (
           <View style={[styles.containerCenter, styles.row]}>
