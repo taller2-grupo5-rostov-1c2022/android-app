@@ -113,7 +113,6 @@ const LightTheme = {
     ...PaperDefaultTheme.colors,
     ...NavigationDefaultTheme.colors,
     primary: "#3498db",
-    accent: "#f1c40f",
     info: "#555555",
   },
 };

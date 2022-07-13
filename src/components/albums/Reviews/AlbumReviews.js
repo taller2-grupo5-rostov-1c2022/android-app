@@ -63,7 +63,9 @@ const AlbumReviews = ({ albumId }) => {
               <Text style={{ fontWeight: "bold" }}>
                 {comment.reviewer.name}
               </Text>
-              {comment.score ? <Text>Score: {comment.score}</Text> : null}
+              {comment.score || comment.score === 0 ? (
+                <Text>Score: {comment.score}</Text>
+              ) : null}
               {comment.text ? <Text>Review: {comment.text}</Text> : null}
             </View>
           ))

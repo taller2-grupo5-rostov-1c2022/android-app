@@ -24,9 +24,7 @@ export default function SongsScreen() {
         right={(props) => [
           <LikeIcon
             {...props}
-            onPress={() => {
-              onLike(data?.id);
-            }}
+            onPress={() => onLike(data?.id)}
             liked={liked}
             key={1}
           />,

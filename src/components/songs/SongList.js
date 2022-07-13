@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IconButton, Button, Title } from "react-native-paper";
 import { View } from "react-native";
 import FetchedList from "./../general/FetchedList";
@@ -6,6 +6,7 @@ import PlayableSongItem from "./PlayableSongItem";
 import styles from "../styles";
 import { fetch, SONGS_URL } from "../../util/services";
 import { AudioContext } from "../general/AudioProvider";
+import { SessionContext } from "../session/SessionProvider";
 import PropTypes from "prop-types";
 import { errStr } from "../../util/general";
 
@@ -16,8 +17,17 @@ export default function SongList({
   title,
   emptyMessage,
 }) {
-  const context = React.useContext(AudioContext);
-  const [loading, setLoading] = React.useState(false);
+  const context = useContext(AudioContext);
+  const [loading, setLoading] = useState(false);
+  const [validSongs, setValidSongs] = useState([]);
+  const { user, role } = useContext(SessionContext);
+
+  useEffect(() => {
+    if (!songs) setValidSongs([]);
+    else if (role === "admin") setValidSongs(songs);
+    else setValidSongs(songs.filter((s) => s.sub_level <= user.sub_level));
+  }, [songs, user, role]);
+
   let song = ({ data }) => (
     <PlayableSongItem
       data={data}
@@ -36,12 +46,12 @@ export default function SongList({
   );
 
   let playAllButton = null;
-  if (songs?.length > 0)
+  if (validSongs?.length > 0)
     playAllButton = (
       <Button
         mode="contained"
         style={[styles.button, { marginTop: "3%", alignSelf: "center" }]}
-        onPress={() => playSongList(songs, context, setLoading)}
+        onPress={() => playSongList(validSongs, context, setLoading)}
         disabled={loading ? "true" : undefined}
         icon={loading ? undefined : "play"}
         loading={loading}
@@ -67,14 +77,14 @@ export default function SongList({
   );
 }
 
-export async function playSongList(songs, context, setLoading) {
+async function playSongList(songs, context, setLoading) {
   setLoading && setLoading(true);
   try {
     const firstSong = await fetch(SONGS_URL + songs[0].id).catch((e) => {
       const detail = errStr(e);
       const error_message = `Cannot play ${songs[0].name}\n${detail}`;
       toast.show(error_message);
-    })
+    });
     songs[0].url = firstSong.file;
     context.setSong(songs[0]);
     context.setPaused(false);

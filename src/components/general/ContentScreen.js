@@ -36,9 +36,8 @@ export default function ContentScreen({
   useEffect(() => {
     if (!favorites) return;
 
-    const favoritesIds = new Set(favorites.map((i) => i.id));
-    onLike.current = (item) =>
-      favoritesIds.has(item.id) ? deleteFavorite(item) : saveFavorite(item);
+    onLike.current = (item, liked) =>
+      liked ? deleteFavorite(item) : saveFavorite(item);
   }, [favorites]);
 
   const customData = useCallback(
@@ -54,11 +53,14 @@ export default function ContentScreen({
       }
       const favoritesIds = new Set(favoritesFilted.map((i) => i.id));
 
-      const addLikeInfo = (item) => ({
-        ...item,
-        liked: favoritesIds.has(item.id),
-        onLike: () => onLike.current && onLike.current(item),
-      });
+      const addLikeInfo = (item) => {
+        const liked = favoritesIds.has(item.id);
+        return {
+          ...item,
+          liked,
+          onLike: () => onLike.current?.(item, liked),
+        };
+      };
 
       return favoritesFilted
         .concat(data.filter((item) => !favoritesIds.has(item.id)))

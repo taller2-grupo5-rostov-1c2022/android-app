@@ -11,12 +11,10 @@ import SongList from "../songs/SongList";
 import AlbumReviews from "./Reviews/AlbumReviews";
 import AlbumComments from "./comments/AlbumComments.js";
 import { useSWR, ALBUMS_URL, json_fetcher } from "../../util/services";
+import StarRating from "react-native-star-rating-widget";
 
 export default function AlbumInfo({ modalStatus, setModalStatus }) {
   const album = modalStatus?.album;
-  const artists = getArtistsAsString(
-    album?.songs?.map((song) => song?.artists).flat()
-  );
   const [playlistAdd, setPlaylistAdd] = useState({
     visible: false,
     id: null,
@@ -26,11 +24,9 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
     json_fetcher,
     { isPaused: () => !modalStatus.visible }
   );
-
-  const getAvgScore = () => {
-    if (album?.score !== 0 && !album?.score) return "-";
-    return Math.round(album?.score * 100) / 100;
-  };
+  const artists = getArtistsAsString(
+    response?.data?.songs?.map((song) => song?.artists).flat()
+  );
 
   useEffect(() => {
     if (!response.error) return;
@@ -48,17 +44,26 @@ export default function AlbumInfo({ modalStatus, setModalStatus }) {
         <View style={[styles.containerCenter]}>
           <Title style={{ margin: 0 }}>{album?.name}</Title>
           <Subheading>{album?.genre}</Subheading>
+          {album?.scores_amount ? (
+            <StarRating
+              rating={album.score / 2}
+              onChange={() => {}}
+              maxStars={5}
+              style={{ alignSelf: "center", marginBottom: 10 }}
+              animationConfig={{ scale: 1 }}
+              color="#FBB52C"
+              starSize={20}
+            />
+          ) : null}
           <ShapedImage
             imageUri={album?.cover}
             shape="square"
             icon="album"
             size={200}
-            style={{ marginBottom: "2%" }}
+            style={{ marginBottom: 10 }}
           />
-
-          <Text>{artists}</Text>
+          {artists ? <Text>{artists}</Text> : null}
           <Caption>{album?.description}</Caption>
-          <Caption>{"avg. Score: " + getAvgScore()}</Caption>
           <SongList
             onPlaylistAdd={(data) =>
               setPlaylistAdd({ visible: true, id: data.id })
