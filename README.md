@@ -32,10 +32,10 @@ npm i
 ## Building the apk
 
 ```
-npm run build
+cd android && ./gradlew assembleRelease
 ```
 
-> WIP : This may not work locally, should add a Docker Image to build the app
+The output file will be on the folder `android/app/build/outputs/apk/release`
 
 ## Workflow - CI/CD
 
@@ -43,7 +43,6 @@ npm run build
 - Setup ( Checkout Repo , Install Node & Dependencies )
 - Run Linter
 - Run Tests
-- Upload Test Coverage
 - Build & Upload APK
 
 ### Build & Upload APK
@@ -51,21 +50,16 @@ npm run build
 - [Deliver Artifact](https://github.com/marketplace/actions/react-native-android-build-apk)
 - [Release](https://github.com/softprops/action-gh-release)
 
-#### Locally
-
-```
-cd android && ./gradlew assembleRelease
-```
-
 #### Creating & Pushing Tags
+
+If a tag that starts with `v` is pushed, the apk will be built for the latest commit and a release will be created.
 
 ```
 $ git tag v0.1.0
 $ git push origin --tags
 ```
 
-> keep tag version aligned with `package.json`
-> this could be automated
+> Keep tag version aligned with `package.json`
 
 ## Firebase
 
